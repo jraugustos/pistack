@@ -1,0 +1,12 @@
+gate:
+  story: "História 2.4 — Histórico do Chat"
+  epic: "Epic 2 — Chat Contextual"
+  status: "CONCERNS"
+  rationale: |
+    O histórico garante contexto ao usuário. Deve ser validado truncamento após 20 mensagens.
+  risks:
+    - "Histórico não persistido corretamente"
+    - "Mensagens antigas não descartadas"
+  conditions:
+    - "Integration test: enviar 21 mensagens → truncamento"
+    - "E2E: navegar pelo histórico e aplicar resposta"

@@ -1,0 +1,12 @@
+gate:
+  story: "História 1.1 — Criar Projeto"
+  epic: "Epic 1 — Canvas & Cards"
+  status: "CONCERNS"
+  rationale: |
+    A criação de projetos é essencial para todo o fluxo. Deve ser validada para casos em branco e com template.
+  risks:
+    - "Projeto não salvo no DB"
+    - "Templates não aplicados corretamente"
+  conditions:
+    - "Integration test: criar projeto vazio e com template"
+    - "E2E: iniciar projeto, abrir canvas, salvar com sucesso"
