@@ -77,7 +77,8 @@ function buildPrompt({
     'Contexto atual do canvas:',
     stageContext,
     '',
-    `Card a ser criado: "${cardType}"`,
+    `⚠️ ATENÇÃO: Card a ser criado: "${cardType}"`,
+    `⚠️ NÃO confunda com outros tipos de card!`,
     `Descrição do card: ${cardDescription}`,
     '',
     '⚠️ SCHEMA OBRIGATÓRIO DO CARD (siga exatamente esta estrutura):',
@@ -90,6 +91,11 @@ function buildPrompt({
     '4. Arrays de objetos devem seguir o schema exato mostrado acima',
     '5. Exemplo CORRETO de painPoints: ["Dificuldade em X", "Problema com Y"]',
     '6. Exemplo ERRADO: "- Dificuldade em X\\n- Problema com Y"',
+    '',
+    `⚠️ VALIDAÇÃO CRÍTICA:`,
+    `- Certifique-se de que está gerando o card tipo "${cardType}"`,
+    `- NÃO gere conteúdo de outros tipos de card`,
+    `- Verifique se os campos retornados correspondem ao schema de "${cardType}"`,
     '',
     'Instruções de execução:',
     '- Analise o contexto e utilize insights relevantes.',
@@ -104,6 +110,60 @@ function buildPrompt({
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function validateCardSchema(cardType: string, content: any): boolean {
+  if (!content || typeof content !== 'object') {
+    return false
+  }
+
+  // Validações específicas por tipo de card
+  // IMPORTANTE: Validações devem ser PERMISSIVAS - só rejeitam se estiver MUITO errado
+  switch (cardType) {
+    case 'initial-kpis':
+      // Verifica se NÃO tem campos de outros cards (solution, problem, etc)
+      const hasWrongFields =
+        ('solution' in content) ||
+        ('problem' in content) ||
+        ('pitch' in content)
+
+      // Aceita se tem kpis OU se não tem campos errados
+      return !hasWrongFields || Array.isArray(content.kpis)
+
+    case 'problem':
+      // Aceita se tem 'problem' OU se não tem campos de outros cards
+      return (
+        ('problem' in content) ||
+        !('solution' in content && 'kpis' in content)
+      )
+
+    case 'solution':
+      // Aceita se tem 'solution' OU se não tem campos de outros cards
+      return (
+        ('solution' in content) ||
+        !('problem' in content && 'kpis' in content)
+      )
+
+    case 'pitch':
+      // Aceita se tem 'pitch'
+      return 'pitch' in content
+
+    case 'project-name':
+      // Aceita se tem 'projectName' ou 'name'
+      return 'projectName' in content || 'name' in content
+
+    case 'target-audience':
+      // Aceita se tem 'primaryAudience' ou 'audience'
+      return 'primaryAudience' in content || 'audience' in content
+
+    case 'primary-persona':
+      // Aceita se tem 'name' e não tem campos completamente errados
+      return 'name' in content || Object.keys(content).length > 2
+
+    default:
+      // Para outros tipos, aceita qualquer coisa com conteúdo
+      return Object.keys(content).length > 0
+  }
 }
 
 export interface GenerateCardOptions {
@@ -143,11 +203,16 @@ IMPORTANTE: differentiators DEVE ser um array de strings simples.`,
 }`,
   'initial-kpis': `{
   "kpis": [
-    { "name": "Nome do KPI", "target": "Meta mensurável" },
-    { "name": "Nome do KPI", "target": "Meta mensurável" }
+    { "name": "Nome do KPI 1", "target": "Meta mensurável" },
+    { "name": "Nome do KPI 2", "target": "Meta mensurável" },
+    { "name": "Nome do KPI 3", "target": "Meta mensurável" }
   ]
 }
-IMPORTANTE: kpis DEVE ser um array de objetos com {name: string, target: string}.`,
+CRÍTICO: Este é o card "initial-kpis" - NÃO confunda com outros cards!
+- O campo DEVE ser "kpis" (não "solution", "problem", ou outros)
+- DEVE ser um array de objetos com {name: string, target: string}
+- Exemplo correto: [{"name": "Taxa de conversão", "target": "5%"}, {"name": "Usuários ativos", "target": "1000/mês"}]
+- NÃO retorne campos de outros cards como "solution" ou "differentiators"`,
 
   // Etapa 2
   'validation-hypotheses': `{
@@ -627,7 +692,7 @@ export async function generateCardWithAssistant({
     assistant_id: assistantId,
   })
 
-  const maxAttempts = 30
+  const maxAttempts = 60 // Aumentado de 30 para 60 (60 segundos)
   let attempts = 0
 
   while (attempts < maxAttempts) {
@@ -710,9 +775,16 @@ export async function generateCardWithAssistant({
   }
 
   if (run.status !== 'completed') {
+    console.error('[AI][Timeout] Assistente não completou a tempo', {
+      cardId,
+      cardType,
+      stageNumber,
+      attempts,
+      finalStatus: run.status,
+    })
     return {
       success: false,
-      error: 'Timeout ao aguardar resposta da IA.',
+      error: `Timeout ao aguardar resposta da IA (status final: ${run.status} após ${attempts} tentativas).`,
     }
   }
 
@@ -748,6 +820,17 @@ export async function generateCardWithAssistant({
         return Object.values(value).some(Boolean)
       return true
     })
+
+  // Validação: verificar se o conteúdo está correto para o tipo de card
+  const hasCorrectSchema = validateCardSchema(cardType, card.content)
+
+  console.log('[AI][Validation]', {
+    cardId,
+    cardType,
+    hasContent,
+    hasCorrectSchema,
+    content: JSON.stringify(card.content).substring(0, 200),
+  })
 
   if (!hasContent) {
     console.warn('[AI] card sem conteúdo após assistente, acionando fallback', {

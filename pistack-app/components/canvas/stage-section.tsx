@@ -98,11 +98,12 @@ interface LoadingState {
 }
 
 const LOADING_MESSAGES = [
-  'Analisando contexto do projeto',
-  'Consultando a IA para gerar conteúdo',
-  'Estruturando as informações',
-  'Quase lá... finalizando os detalhes',
-  'Preparando o card para você',
+  'Analisando contexto do projeto...',
+  'Consultando a IA para gerar conteúdo...',
+  'Estruturando as informações...',
+  'Processando resposta da IA...',
+  'Finalizando os detalhes...',
+  'Preparando o card para você...',
 ]
 
 const LOADING_STEPS = [
@@ -1077,9 +1078,24 @@ const StageSectionBase: ForwardRefRenderFunction<
 
       if (response.ok) {
         const data = await response.json()
+
+        // Normaliza o conteúdo antes de atualizar o estado
+        const cardType = cards.find(c => c.id === cardId)?.card_type
+        const normalizedCard = {
+          ...data.card,
+          content: cardType
+            ? normalizeCardContent(cardType, data.card.content)
+            : data.card.content
+        }
+
         setCards((prev) =>
-          prev.map((card) => (card.id === cardId ? data.card : card))
+          prev.map((card) => (card.id === cardId ? normalizedCard : card))
         )
+
+        console.log('[StageSection] Card saved successfully:', cardId)
+      } else {
+        const errorData = await response.json()
+        console.error('[StageSection] Failed to save card:', errorData)
       }
     } catch (error) {
       console.error('Error saving card:', error)
@@ -1112,26 +1128,38 @@ const StageSectionBase: ForwardRefRenderFunction<
           // eslint-disable-next-line no-console
           console.debug('[StageSection] card created', data.card)
         }
+
+        // Se houve warning, significa que a IA falhou
+        if (data.warning) {
+          console.warn('[StageSection] Card created with warning:', data.warning)
+        }
+
+        // Normaliza e adiciona o card ao estado
+        const normalizedCard = {
+          ...data.card,
+          content: normalizeCardContent(cardType, data.card.content),
+        }
+
         setCards((prev) => {
-          const normalizedCard = {
-            ...data.card,
-            content: normalizeCardContent(cardType, data.card.content),
-          }
           const next = prev.filter((existing) => existing.id !== data.card.id)
           next.push(normalizedCard)
           return next
         })
 
         return data.card
+      } else {
+        const errorData = await response.json()
+        console.error('[StageSection] Failed to create card:', errorData)
+        throw new Error(errorData.error || 'Failed to create card')
       }
     } catch (error) {
       console.error('Error creating card:', error)
+      // Em caso de erro, atualiza a lista de cards para garantir consistência
+      fetchCards({ silent: true })
+      throw error
     } finally {
       if (autoPopulate) {
         stopLoadingOverlay()
-      }
-      if (autoPopulate) {
-        fetchCards({ silent: true })
       }
     }
   }

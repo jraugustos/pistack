@@ -124,32 +124,54 @@ export async function POST(request: NextRequest) {
     const initialContent =
       content && Object.keys(content).length > 0 ? content : {}
 
-    const { data: card, error: createError } = await supabase
+    const shouldAutoGenerate =
+      autoPopulate || !content || Object.keys(content || {}).length === 0
+
+    // Se não precisa auto-gerar, cria o card diretamente
+    if (!shouldAutoGenerate) {
+      const { data: card, error: createError } = await supabase
+        .from('cards')
+        .insert({
+          stage_id: stageId,
+          card_type: cardType,
+          content: initialContent,
+          position: position ?? 0,
+        })
+        .select()
+        .single()
+
+      if (createError || !card) {
+        console.error('Error creating card:', createError)
+        return NextResponse.json(
+          { error: 'Failed to create card' },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ card }, { status: 201 })
+    }
+
+    // Se precisa auto-gerar, cria o card vazio primeiro (necessário para ter o card_id)
+    const { data: tempCard, error: createError } = await supabase
       .from('cards')
       .insert({
         stage_id: stageId,
         card_type: cardType,
-        content: initialContent,
+        content: {},
         position: position ?? 0,
       })
       .select()
       .single()
 
-    if (createError || !card) {
-      console.error('Error creating card:', createError)
+    if (createError || !tempCard) {
+      console.error('Error creating temporary card:', createError)
       return NextResponse.json(
         { error: 'Failed to create card' },
         { status: 500 }
       )
     }
 
-    const shouldAutoGenerate =
-      autoPopulate || !content || Object.keys(content || {}).length === 0
-
-    if (!shouldAutoGenerate) {
-      return NextResponse.json({ card }, { status: 201 })
-    }
-
+    // Gera o conteúdo com a IA
     const result = await generateCardWithAssistant({
       supabase,
       projectId: stageProject.id,
@@ -158,7 +180,7 @@ export async function POST(request: NextRequest) {
       stageName: stage.stage_name,
       cardType,
       userId,
-      cardId: card.id,
+      cardId: tempCard.id,
     })
 
     console.log('[AI][AutoPopulate]', {
@@ -169,24 +191,26 @@ export async function POST(request: NextRequest) {
       stageNumber: stage.stage_number,
     })
 
+    // Se a IA falhou, retorna o card vazio com warning
     if (!result.success || !result.card) {
       if (result.error) {
         console.warn('[AI][AutoPopulate] restoring empty card due to error', {
-          cardId: card.id,
+          cardId: tempCard.id,
           error: result.error,
         })
       }
       return NextResponse.json(
         {
-          card: result.card ?? card,
+          card: tempCard,
           warning:
             result.error ||
             'Assistente não conseguiu preencher automaticamente. Card criado em branco.',
         },
-        { status: result.success ? 201 : 202 }
+        { status: 202 }
       )
     }
 
+    // Retorna o card POPULADO pela IA
     return NextResponse.json({ card: result.card }, { status: 201 })
   } catch (error) {
     console.error('Create card error:', error)
