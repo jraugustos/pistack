@@ -1,0 +1,1004 @@
+<html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas — PIStack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-[#0F1115] text-[#E6E9F2] antialiased overflow-x-hidden transition-colors duration-200" data-theme="dark">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0F1115]/80 backdrop-blur-xl transition-colors duration-200">
+      <nav class="h-14 px-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </button>
+          <div class="flex items-center gap-3">
+            <div class="text-sm font-semibold tracking-tight">
+              App de Finanças
+            </div>
+            <div class="flex items-center gap-1.5 px-2 py-1 bg-[#5AD19A]/10 rounded-md">
+              <div class="w-1.5 h-1.5 rounded-full bg-[#5AD19A]"></div>
+              <span class="text-xs text-[#5AD19A]">Autosaved</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="history" class="w-3.5 h-3.5"></i>
+            Versions
+          </button>
+          <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            Share
+          </button>
+          <div class="w-px h-6 bg-white/5 mx-1"></div>
+          <button class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            Export
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Canvas -->
+    <main class="pt-14 h-screen flex">
+      <!-- Left Sidebar - Stages -->
+      <aside class="w-64 border-r border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
+        <div class="p-4 border-b border-white/5">
+          <h2 class="text-xs font-semibold text-[#E6E9F2]/40 uppercase tracking-wider mb-3">
+            Etapas do Projeto
+          </h2>
+        </div>
+        <div class="flex-1 overflow-y-auto p-3 space-y-2">
+          <!-- Stage 1 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#7AA2FF]"></div>
+              <span class="text-xs font-medium text-[#7AA2FF]">Etapa 1</span>
+            </div>
+            <div class="text-sm font-medium">Ideia Base</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">6 cards</div>
+          </button>
+
+          <!-- Stage 2 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#5AD19A]"></div>
+              <span class="text-xs font-medium text-[#5AD19A]">Etapa 2</span>
+            </div>
+            <div class="text-sm font-medium">Entendimento</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">4 cards</div>
+          </button>
+
+          <!-- Stage 3 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/30 hover:border-[#FFC24B]/50 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#FFC24B]"></div>
+              <span class="text-xs font-medium text-[#FFC24B]">Etapa 3</span>
+            </div>
+            <div class="text-sm font-medium">Escopo</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">6 cards</div>
+          </button>
+
+          <!-- Stage 4 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#FF6B6B]"></div>
+              <span class="text-xs font-medium text-[#FF6B6B]">Etapa 4</span>
+            </div>
+            <div class="text-sm font-medium">Design &amp; Tech</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">6 cards</div>
+          </button>
+
+          <!-- Stage 5 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#9B8AFB]"></div>
+              <span class="text-xs font-medium text-[#9B8AFB]">Etapa 5</span>
+            </div>
+            <div class="text-sm font-medium">Planejamento</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">0 cards</div>
+          </button>
+        </div>
+
+        <div class="p-3 border-t border-white/5">
+          <button class="w-full px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Nova Etapa
+          </button>
+        </div>
+      </aside>
+
+      <!-- Canvas Area -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Canvas Toolbar -->
+        <div class="h-12 border-b border-white/5 px-4 flex items-center justify-between bg-[#0F1115] transition-colors duration-200">
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF]/10 text-[#7AA2FF] rounded-lg flex items-center gap-1.5">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+              Canvas View
+            </button>
+            <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/60 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+              <i data-lucide="list" class="w-3.5 h-3.5"></i>
+              List View
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </button>
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="filter" class="w-4 h-4"></i>
+            </button>
+            <div class="w-px h-6 bg-white/5 mx-1"></div>
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="zoom-in" class="w-4 h-4"></i>
+            </button>
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="zoom-out" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Canvas Content -->
+        <div class="flex-1 overflow-auto bg-[#0A0B0E] p-6 transition-colors duration-200">
+          <div class="max-w-7xl mx-auto">
+            
+            <!-- ETAPA 3: ESCOPO -->
+            <div class="mb-12">
+              <div class="mb-6">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-3 h-3 rounded-full bg-[#FFC24B]"></div>
+                  <h2 class="text-xl font-semibold tracking-tight">
+                    Etapa 3: Escopo
+                  </h2>
+                </div>
+                <p class="text-sm text-[#E6E9F2]/60">
+                  Definição do MVP, features essenciais, user stories e roadmap
+                </p>
+              </div>
+
+              <!-- Cards Grid Etapa 3 -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                
+                <!-- Card 1: MVP Features -->
+                <div class="bg-[#151821] rounded-xl border border-[#FFC24B]/30 p-5 hover:border-[#FFC24B]/50 transition-all hover:shadow-lg hover:shadow-[#FFC24B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                        <i data-lucide="package" class="w-4 h-4 text-[#FFC24B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FFC24B] font-medium">
+                          MVP Features Essenciais
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#FFC24B]"></i>
+                      </button>
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="flex items-start gap-2 p-2 bg-[#FFC24B]/5 rounded">
+                      <div class="w-5 h-5 rounded bg-[#FFC24B]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-xs font-semibold text-[#FFC24B]">1</span>
+                      </div>
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Cadastro de Transações</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Manual e via foto de nota fiscal</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-2 p-2 bg-[#FFC24B]/5 rounded">
+                      <div class="w-5 h-5 rounded bg-[#FFC24B]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-xs font-semibold text-[#FFC24B]">2</span>
+                      </div>
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Categorização por IA</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Automática com aprendizado</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-2 p-2 bg-[#FFC24B]/5 rounded">
+                      <div class="w-5 h-5 rounded bg-[#FFC24B]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-xs font-semibold text-[#FFC24B]">3</span>
+                      </div>
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Dashboard Visual</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Gráficos de gastos por categoria</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start gap-2 p-2 bg-[#FFC24B]/5 rounded">
+                      <div class="w-5 h-5 rounded bg-[#FFC24B]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-xs font-semibold text-[#FFC24B]">4</span>
+                      </div>
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Insights Mensais</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Análise e dicas de economia</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2: User Stories -->
+                <div class="bg-[#151821] rounded-xl border border-[#FFC24B]/30 p-5 hover:border-[#FFC24B]/50 transition-all hover:shadow-lg hover:shadow-[#FFC24B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                        <i data-lucide="book-open" class="w-4 h-4 text-[#FFC24B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FFC24B] font-medium">
+                          User Stories Principais
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="space-y-1.5">
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#FFC24B]"></div>
+                        <span class="text-xs font-medium text-[#E6E9F2]/90">US-001</span>
+                        <span class="px-1.5 py-0.5 bg-[#5AD19A]/10 rounded text-[10px] text-[#5AD19A]">Alta</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/70 leading-relaxed">
+                        Como usuário, quero adicionar gastos rapidamente para não esquecer de registrá-los
+                      </p>
+                    </div>
+                    <div class="space-y-1.5">
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#FFC24B]"></div>
+                        <span class="text-xs font-medium text-[#E6E9F2]/90">US-002</span>
+                        <span class="px-1.5 py-0.5 bg-[#5AD19A]/10 rounded text-[10px] text-[#5AD19A]">Alta</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/70 leading-relaxed">
+                        Como usuário, quero que o app categorize automaticamente para economizar tempo
+                      </p>
+                    </div>
+                    <div class="space-y-1.5">
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#FFC24B]"></div>
+                        <span class="text-xs font-medium text-[#E6E9F2]/90">US-003</span>
+                        <span class="px-1.5 py-0.5 bg-[#FFC24B]/10 rounded text-[10px] text-[#FFC24B]">Média</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/70 leading-relaxed">
+                        Como usuário, quero ver gráficos visuais para entender meus padrões de gastos
+                      </p>
+                    </div>
+                    <div class="space-y-1.5">
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#FFC24B]"></div>
+                        <span class="text-xs font-medium text-[#E6E9F2]/90">US-004</span>
+                        <span class="px-1.5 py-0.5 bg-[#FFC24B]/10 rounded text-[10px] text-[#FFC24B]">Média</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/70 leading-relaxed">
+                        Como usuário, quero receber insights personalizados para economizar mais
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3: Features Fora do MVP -->
+                <div class="bg-[#151821] rounded-xl border border-[#FFC24B]/30 p-5 hover:border-[#FFC24B]/50 transition-all hover:shadow-lg hover:shadow-[#FFC24B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                        <i data-lucide="archive" class="w-4 h-4 text-[#FFC24B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FFC24B] font-medium">
+                          Features Fora do MVP
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="text-xs text-[#E6E9F2]/40 mb-3">Para versões futuras:</div>
+                  <div class="space-y-2">
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Integração bancária automática</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Metas financeiras com gamificação</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Compartilhamento familiar</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Relatórios customizados PDF</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Consultor financeiro IA</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Planejamento de investimentos</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                      <i data-lucide="square" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                      <span class="text-xs text-[#E6E9F2]/70">Alertas inteligentes de gastos</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 4: Critérios de Sucesso -->
+                <div class="bg-[#151821] rounded-xl border border-[#FFC24B]/30 p-5 hover:border-[#FFC24B]/50 transition-all hover:shadow-lg hover:shadow-[#FFC24B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                        <i data-lucide="target" class="w-4 h-4 text-[#FFC24B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FFC24B] font-medium">
+                          Critérios de Sucesso
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">MVP (3 meses):</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs text-[#E6E9F2]/70">5k usuários ativos</span>
+                          <i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#5AD19A]"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs text-[#E6E9F2]/70">40% retenção D7</span>
+                          <i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#5AD19A]"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs text-[#E6E9F2]/70">4.2+ rating stores</span>
+                          <i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#5AD19A]"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Qualitativo:</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="check" class="w-3 h-3 text-[#FFC24B] mt-0.5"></i>
+                          <p class="text-xs text-[#E6E9F2]/70">Usuários economizam 15%+ ao mês</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="check" class="w-3 h-3 text-[#FFC24B] mt-0.5"></i>
+                          <p class="text-xs text-[#E6E9F2]/70">95% de acurácia na categorização</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="check" class="w-3 h-3 text-[#FFC24B] mt-0.5"></i>
+                          <p class="text-xs text-[#E6E9F2]/70">Feedbacks positivos em reviews</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 5: Roadmap Inicial -->
+                <div class="bg-[#151821] rounded-xl border border-[#FFC24B]/30 p-5 hover:border-[#FFC24B]/50 transition-all hover:shadow-lg hover:shadow-[#FFC24B]/5 group col-span-1 md:col-span-2">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                        <i data-lucide="map" class="w-4 h-4 text-[#FFC24B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FFC24B] font-medium">
+                          Roadmap Inicial
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <!-- V1.0 -->
+                    <div class="p-3 bg-[#FFC24B]/5 border border-[#FFC24B]/20 rounded-lg">
+                      <div class="flex items-center gap-2 mb-3">
+                        <div class="px-2 py-1 bg-[#FFC24B]/20 rounded text-xs font-semibold text-[#FFC24B]">
+                          V1.0 MVP
+                        </div>
+                        <span class="text-xs text-[#E6E9F2]/40">3 meses</span>
+                      </div>
+                      <ul class="space-y-1.5">
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#FFC24B] mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Cadastro transações</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#FFC24B] mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">IA categorização</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#FFC24B] mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Dashboard básico</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#FFC24B] mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Insights mensais</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- V1.5 -->
+                    <div class="p-3 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center gap-2 mb-3">
+                        <div class="px-2 py-1 bg-white/10 rounded text-xs font-semibold">
+                          V1.5
+                        </div>
+                        <span class="text-xs text-[#E6E9F2]/40">+2 meses</span>
+                      </div>
+                      <ul class="space-y-1.5">
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Metas financeiras</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Notificações push</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Widgets iOS/Android</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Export dados CSV</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- V2.0 -->
+                    <div class="p-3 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center gap-2 mb-3">
+                        <div class="px-2 py-1 bg-white/10 rounded text-xs font-semibold">
+                          V2.0
+                        </div>
+                        <span class="text-xs text-[#E6E9F2]/40">+3 meses</span>
+                      </div>
+                      <ul class="space-y-1.5">
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Integração bancária</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Compartilhamento</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Consultor IA avançado</span>
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-2.5 h-2.5 text-[#E6E9F2]/40 mt-1"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Premium features</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <button class="w-full max-w-xs px-4 py-3 border-2 border-dashed border-white/10 hover:border-[#FFC24B]/30 rounded-xl text-sm font-medium text-[#E6E9F2]/60 hover:text-[#FFC24B] transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Adicionar Card
+              </button>
+            </div>
+
+            <!-- ETAPA 4: DESIGN & TECH -->
+            <div class="mt-12 pt-8 border-t border-white/5">
+              <div class="mb-6">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-3 h-3 rounded-full bg-[#FF6B6B]"></div>
+                  <h2 class="text-xl font-semibold tracking-tight">
+                    Etapa 4: Design &amp; Tech
+                  </h2>
+                </div>
+                <p class="text-sm text-[#E6E9F2]/60">
+                  Stack tecnológica, arquitetura, design system e segurança
+                </p>
+              </div>
+
+              <!-- Cards Grid Etapa 4 -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                
+                <!-- Card 1: Stack Tecnológica -->
+                <div class="bg-[#151821] rounded-xl border border-[#FF6B6B]/30 p-5 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg hover:shadow-[#FF6B6B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                        <i data-lucide="code-2" class="w-4 h-4 text-[#FF6B6B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FF6B6B] font-medium">
+                          Stack Tecnológica
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Frontend Mobile:</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span class="px-2 py-1 bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 rounded text-xs">React Native</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Expo</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">TypeScript</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Backend:</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span class="px-2 py-1 bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 rounded text-xs">Node.js</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Express</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">PostgreSQL</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">IA &amp; ML:</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span class="px-2 py-1 bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 rounded text-xs">OpenAI GPT-4</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Python</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">TensorFlow</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Infraestrutura:</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span class="px-2 py-1 bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 rounded text-xs">AWS</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Docker</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">CI/CD</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2: Arquitetura do Sistema -->
+                <div class="bg-[#151821] rounded-xl border border-[#FF6B6B]/30 p-5 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg hover:shadow-[#FF6B6B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                        <i data-lucide="network" class="w-4 h-4 text-[#FF6B6B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FF6B6B] font-medium">
+                          Arquitetura do Sistema
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="p-2 bg-[#FF6B6B]/5 border border-[#FF6B6B]/20 rounded">
+                      <div class="text-xs font-medium mb-1 text-[#FF6B6B]">Mobile App</div>
+                      <p class="text-xs text-[#E6E9F2]/60">Interface do usuário + Estado local</p>
+                    </div>
+                    <div class="flex items-center justify-center">
+                      <i data-lucide="arrow-down" class="w-3 h-3 text-[#E6E9F2]/30"></i>
+                    </div>
+                    <div class="p-2 bg-white/5 rounded">
+                      <div class="text-xs font-medium mb-1">API Gateway</div>
+                      <p class="text-xs text-[#E6E9F2]/60">REST API + Auth JWT</p>
+                    </div>
+                    <div class="flex items-center justify-center">
+                      <i data-lucide="arrow-down" class="w-3 h-3 text-[#E6E9F2]/30"></i>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div class="p-2 bg-white/5 rounded">
+                        <div class="text-xs font-medium mb-1">Serviço Principal</div>
+                        <p class="text-xs text-[#E6E9F2]/60">CRUD + Lógica</p>
+                      </div>
+                      <div class="p-2 bg-white/5 rounded">
+                        <div class="text-xs font-medium mb-1">Serviço IA</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Categorização</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-center">
+                      <i data-lucide="arrow-down" class="w-3 h-3 text-[#E6E9F2]/30"></i>
+                    </div>
+                    <div class="p-2 bg-white/5 rounded">
+                      <div class="text-xs font-medium mb-1">Database</div>
+                      <p class="text-xs text-[#E6E9F2]/60">PostgreSQL + Redis Cache</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3: Design System -->
+                <div class="bg-[#151821] rounded-xl border border-[#FF6B6B]/30 p-5 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg hover:shadow-[#FF6B6B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                        <i data-lucide="palette" class="w-4 h-4 text-[#FF6B6B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FF6B6B] font-medium">
+                          Design System
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Cores Principais:</div>
+                      <div class="flex gap-2">
+                        <div class="flex-1">
+                          <div class="w-full h-8 bg-[#7AA2FF] rounded mb-1"></div>
+                          <span class="text-xs text-[#E6E9F2]/60">#7AA2FF</span>
+                        </div>
+                        <div class="flex-1">
+                          <div class="w-full h-8 bg-[#5AD19A] rounded mb-1"></div>
+                          <span class="text-xs text-[#E6E9F2]/60">#5AD19A</span>
+                        </div>
+                        <div class="flex-1">
+                          <div class="w-full h-8 bg-[#FF6B6B] rounded mb-1"></div>
+                          <span class="text-xs text-[#E6E9F2]/60">#FF6B6B</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Tipografia:</div>
+                      <div class="space-y-1">
+                        <div class="flex items-center justify-between">
+                          <span class="text-sm font-semibold">Inter</span>
+                          <span class="text-xs text-[#E6E9F2]/60">Primary</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs font-medium">Weights: 400, 500, 600, 700</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Componentes:</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Buttons</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Cards</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Inputs</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Charts</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Modals</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs">Lists</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 4: Telas Principais -->
+                <div class="bg-[#151821] rounded-xl border border-[#FF6B6B]/30 p-5 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg hover:shadow-[#FF6B6B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                        <i data-lucide="layout" class="w-4 h-4 text-[#FF6B6B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FF6B6B] font-medium">
+                          Telas Principais
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="flex items-center justify-between p-2 bg-[#FF6B6B]/5 border border-[#FF6B6B]/20 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="home" class="w-3.5 h-3.5 text-[#FF6B6B]"></i>
+                        <span class="text-xs font-medium">Dashboard</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-[#FF6B6B]/20 rounded text-[10px] text-[#FF6B6B]">P0</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-[#FF6B6B]/5 border border-[#FF6B6B]/20 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-[#FF6B6B]"></i>
+                        <span class="text-xs font-medium">Nova Transação</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-[#FF6B6B]/20 rounded text-[10px] text-[#FF6B6B]">P0</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="list" class="w-3.5 h-3.5 text-[#E6E9F2]/60"></i>
+                        <span class="text-xs font-medium">Histórico</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">P1</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-3.5 h-3.5 text-[#E6E9F2]/60"></i>
+                        <span class="text-xs font-medium">Categorias</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">P1</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-[#E6E9F2]/60"></i>
+                        <span class="text-xs font-medium">Insights</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">P1</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="settings" class="w-3.5 h-3.5 text-[#E6E9F2]/60"></i>
+                        <span class="text-xs font-medium">Configurações</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">P2</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 5: Modelo de Dados -->
+                <div class="bg-[#151821] rounded-xl border border-[#FF6B6B]/30 p-5 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg hover:shadow-[#FF6B6B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                        <i data-lucide="database" class="w-4 h-4 text-[#FF6B6B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FF6B6B] font-medium">
+                          Modelo de Dados
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="p-2 bg-[#FF6B6B]/5 border border-[#FF6B6B]/20 rounded">
+                      <div class="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <i data-lucide="user" class="w-3 h-3 text-[#FF6B6B]"></i>
+                        Users
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60">id, email, name, created_at</p>
+                    </div>
+                    <div class="p-2 bg-[#FF6B6B]/5 border border-[#FF6B6B]/20 rounded">
+                      <div class="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <i data-lucide="receipt" class="w-3 h-3 text-[#FF6B6B]"></i>
+                        Transactions
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60">id, user_id, amount, category_id, date</p>
+                    </div>
+                    <div class="p-2 bg-white/5 rounded">
+                      <div class="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <i data-lucide="tag" class="w-3 h-3"></i>
+                        Categories
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60">id, name, icon, color, type</p>
+                    </div>
+                    <div class="p-2 bg-white/5 rounded">
+                      <div class="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <i data-lucide="brain" class="w-3 h-3"></i>
+                        AI_Insights
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60">id, user_id, insight, created_at</p>
+                    </div>
+                    <div class="p-2 bg-white/5 rounded">
+                      <div class="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <i data-lucide="folder" class="w-3 h-3"></i>
+                        Budgets
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60">id, user_id, category_id, limit, period</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 6: Segurança & Privacidade -->
+                <div class="bg-[#151821] rounded-xl border border-[#FF6B6B]/30 p-5 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg hover:shadow-[#FF6B6B]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-[#FF6B6B]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#FF6B6B] font-medium">
+                          Segurança &amp; Privacidade
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Autenticação:</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="check" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">JWT tokens com refresh</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="check" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">OAuth2 (Google, Apple)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="check" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Biometria local</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Proteção de Dados:</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="lock" class="w-3 h-3 text-[#FF6B6B] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Criptografia AES-256</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="lock" class="w-3 h-3 text-[#FF6B6B] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">HTTPS obrigatório (TLS 1.3)</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="lock" class="w-3 h-3 text-[#FF6B6B] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Compliance LGPD total</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Backup &amp; Recovery:</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="hard-drive" class="w-3 h-3 text-[#7AA2FF] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Backup automático diário</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                          <i data-lucide="hard-drive" class="w-3 h-3 text-[#7AA2FF] mt-0.5"></i>
+                          <span class="text-xs text-[#E6E9F2]/70">Retenção 30 dias</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <button class="w-full max-w-xs px-4 py-3 border-2 border-dashed border-white/10 hover:border-[#FF6B6B]/30 rounded-xl text-sm font-medium text-[#E6E9F2]/60 hover:text-[#FF6B6B] transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Adicionar Card
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar - AI Assistant -->
+      <aside class="w-96 border-l border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
+        <div class="p-4 border-b border-white/5">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7AA2FF]/20 to-[#5AD19A]/20 border border-[#7AA2FF]/30 flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-5 h-5 text-[#7AA2FF]"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-sm">AI Assistant</h3>
+              <p class="text-xs text-[#E6E9F2]/40">Powered by GPT-4</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Chat -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4">
+          <!-- AI Message -->
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#7AA2FF]"></i>
+            </div>
+            <div class="flex-1">
+              <div class="bg-white/5 rounded-lg p-3 text-sm leading-relaxed">
+                Ótimo progresso! As Etapas 3 e 4 estão bem estruturadas. Posso ajudar com:
+                <ul class="mt-2 space-y-1 text-xs text-[#E6E9F2]/70">
+                  <li>• Detalhar user stories em tarefas técnicas</li>
+                  <li>• Gerar diagramas de arquitetura</li>
+                  <li>• Sugerir melhorias de segurança</li>
+                  <li>• Criar wireframes das telas principais</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggestions -->
+          <div class="space-y-2">
+            <div class="text-xs text-[#E6E9F2]/40 font-medium">
+              Sugestões para próximos passos:
+            </div>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="calendar" class="w-4 h-4 text-[#9B8AFB] mt-0.5 flex-shrink-0"></i>
+              <span>Criar cronograma detalhado do MVP</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="users-2" class="w-4 h-4 text-[#5AD19A] mt-0.5 flex-shrink-0"></i>
+              <span>Definir estrutura da equipe necessária</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="dollar-sign" class="w-4 h-4 text-[#FFC24B] mt-0.5 flex-shrink-0"></i>
+              <span>Estimar custos de desenvolvimento e infra</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-[#FF6B6B] mt-0.5 flex-shrink-0"></i>
+              <span>Gerar documentação técnica inicial</span>
+            </button>
+          </div>
+
+          <!-- Context Card -->
+          <div class="mt-6 p-3 bg-gradient-to-br from-[#FFC24B]/5 to-[#FF6B6B]/5 rounded-lg border border-white/5">
+            <div class="flex items-start gap-2 mb-2">
+              <i data-lucide="zap" class="w-4 h-4 text-[#FFC24B] mt-0.5"></i>
+              <div>
+                <div class="text-xs font-medium mb-1">Escopo e Tech prontos!</div>
+                <p class="text-xs text-[#E6E9F2]/60 leading-relaxed">
+                  Com MVP definido e stack escolhida, você está pronto para começar o planejamento executivo na Etapa 5.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Input -->
+        <div class="p-4 border-t border-white/5">
+          <div class="relative">
+            <input type="text" placeholder="Pergunte algo ou peça ajuda..." class="w-full px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[#7AA2FF] hover:bg-[#6690E8] rounded-lg transition-colors">
+              <i data-lucide="send" class="w-4 h-4 text-white"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-2 mt-2 text-xs text-[#E6E9F2]/40">
+            <kbd class="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">Cmd</kbd>
+            <span>+</span>
+            <kbd class="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">K</kbd>
+            <span>para comandos rápidos</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  
+</body></html>

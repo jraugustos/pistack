@@ -1,0 +1,890 @@
+<html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas — PIStack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-[#0F1115] text-[#E6E9F2] antialiased overflow-x-hidden transition-colors duration-200" data-theme="dark">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0F1115]/80 backdrop-blur-xl transition-colors duration-200">
+      <nav class="h-14 px-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </button>
+          <div class="flex items-center gap-3">
+            <div class="text-sm font-semibold tracking-tight">
+              App de Finanças
+            </div>
+            <div class="flex items-center gap-1.5 px-2 py-1 bg-[#5AD19A]/10 rounded-md">
+              <div class="w-1.5 h-1.5 rounded-full bg-[#5AD19A]"></div>
+              <span class="text-xs text-[#5AD19A]">Autosaved</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="history" class="w-3.5 h-3.5"></i>
+            Versions
+          </button>
+          <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            Share
+          </button>
+          <div class="w-px h-6 bg-white/5 mx-1"></div>
+          <button class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            Export
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Canvas -->
+    <main class="pt-14 h-screen flex">
+      <!-- Left Sidebar - Stages -->
+      <aside class="w-64 border-r border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
+        <div class="p-4 border-b border-white/5">
+          <h2 class="text-xs font-semibold text-[#E6E9F2]/40 uppercase tracking-wider mb-3">
+            Etapas do Projeto
+          </h2>
+        </div>
+        <div class="flex-1 overflow-y-auto p-3 space-y-2">
+          <!-- Stage 1 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#7AA2FF]"></div>
+              <span class="text-xs font-medium text-[#7AA2FF]">Etapa 1</span>
+            </div>
+            <div class="text-sm font-medium">Ideia Base</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">6 cards</div>
+          </button>
+
+          <!-- Stage 2 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#5AD19A]"></div>
+              <span class="text-xs font-medium text-[#5AD19A]">Etapa 2</span>
+            </div>
+            <div class="text-sm font-medium">Entendimento</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">4 cards</div>
+          </button>
+
+          <!-- Stage 3 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#FFC24B]"></div>
+              <span class="text-xs font-medium text-[#FFC24B]">Etapa 3</span>
+            </div>
+            <div class="text-sm font-medium">Escopo</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">6 cards</div>
+          </button>
+
+          <!-- Stage 4 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#FF6B6B]"></div>
+              <span class="text-xs font-medium text-[#FF6B6B]">Etapa 4</span>
+            </div>
+            <div class="text-sm font-medium">Design &amp; Tech</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">6 cards</div>
+          </button>
+
+          <!-- Stage 5 -->
+          <button class="w-full text-left px-3 py-2.5 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/30 hover:border-[#9B8AFB]/50 transition-colors">
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#9B8AFB]"></div>
+              <span class="text-xs font-medium text-[#9B8AFB]">Etapa 5</span>
+            </div>
+            <div class="text-sm font-medium">Planejamento</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">8 cards</div>
+          </button>
+        </div>
+
+        <div class="p-3 border-t border-white/5">
+          <button class="w-full px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Nova Etapa
+          </button>
+        </div>
+      </aside>
+
+      <!-- Canvas Area -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Canvas Toolbar -->
+        <div class="h-12 border-b border-white/5 px-4 flex items-center justify-between bg-[#0F1115] transition-colors duration-200">
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF]/10 text-[#7AA2FF] rounded-lg flex items-center gap-1.5">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+              Canvas View
+            </button>
+            <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/60 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+              <i data-lucide="list" class="w-3.5 h-3.5"></i>
+              List View
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </button>
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="filter" class="w-4 h-4"></i>
+            </button>
+            <div class="w-px h-6 bg-white/5 mx-1"></div>
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="zoom-in" class="w-4 h-4"></i>
+            </button>
+            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="zoom-out" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Canvas Content -->
+        <div class="flex-1 overflow-auto bg-[#0A0B0E] p-6 transition-colors duration-200">
+          <div class="max-w-7xl mx-auto">
+
+            <!-- ETAPA 5: PLANEJAMENTO -->
+            <div class="mb-12">
+              <div class="mb-6">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-3 h-3 rounded-full bg-[#9B8AFB]"></div>
+                  <h2 class="text-xl font-semibold tracking-tight">
+                    Etapa 5: Planejamento
+                  </h2>
+                </div>
+                <p class="text-sm text-[#E6E9F2]/60">
+                  Cronograma, recursos, custos e estratégia de lançamento
+                </p>
+              </div>
+
+              <!-- Cards Grid Etapa 5 -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                
+                <!-- Card 1: Cronograma do MVP -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group col-span-1 md:col-span-2">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="gantt-chart" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Cronograma do MVP (12 semanas)
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <!-- Sprint 1-2 -->
+                    <div class="p-3 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded-lg">
+                      <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-semibold text-[#9B8AFB]">Sprint 1-2</span>
+                          <span class="text-xs text-[#E6E9F2]/40">Semanas 1-4</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-[#5AD19A]/10 rounded text-[10px] text-[#5AD19A]">Setup</span>
+                      </div>
+                      <ul class="space-y-1 text-xs text-[#E6E9F2]/70">
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="check-circle" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                          Setup do projeto e infraestrutura
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="check-circle" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                          Autenticação e cadastro de usuários
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          Estrutura básica do app mobile
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- Sprint 3-4 -->
+                    <div class="p-3 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-semibold">Sprint 3-4</span>
+                          <span class="text-xs text-[#E6E9F2]/40">Semanas 5-8</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-[#FFC24B]/10 rounded text-[10px] text-[#FFC24B]">Core</span>
+                      </div>
+                      <ul class="space-y-1 text-xs text-[#E6E9F2]/70">
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          CRUD de transações com foto
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          Integração IA para categorização
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          Sistema de categorias
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- Sprint 5-6 -->
+                    <div class="p-3 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-semibold">Sprint 5-6</span>
+                          <span class="text-xs text-[#E6E9F2]/40">Semanas 9-12</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-[#7AA2FF]/10 rounded text-[10px] text-[#7AA2FF]">Polish</span>
+                      </div>
+                      <ul class="space-y-1 text-xs text-[#E6E9F2]/70">
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          Dashboard e gráficos visuais
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          Sistema de insights mensais
+                        </li>
+                        <li class="flex items-start gap-1.5">
+                          <i data-lucide="circle" class="w-3 h-3 text-[#E6E9F2]/30 mt-0.5"></i>
+                          Testes, ajustes e preparação para launch
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2: Estrutura da Equipe -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="users-2" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Estrutura da Equipe
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="flex items-start justify-between p-2 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded">
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Full-Stack Dev</div>
+                        <p class="text-xs text-[#E6E9F2]/60">React Native + Node.js</p>
+                      </div>
+                      <span class="text-xs font-semibold text-[#9B8AFB]">1</span>
+                    </div>
+                    <div class="flex items-start justify-between p-2 bg-white/5 rounded">
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Backend Dev</div>
+                        <p class="text-xs text-[#E6E9F2]/60">APIs + Database</p>
+                      </div>
+                      <span class="text-xs font-semibold">1</span>
+                    </div>
+                    <div class="flex items-start justify-between p-2 bg-white/5 rounded">
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">UI/UX Designer</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Figma + Prototypes</p>
+                      </div>
+                      <span class="text-xs font-semibold">1</span>
+                    </div>
+                    <div class="flex items-start justify-between p-2 bg-white/5 rounded">
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">ML Engineer</div>
+                        <p class="text-xs text-[#E6E9F2]/60">IA categorização</p>
+                      </div>
+                      <span class="text-xs font-semibold">0.5</span>
+                    </div>
+                    <div class="flex items-start justify-between p-2 bg-white/5 rounded">
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">QA Tester</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Testes manuais</p>
+                      </div>
+                      <span class="text-xs font-semibold">0.5</span>
+                    </div>
+                    <div class="flex items-start justify-between p-2 bg-white/5 rounded">
+                      <div>
+                        <div class="text-xs font-medium mb-0.5">Product Owner</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Gestão e visão</p>
+                      </div>
+                      <span class="text-xs font-semibold">1</span>
+                    </div>
+                  </div>
+                  <div class="mt-3 pt-3 border-t border-white/5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-[#E6E9F2]/60">Total da equipe:</span>
+                      <span class="font-semibold text-[#9B8AFB]">5 pessoas</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3: Orçamento Estimado -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="dollar-sign" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Orçamento Estimado MVP
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Desenvolvimento (3 meses):</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">Equipe técnica</span>
+                          <span class="font-medium">R$ 90.000</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">Design UI/UX</span>
+                          <span class="font-medium">R$ 18.000</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">Product Owner</span>
+                          <span class="font-medium">R$ 24.000</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pt-2 border-t border-white/5">
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Infraestrutura (mensal):</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">AWS + Database</span>
+                          <span class="font-medium">R$ 800</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">OpenAI API</span>
+                          <span class="font-medium">R$ 500</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">Ferramentas (Figma, etc)</span>
+                          <span class="font-medium">R$ 300</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pt-2 border-t border-white/5">
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Outros:</div>
+                      <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">Marketing inicial</span>
+                          <span class="font-medium">R$ 5.000</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="text-[#E6E9F2]/70">Legal + Contabilidade</span>
+                          <span class="font-medium">R$ 3.000</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-[#9B8AFB]/20 bg-[#9B8AFB]/5 -mx-5 -mb-5 px-5 pb-5 rounded-b-xl">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-medium text-[#9B8AFB]">Total MVP:</span>
+                      <span class="text-lg font-semibold text-[#9B8AFB]">R$ 145.000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 4: Riscos e Mitigações -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Riscos e Mitigações
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="p-2.5 bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 rounded-lg">
+                      <div class="flex items-center gap-1.5 mb-1.5">
+                        <span class="px-1.5 py-0.5 bg-[#FF6B6B]/20 rounded text-[10px] text-[#FF6B6B] font-medium">ALTO</span>
+                        <span class="text-xs font-medium">Atraso no desenvolvimento</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60 mb-1.5">IA mais complexa que previsto</p>
+                      <p class="text-xs text-[#5AD19A]">→ Buffer de 2 semanas no cronograma</p>
+                    </div>
+
+                    <div class="p-2.5 bg-[#FFC24B]/10 border border-[#FFC24B]/20 rounded-lg">
+                      <div class="flex items-center gap-1.5 mb-1.5">
+                        <span class="px-1.5 py-0.5 bg-[#FFC24B]/20 rounded text-[10px] text-[#FFC24B] font-medium">MÉDIO</span>
+                        <span class="text-xs font-medium">Acurácia da IA baixa</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60 mb-1.5">Categorização não atinge 95%</p>
+                      <p class="text-xs text-[#5AD19A]">→ Permitir edição manual + treinar modelo</p>
+                    </div>
+
+                    <div class="p-2.5 bg-[#FFC24B]/10 border border-[#FFC24B]/20 rounded-lg">
+                      <div class="flex items-center gap-1.5 mb-1.5">
+                        <span class="px-1.5 py-0.5 bg-[#FFC24B]/20 rounded text-[10px] text-[#FFC24B] font-medium">MÉDIO</span>
+                        <span class="text-xs font-medium">Custos de API IA altos</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60 mb-1.5">Muitas requisições ao OpenAI</p>
+                      <p class="text-xs text-[#5AD19A]">→ Cache inteligente + rate limiting</p>
+                    </div>
+
+                    <div class="p-2.5 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center gap-1.5 mb-1.5">
+                        <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px] font-medium">BAIXO</span>
+                        <span class="text-xs font-medium">Adoção lenta de usuários</span>
+                      </div>
+                      <p class="text-xs text-[#E6E9F2]/60 mb-1.5">Marketing não gera tração</p>
+                      <p class="text-xs text-[#5AD19A]">→ Programa de beta testers + referral</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 5: KPIs e Métricas -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          KPIs e Métricas
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Métricas de Produto:</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded">
+                          <span class="text-xs font-medium">DAU / MAU</span>
+                          <span class="text-xs text-[#9B8AFB]">&gt; 30%</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Retenção D7</span>
+                          <span class="text-xs">&gt; 40%</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Retenção D30</span>
+                          <span class="text-xs">&gt; 25%</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Session/day</span>
+                          <span class="text-xs">&gt; 2.5</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Métricas Técnicas:</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Uptime</span>
+                          <span class="text-xs">&gt; 99.5%</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">API Response</span>
+                          <span class="text-xs">&lt; 200ms</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Crash Rate</span>
+                          <span class="text-xs">&lt; 0.5%</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-[#E6E9F2]/40 mb-2">Métricas de IA:</div>
+                      <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Acurácia Cat.</span>
+                          <span class="text-xs">&gt; 95%</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                          <span class="text-xs font-medium">Tempo Process.</span>
+                          <span class="text-xs">&lt; 3s</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 6: Estratégia de Lançamento -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="rocket" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Estratégia de Lançamento
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <!-- Fase 1 -->
+                    <div class="p-2.5 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded-lg">
+                      <div class="flex items-center gap-2 mb-2">
+                        <div class="w-5 h-5 rounded bg-[#9B8AFB]/20 flex items-center justify-center">
+                          <span class="text-xs font-semibold text-[#9B8AFB]">1</span>
+                        </div>
+                        <span class="text-xs font-medium">Beta Fechado</span>
+                        <span class="text-xs text-[#E6E9F2]/40">Semana 13-14</span>
+                      </div>
+                      <ul class="space-y-1 text-xs text-[#E6E9F2]/70">
+                        <li>• 50 early adopters selecionados</li>
+                        <li>• Coleta intensiva de feedback</li>
+                        <li>• Ajustes críticos</li>
+                      </ul>
+                    </div>
+
+                    <!-- Fase 2 -->
+                    <div class="p-2.5 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center gap-2 mb-2">
+                        <div class="w-5 h-5 rounded bg-white/10 flex items-center justify-center">
+                          <span class="text-xs font-semibold">2</span>
+                        </div>
+                        <span class="text-xs font-medium">Beta Aberto</span>
+                        <span class="text-xs text-[#E6E9F2]/40">Semana 15-16</span>
+                      </div>
+                      <ul class="space-y-1 text-xs text-[#E6E9F2]/70">
+                        <li>• 500 usuários via waitlist</li>
+                        <li>• TestFlight e Google Play Beta</li>
+                        <li>• Conteúdo redes sociais</li>
+                      </ul>
+                    </div>
+
+                    <!-- Fase 3 -->
+                    <div class="p-2.5 bg-white/5 border border-white/10 rounded-lg">
+                      <div class="flex items-center gap-2 mb-2">
+                        <div class="w-5 h-5 rounded bg-white/10 flex items-center justify-center">
+                          <span class="text-xs font-semibold">3</span>
+                        </div>
+                        <span class="text-xs font-medium">Launch Público</span>
+                        <span class="text-xs text-[#E6E9F2]/40">Semana 17</span>
+                      </div>
+                      <ul class="space-y-1 text-xs text-[#E6E9F2]/70">
+                        <li>• App Store + Google Play</li>
+                        <li>• Product Hunt launch</li>
+                        <li>• Campanhas pagas (R$ 5k)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 7: Canais de Marketing -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="megaphone" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Canais de Marketing
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2.5">
+                    <div class="flex items-center justify-between p-2 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="instagram" class="w-3.5 h-3.5 text-[#9B8AFB]"></i>
+                        <span class="text-xs font-medium">Instagram</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-[#9B8AFB]/20 rounded text-[10px] text-[#9B8AFB]">Principal</span>
+                    </div>
+                    <div class="text-xs text-[#E6E9F2]/60 pl-2 -mt-1 mb-2">
+                      Dicas de finanças + Stories educativos
+                    </div>
+
+                    <div class="flex items-center justify-between p-2 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="youtube" class="w-3.5 h-3.5 text-[#9B8AFB]"></i>
+                        <span class="text-xs font-medium">TikTok / Reels</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-[#9B8AFB]/20 rounded text-[10px] text-[#9B8AFB]">Principal</span>
+                    </div>
+                    <div class="text-xs text-[#E6E9F2]/60 pl-2 -mt-1 mb-2">
+                      Vídeos curtos de dicas práticas
+                    </div>
+
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                        <span class="text-xs font-medium">Referral Program</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">Viral</span>
+                    </div>
+                    <div class="text-xs text-[#E6E9F2]/60 pl-2 -mt-1 mb-2">
+                      Convide amigos e ganhe insights premium
+                    </div>
+
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                        <span class="text-xs font-medium">SEO / Blog</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">Longo prazo</span>
+                    </div>
+                    <div class="text-xs text-[#E6E9F2]/60 pl-2 -mt-1 mb-2">
+                      Artigos sobre educação financeira
+                    </div>
+
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+                      <div class="flex items-center gap-2">
+                        <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                        <span class="text-xs font-medium">Email Marketing</span>
+                      </div>
+                      <span class="px-1.5 py-0.5 bg-white/10 rounded text-[10px]">Retenção</span>
+                    </div>
+                    <div class="text-xs text-[#E6E9F2]/60 pl-2 -mt-1">
+                      Newsletter semanal com insights
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 8: Próximos Passos -->
+                <div class="bg-[#151821] rounded-xl border border-[#9B8AFB]/30 p-5 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg hover:shadow-[#9B8AFB]/5 group col-span-1 md:col-span-2 lg:col-span-1">
+                  <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                        <i data-lucide="check-square" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <div class="text-xs text-[#9B8AFB] font-medium">
+                          Próximos Passos Imediatos
+                        </div>
+                      </div>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <button class="w-6 h-6 flex items-center justify-center hover:bg-white/5 rounded">
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex items-start gap-2 p-2 bg-[#5AD19A]/5 border border-[#5AD19A]/20 rounded">
+                      <i data-lucide="check-circle" class="w-4 h-4 text-[#5AD19A] mt-0.5"></i>
+                      <div class="flex-1">
+                        <div class="text-xs font-medium mb-0.5">Canvas completo ✓</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Todas as 5 etapas documentadas</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-2 p-2 bg-[#9B8AFB]/5 border border-[#9B8AFB]/20 rounded">
+                      <div class="w-4 h-4 rounded border-2 border-[#9B8AFB] flex items-center justify-center mt-0.5">
+                        <span class="text-xs font-semibold text-[#9B8AFB]">1</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-xs font-medium mb-0.5">Contratar equipe</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Buscar devs e designer</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-2 p-2 bg-white/5 rounded">
+                      <div class="w-4 h-4 rounded border-2 border-white/30 flex items-center justify-center mt-0.5">
+                        <span class="text-xs font-semibold">2</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-xs font-medium mb-0.5">Setup infraestrutura</div>
+                        <p class="text-xs text-[#E6E9F2]/60">AWS, repos, ferramentas</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-2 p-2 bg-white/5 rounded">
+                      <div class="w-4 h-4 rounded border-2 border-white/30 flex items-center justify-center mt-0.5">
+                        <span class="text-xs font-semibold">3</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-xs font-medium mb-0.5">Iniciar design</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Wireframes e protótipo</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-2 p-2 bg-white/5 rounded">
+                      <div class="w-4 h-4 rounded border-2 border-white/30 flex items-center justify-center mt-0.5">
+                        <span class="text-xs font-semibold">4</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-xs font-medium mb-0.5">Sprint Planning 1</div>
+                        <p class="text-xs text-[#E6E9F2]/60">Backlog e tasks detalhadas</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-start gap-2 p-2 bg-white/5 rounded">
+                      <div class="w-4 h-4 rounded border-2 border-white/30 flex items-center justify-center mt-0.5">
+                        <span class="text-xs font-semibold">5</span>
+                      </div>
+                      <div class="flex-1">
+                        <div class="text-xs font-medium mb-0.5">Começar desenvolvimento</div>
+                        <p class="text-xs text-[#E6E9F2]/60">First commit! 🚀</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <button class="w-full max-w-xs px-4 py-3 border-2 border-dashed border-white/10 hover:border-[#9B8AFB]/30 rounded-xl text-sm font-medium text-[#E6E9F2]/60 hover:text-[#9B8AFB] transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Adicionar Card
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar - AI Assistant -->
+      <aside class="w-96 border-l border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
+        <div class="p-4 border-b border-white/5">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7AA2FF]/20 to-[#5AD19A]/20 border border-[#7AA2FF]/30 flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-5 h-5 text-[#7AA2FF]"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-sm">AI Assistant</h3>
+              <p class="text-xs text-[#E6E9F2]/40">Powered by GPT-4</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Chat -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4">
+          <!-- AI Message -->
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#7AA2FF]"></i>
+            </div>
+            <div class="flex-1">
+              <div class="bg-white/5 rounded-lg p-3 text-sm leading-relaxed">
+                🎉 Parabéns! Você completou todas as 5 etapas do Canvas PIStack! 
+                <div class="mt-3 p-2 bg-[#5AD19A]/10 rounded text-xs">
+                  <strong class="text-[#5AD19A]">Canvas 100% completo:</strong>
+                  <ul class="mt-1 space-y-0.5 text-[#E6E9F2]/70">
+                    <li>✓ Ideia validada e problema definido</li>
+                    <li>✓ Mercado e personas mapeados</li>
+                    <li>✓ MVP e features priorizados</li>
+                    <li>✓ Stack e arquitetura escolhidos</li>
+                    <li>✓ Planejamento executivo pronto</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggestions -->
+          <div class="space-y-2">
+            <div class="text-xs text-[#E6E9F2]/40 font-medium">
+              Agora você pode:
+            </div>
+            <button class="w-full px-3 py-2.5 bg-gradient-to-br from-[#9B8AFB]/10 to-[#7AA2FF]/10 hover:from-[#9B8AFB]/20 hover:to-[#7AA2FF]/20 rounded-lg text-left text-sm transition-colors border border-[#9B8AFB]/30 flex items-start gap-2">
+              <i data-lucide="download" class="w-4 h-4 text-[#9B8AFB] mt-0.5 flex-shrink-0"></i>
+              <span>Exportar canvas completo (PDF)</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="trello" class="w-4 h-4 text-[#7AA2FF] mt-0.5 flex-shrink-0"></i>
+              <span>Criar backlog no Jira/Trello</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-[#5AD19A] mt-0.5 flex-shrink-0"></i>
+              <span>Gerar PRD (Product Requirements)</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="presentation" class="w-4 h-4 text-[#FFC24B] mt-0.5 flex-shrink-0"></i>
+              <span>Criar pitch deck para investidores</span>
+            </button>
+            <button class="w-full px-3 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-left text-sm transition-colors border border-white/5 flex items-start gap-2">
+              <i data-lucide="play" class="w-4 h-4 text-[#FF6B6B] mt-0.5 flex-shrink-0"></i>
+              <span>Iniciar Sprint 1 (setup projeto)</span>
+            </button>
+          </div>
+
+          <!-- Context Card -->
+          <div class="mt-6 p-3 bg-gradient-to-br from-[#9B8AFB]/10 to-[#5AD19A]/10 rounded-lg border border-[#9B8AFB]/20">
+            <div class="flex items-start gap-2 mb-2">
+              <i data-lucide="trophy" class="w-4 h-4 text-[#9B8AFB] mt-0.5"></i>
+              <div>
+                <div class="text-xs font-medium mb-1">Pronto para executar! 🚀</div>
+                <p class="text-xs text-[#E6E9F2]/60 leading-relaxed">
+                  Seu projeto está completamente planejado. Você tem cronograma, orçamento, equipe e estratégia definidos. Hora de colocar a mão na massa!
+                </p>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-white/10">
+              <div class="text-xs text-[#E6E9F2]/40 mb-2">Investimento total:</div>
+              <div class="text-xl font-semibold text-[#9B8AFB]">R$ 145.000</div>
+              <div class="text-xs text-[#E6E9F2]/60 mt-1">MVP em 12 semanas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Input -->
+        <div class="p-4 border-t border-white/5">
+          <div class="relative">
+            <input type="text" placeholder="Pergunte algo ou peça ajuda..." class="w-full px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[#7AA2FF] hover:bg-[#6690E8] rounded-lg transition-colors">
+              <i data-lucide="send" class="w-4 h-4 text-white"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-2 mt-2 text-xs text-[#E6E9F2]/40">
+            <kbd class="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">Cmd</kbd>
+            <span>+</span>
+            <kbd class="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">K</kbd>
+            <span>para comandos rápidos</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  
+</body></html>
