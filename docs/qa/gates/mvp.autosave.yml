@@ -1,0 +1,14 @@
+gate:
+  story: "História 1.4 — Autosave"
+  epic: "Epic 1 — Canvas & Cards"
+  status: "CONCERNS"
+  rationale: |
+    Autosave é crítico para UX. Necessário validar latência (<1s percebido)
+    e persistência confiável antes de aprovar.
+  risks:
+    - "Perda de dados em edição contínua"
+    - "Latência acima de 1s percebida pelo usuário"
+  conditions:
+    - "Unit tests para debounce/autosave"
+    - "Integration test: edição salva no DB"
+    - "E2E: editar card, recarregar página → mudanças persistem"

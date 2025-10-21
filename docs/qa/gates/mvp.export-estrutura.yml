@@ -1,0 +1,13 @@
+gate:
+  story: "História 3.2 — Estruturar Conteúdo no Export"
+  epic: "Epic 3 — Exportação"
+  status: "CONCERNS"
+  rationale: |
+    Estrutura do export deve ser clara e completa. Caso falhe, gera frustração imediata.
+  risks:
+    - "Export desorganizado (cards soltos)"
+    - "Conexões não refletidas"
+  conditions:
+    - "Unit test: parser organiza seções"
+    - "Integration test: cards agrupados por tipo"
+    - "E2E: criar projeto → exportar → validar estrutura"

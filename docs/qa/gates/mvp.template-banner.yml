@@ -1,0 +1,12 @@
+gate:
+  story: "História 4.3 — Banner de Próximos Passos"
+  epic: "Epic 4 — Templates"
+  status: "CONCERNS"
+  rationale: |
+    O banner orienta o usuário após criar projeto com template. Sem ele, onboarding fica pobre.
+  risks:
+    - "Banner não exibido"
+    - "Banner exibido em projetos sem template"
+  conditions:
+    - "Integration test: criar projeto com template → banner aparece"
+    - "E2E: banner exibido e fechável pelo usuário"

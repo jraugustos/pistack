@@ -1,0 +1,12 @@
+gate:
+  story: "História 4.2 — Gerar Cards Pré-Conectados"
+  epic: "Epic 4 — Templates"
+  status: "CONCERNS"
+  rationale: |
+    Cards conectados são fundamentais para transmitir fluxo inicial. Erros comprometem clareza.
+  risks:
+    - "Cards criados sem conexões"
+    - "Conexões inconsistentes com o template"
+  conditions:
+    - "Integration test: gerar template → conexões salvas no DB"
+    - "E2E: abrir canvas e ver conexões corretas"

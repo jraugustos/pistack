@@ -1,0 +1,12 @@
+gate:
+  story: "História 4.1 — Selecionar Template"
+  epic: "Epic 4 — Templates"
+  status: "CONCERNS"
+  rationale: |
+    Seleção de template é a entrada principal para novos usuários. Erros aqui comprometem onboarding.
+  risks:
+    - "Template não aparece no canvas"
+    - "Erro de persistência no DB"
+  conditions:
+    - "Integration test: selecionar cada template → cards aparecem"
+    - "E2E: criar projeto com template e exportar"

@@ -1,0 +1,13 @@
+gate:
+  story: "História 2.2 — Receber Resposta da IA"
+  epic: "Epic 2 — Chat Contextual"
+  status: "CONCERNS"
+  rationale: |
+    Resposta da IA é core do produto. Deve ser validado timeout, erros e exibição clara para o usuário.
+  risks:
+    - "Erro da API sem feedback"
+    - "Latência percebida acima de 4s"
+  conditions:
+    - "Unit test: renderização de resposta"
+    - "Integration test: enviar prompt → resposta exibida"
+    - "E2E: fluxo completo com erro simulado"

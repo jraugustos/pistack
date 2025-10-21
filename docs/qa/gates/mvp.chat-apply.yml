@@ -1,0 +1,14 @@
+gate:
+  story: "História 2.3 — Aplicar Resposta da IA"
+  epic: "Epic 2 — Chat Contextual"
+  status: "CONCERNS"
+  rationale: |
+    Aplicar resposta da IA é ponto de maior risco (integração externa + versionamento).
+    Necessário validar persistência no DB e geração de versões consistentes.
+  risks:
+    - "Erro de API IA impacta usuário"
+    - "Resumo não atualizado corretamente"
+  conditions:
+    - "Unit test: criação de nova versão"
+    - "Integration test: prompt → resposta → apply → DB atualizado"
+    - "E2E: fluxo completo sem falhas visuais"

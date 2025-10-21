@@ -1,0 +1,13 @@
+gate:
+  story: "História 3.1 — Exportar Projeto em Markdown"
+  epic: "Epic 3 — Exportação"
+  status: "CONCERNS"
+  rationale: |
+    Exportação é entrega de valor central. Necessário validar conteúdo, formato e feedback ao usuário.
+  risks:
+    - "Arquivo incompleto ou vazio"
+    - "Toast de erro não exibido em falhas"
+  conditions:
+    - "Unit test: parser Markdown gera saída válida"
+    - "Integration test: projeto com cards exportado corretamente"
+    - "E2E: criar projeto, adicionar cards, exportar e baixar arquivo"

@@ -1,0 +1,13 @@
+gate:
+  story: "História 3.3 — Notificação de Exportação"
+  epic: "Epic 3 — Exportação"
+  status: "CONCERNS"
+  rationale: |
+    Usuário precisa de feedback imediato. Sem toast, não há confirmação do processo.
+  risks:
+    - "Export falha silenciosa"
+    - "Toast não exibido em erro"
+  conditions:
+    - "Integration test: export sucesso → toast verde"
+    - "Integration test: export vazio → toast vermelho"
+    - "E2E: simular falha e verificar feedback"
