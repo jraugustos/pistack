@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd pistack-app && npm run build",
+  "devCommand": "cd pistack-app && npm run dev",
+  "installCommand": "cd pistack-app && npm install",
+  "framework": "nextjs",
+  "outputDirectory": "pistack-app/.next"
+}
