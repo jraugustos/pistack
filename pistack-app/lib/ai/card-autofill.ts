@@ -18,6 +18,8 @@ interface BuildPromptParams {
     stage_number: number
     stage_name: string
     cards: Array<{
+      id?: string
+      card_id?: string
       card_type: string
       content: Record<string, any>
     }>

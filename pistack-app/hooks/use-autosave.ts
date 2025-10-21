@@ -14,7 +14,7 @@ interface UseAutosaveOptions {
  */
 export function useAutosave<T>(value: T, options: UseAutosaveOptions) {
   const { delay = 1000, onSave } = options
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const previousValueRef = useRef<T>(value)
   const isSavingRef = useRef(false)
 

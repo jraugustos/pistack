@@ -6,13 +6,10 @@ import {
   getServiceRoleClient,
 } from '@/lib/supabase/admin'
 
-type RouteParams = {
-  params: {
-    id: string
-  }
-}
-
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { userId } = await auth()
 
@@ -20,7 +17,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const projectId = params.id
+    const { id: projectId } = await params
 
     if (!projectId) {
       return NextResponse.json(

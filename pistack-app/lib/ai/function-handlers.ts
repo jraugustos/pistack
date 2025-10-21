@@ -4,6 +4,7 @@
  */
 
 import { getServiceRoleClient } from '@/lib/supabase/admin'
+import { createClient as createServerClient } from '@/lib/supabase/server'
 import {
   CreateCardArgs,
   UpdateCardArgs,
@@ -131,8 +132,12 @@ export async function handleUpdateCard(
       }
     }
 
+    const cardStage = Array.isArray(card.stages)
+      ? card.stages[0]
+      : card.stages
+
     // Verify card belongs to this project
-    if (card.stages?.project_id !== projectId) {
+    if (!cardStage || cardStage.project_id !== projectId) {
       return {
         success: false,
         error: 'Card does not belong to this project',
@@ -308,7 +313,7 @@ export async function handleGetProjectContext(
   projectId: string
 ) {
   try {
-    const supabase = await createClient()
+    const supabase = await createServerClient()
 
     // Get project with all stages and cards
     const { data: project } = await supabase
