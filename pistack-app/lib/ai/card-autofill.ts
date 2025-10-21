@@ -63,6 +63,8 @@ function buildPrompt({
     CARD_TYPE_DESCRIPTIONS[cardType] ||
     'Preencha com conteúdo detalhado e estruturado.'
 
+  const schemaPrompt = CARD_SCHEMA_PROMPTS[cardType] || '{}'
+
   return [
     `Você é o assistente especializado da Etapa ${stageNumber} (${stageName}) do PIStack.`,
     'Seu objetivo é criar um card completo e pragmático baseado no contexto atual do projeto.',
@@ -76,12 +78,24 @@ function buildPrompt({
     `Card a ser criado: "${cardType}"`,
     `Descrição do card: ${cardDescription}`,
     '',
-    'Instruções obrigatórias:',
+    '⚠️ SCHEMA OBRIGATÓRIO DO CARD (siga exatamente esta estrutura):',
+    schemaPrompt,
+    '',
+    'Instruções CRÍTICAS sobre arrays:',
+    '1. Arrays DEVEM ser JSON válido: ["item1", "item2", "item3"]',
+    '2. NUNCA use strings com quebras de linha para representar listas',
+    '3. NUNCA use formato de texto como "- item1\\n- item2"',
+    '4. Arrays de objetos devem seguir o schema exato mostrado acima',
+    '5. Exemplo CORRETO de painPoints: ["Dificuldade em X", "Problema com Y"]',
+    '6. Exemplo ERRADO: "- Dificuldade em X\\n- Problema com Y"',
+    '',
+    'Instruções de execução:',
     '- Analise o contexto e utilize insights relevantes.',
-    '- Gere conteúdo claro, conciso e acionável.',
+    '- Gere conteúdo claro, conciso e acionável em português brasileiro.',
     '- Retorne o card utilizando a função `create_card`.',
     `- Utilize stage=${stageNumber} e card_type="${cardType}".`,
-    '- Inclua todos os campos esperados para o card no objeto `content`.',
+    '- Inclua TODOS os campos esperados no schema acima.',
+    '- Respeite os tipos de dados: strings, arrays, objetos.',
     '- Não responda com texto livre; execute apenas a função.',
   ].join('\n')
 }
@@ -102,6 +116,7 @@ export interface GenerateCardOptions {
 }
 
 const CARD_SCHEMA_PROMPTS: Record<string, string> = {
+  // Etapa 1
   'project-name': `{
   "projectName": "Nome memorável do produto",
   "description": "Frase curta que resume o produto",
@@ -113,11 +128,13 @@ const CARD_SCHEMA_PROMPTS: Record<string, string> = {
   problem: `{
   "problem": "Texto em 2-3 parágrafos descrevendo a dor central",
   "painPoints": ["Pain point 1", "Pain point 2", "Pain point 3"]
-}`,
+}
+IMPORTANTE: painPoints DEVE ser um array de strings simples, não um objeto ou string com quebras de linha.`,
   solution: `{
   "solution": "Descrição clara de como o produto resolve o problema",
   "differentiators": ["Diferencial 1", "Diferencial 2", "Diferencial 3"]
-}`,
+}
+IMPORTANTE: differentiators DEVE ser um array de strings simples.`,
   'target-audience': `{
   "primaryAudience": "Descrição do público primário",
   "secondaryAudience": "Descrição do público secundário (opcional)"
@@ -127,7 +144,311 @@ const CARD_SCHEMA_PROMPTS: Record<string, string> = {
     { "name": "Nome do KPI", "target": "Meta mensurável" },
     { "name": "Nome do KPI", "target": "Meta mensurável" }
   ]
+}
+IMPORTANTE: kpis DEVE ser um array de objetos com {name: string, target: string}.`,
+
+  // Etapa 2
+  'validation-hypotheses': `{
+  "hypotheses": [
+    {
+      "label": "H1",
+      "category": "Problema",
+      "statement": "Acreditamos que [persona] enfrenta [dor] porque [causa].",
+      "successMetric": "Validar com X entrevistas onde Y% mencionam a dor.",
+      "confidence": "Alta/Média/Baixa (opcional)",
+      "risk": "Alto/Médio/Baixo (opcional)"
+    },
+    {
+      "label": "H2",
+      "category": "Solução",
+      "statement": "Se oferecermos [solução], esperamos reduzir [dor] em [métrica].",
+      "successMetric": "Teste com 20 usuários; 80% devem concluir o fluxo sem ajuda."
+    }
+  ]
+}
+IMPORTANTE: hypotheses DEVE ser um array de objetos. Cada objeto DEVE ter label, category, statement e successMetric.`,
+  'primary-persona': `{
+  "name": "Nome da persona",
+  "age": "Faixa etária",
+  "occupation": "Profissão/ocupação",
+  "bio": "Breve biografia",
+  "goals": ["Objetivo 1", "Objetivo 2", "Objetivo 3"],
+  "frustrations": ["Frustração 1", "Frustração 2"],
+  "motivations": ["Motivação 1", "Motivação 2"]
+}
+IMPORTANTE: goals, frustrations e motivations DEVEM ser arrays de strings.`,
+  'value-proposition': `{
+  "headline": "Proposta de valor principal em uma frase",
+  "subheadline": "Explicação complementar",
+  "benefits": ["Benefício 1", "Benefício 2", "Benefício 3"],
+  "forWho": "Para quem é o produto"
+}
+IMPORTANTE: benefits DEVE ser um array de strings.`,
+  benchmarking: `{
+  "competitors": [
+    {
+      "name": "Nome do concorrente",
+      "strengths": ["Força 1", "Força 2"],
+      "weaknesses": ["Fraqueza 1", "Fraqueza 2"],
+      "pricing": "Modelo de precificação"
+    }
+  ],
+  "opportunities": ["Oportunidade 1", "Oportunidade 2"]
+}
+IMPORTANTE: competitors DEVE ser array de objetos, strengths/weaknesses/opportunities DEVEM ser arrays de strings.`,
+
+  // Etapa 3
+  'mvp-definition': `{
+  "description": "Descrição do MVP",
+  "scope": "O que está incluído no MVP",
+  "outOfScope": "O que NÃO está incluído",
+  "timeline": "Prazo estimado"
 }`,
+  'essential-features': `{
+  "features": [
+    {
+      "name": "Nome da feature",
+      "description": "Descrição breve",
+      "priority": "Alta/Média/Baixa",
+      "effort": "Alto/Médio/Baixo"
+    }
+  ]
+}
+IMPORTANTE: features DEVE ser um array de objetos.`,
+  'user-stories': `{
+  "stories": [
+    {
+      "title": "Título da user story",
+      "asA": "Como [persona]",
+      "iWant": "Eu quero [ação]",
+      "soThat": "Para que [benefício]",
+      "acceptanceCriteria": ["Critério 1", "Critério 2"]
+    }
+  ]
+}
+IMPORTANTE: stories DEVE ser array de objetos, acceptanceCriteria DEVE ser array de strings.`,
+  'acceptance-criteria': `{
+  "criteria": [
+    {
+      "feature": "Nome da feature",
+      "conditions": ["Condição 1", "Condição 2", "Condição 3"]
+    }
+  ]
+}
+IMPORTANTE: criteria DEVE ser array de objetos, conditions DEVE ser array de strings.`,
+  roadmap: `{
+  "phases": [
+    {
+      "name": "Fase 1: MVP",
+      "duration": "2-3 meses",
+      "milestones": ["Marco 1", "Marco 2"],
+      "deliverables": ["Entrega 1", "Entrega 2"]
+    }
+  ]
+}
+IMPORTANTE: phases, milestones e deliverables DEVEM ser arrays.`,
+  'scope-constraints': `{
+  "constraints": ["Restrição 1", "Restrição 2"],
+  "assumptions": ["Premissa 1", "Premissa 2"],
+  "dependencies": ["Dependência 1", "Dependência 2"]
+}
+IMPORTANTE: Todos os campos DEVEM ser arrays de strings.`,
+
+  // Etapa 4
+  'user-flows': `{
+  "flows": [
+    {
+      "name": "Nome do fluxo",
+      "description": "Descrição",
+      "steps": ["Passo 1", "Passo 2", "Passo 3"]
+    }
+  ]
+}
+IMPORTANTE: flows DEVE ser array de objetos, steps DEVE ser array de strings.`,
+  wireframes: `{
+  "screens": [
+    {
+      "name": "Nome da tela",
+      "description": "Descrição",
+      "elements": ["Elemento 1", "Elemento 2"]
+    }
+  ]
+}
+IMPORTANTE: screens DEVE ser array de objetos, elements DEVE ser array de strings.`,
+  'design-system': `{
+  "colors": {
+    "primary": "#hexadecimal",
+    "secondary": "#hexadecimal"
+  },
+  "typography": {
+    "headings": "Fonte para títulos",
+    "body": "Fonte para texto"
+  },
+  "spacing": "Sistema de espaçamento (ex: 4px, 8px, 16px...)"
+}`,
+  components: `{
+  "components": [
+    {
+      "name": "Nome do componente",
+      "description": "Descrição",
+      "variants": ["Variante 1", "Variante 2"]
+    }
+  ]
+}
+IMPORTANTE: components DEVE ser array de objetos, variants DEVE ser array de strings.`,
+  accessibility: `{
+  "guidelines": ["Guideline 1", "Guideline 2"],
+  "wcagLevel": "A/AA/AAA",
+  "considerations": ["Consideração 1", "Consideração 2"]
+}
+IMPORTANTE: guidelines e considerations DEVEM ser arrays de strings.`,
+
+  // Etapa 5
+  'tech-stack': `{
+  "frontend": ["Tecnologia 1", "Tecnologia 2"],
+  "backend": ["Tecnologia 1", "Tecnologia 2"],
+  "database": "Nome do banco de dados",
+  "infrastructure": ["Serviço 1", "Serviço 2"],
+  "justification": "Justificativa das escolhas"
+}
+IMPORTANTE: frontend, backend e infrastructure DEVEM ser arrays de strings.`,
+  architecture: `{
+  "type": "Tipo de arquitetura (ex: Microserviços, Monolito)",
+  "description": "Descrição da arquitetura",
+  "components": [
+    {
+      "name": "Nome do componente",
+      "responsibility": "Responsabilidade"
+    }
+  ]
+}
+IMPORTANTE: components DEVE ser array de objetos.`,
+  database: `{
+  "type": "SQL/NoSQL",
+  "schema": "Descrição do schema",
+  "tables": [
+    {
+      "name": "Nome da tabela",
+      "fields": ["campo1", "campo2"]
+    }
+  ]
+}
+IMPORTANTE: tables DEVE ser array de objetos, fields DEVE ser array de strings.`,
+  'api-design': `{
+  "endpoints": [
+    {
+      "method": "GET/POST/PUT/DELETE",
+      "path": "/api/endpoint",
+      "description": "Descrição"
+    }
+  ],
+  "authentication": "Tipo de autenticação"
+}
+IMPORTANTE: endpoints DEVE ser array de objetos.`,
+  infrastructure: `{
+  "hosting": "Provedor de hospedagem",
+  "services": ["Serviço 1", "Serviço 2"],
+  "cicd": "Pipeline de CI/CD",
+  "monitoring": ["Ferramenta 1", "Ferramenta 2"]
+}
+IMPORTANTE: services e monitoring DEVEM ser arrays de strings.`,
+  security: `{
+  "measures": ["Medida 1", "Medida 2"],
+  "authentication": "Estratégia de autenticação",
+  "dataProtection": "Como proteger dados sensíveis",
+  "compliance": ["Regulamentação 1", "Regulamentação 2"]
+}
+IMPORTANTE: measures e compliance DEVEM ser arrays de strings.`,
+
+  // Etapa 6
+  'sprint-planning': `{
+  "sprints": [
+    {
+      "number": 1,
+      "duration": "2 semanas",
+      "goals": ["Objetivo 1", "Objetivo 2"],
+      "stories": ["Story 1", "Story 2"]
+    }
+  ]
+}
+IMPORTANTE: sprints DEVE ser array de objetos, goals e stories DEVEM ser arrays de strings.`,
+  timeline: `{
+  "milestones": [
+    {
+      "name": "Marco 1",
+      "date": "2025-03-01",
+      "deliverables": ["Entrega 1", "Entrega 2"]
+    }
+  ],
+  "totalDuration": "X meses"
+}
+IMPORTANTE: milestones DEVE ser array de objetos, deliverables DEVE ser array de strings.`,
+  resources: `{
+  "team": [
+    {
+      "role": "Desenvolvedor",
+      "quantity": 2,
+      "skills": ["Skill 1", "Skill 2"]
+    }
+  ],
+  "tools": ["Ferramenta 1", "Ferramenta 2"]
+}
+IMPORTANTE: team DEVE ser array de objetos, skills e tools DEVEM ser arrays de strings.`,
+  budget: `{
+  "totalEstimate": "R$ X.XXX,XX",
+  "breakdown": [
+    {
+      "category": "Desenvolvimento",
+      "amount": "R$ X.XXX,XX",
+      "items": ["Item 1", "Item 2"]
+    }
+  ]
+}
+IMPORTANTE: breakdown DEVE ser array de objetos, items DEVE ser array de strings.`,
+  milestones: `{
+  "milestones": [
+    {
+      "name": "Marco 1",
+      "description": "Descrição",
+      "deadline": "2025-03-01",
+      "deliverables": ["Entrega 1", "Entrega 2"]
+    }
+  ]
+}
+IMPORTANTE: milestones DEVE ser array de objetos, deliverables DEVE ser array de strings.`,
+  'success-criteria': `{
+  "criteria": [
+    {
+      "metric": "Nome da métrica",
+      "target": "Meta",
+      "measurement": "Como medir"
+    }
+  ]
+}
+IMPORTANTE: criteria DEVE ser array de objetos.`,
+  'risk-management': `{
+  "risks": [
+    {
+      "description": "Descrição do risco",
+      "probability": "Alta/Média/Baixa",
+      "impact": "Alto/Médio/Baixo",
+      "mitigation": "Estratégia de mitigação"
+    }
+  ]
+}
+IMPORTANTE: risks DEVE ser array de objetos.`,
+  'launch-plan': `{
+  "phases": [
+    {
+      "name": "Fase 1",
+      "activities": ["Atividade 1", "Atividade 2"],
+      "timeline": "Data/período"
+    }
+  ],
+  "channels": ["Canal 1", "Canal 2"],
+  "metrics": ["Métrica 1", "Métrica 2"]
+}
+IMPORTANTE: phases DEVE ser array de objetos, activities/channels/metrics DEVEM ser arrays de strings.`,
 }
 
 async function generateFallbackContent(options: GenerateCardOptions & {

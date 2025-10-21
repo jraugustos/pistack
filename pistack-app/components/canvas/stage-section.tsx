@@ -60,6 +60,7 @@ import {
   LaunchPlanCard,
 } from '@/components/canvas/cards/etapa-6'
 import { CardActionsProvider, CardActionsContextValue } from '@/components/canvas/cards/base-card'
+import { CardEditModal } from '@/components/canvas/card-edit-modal'
 
 interface StageSectionProps {
   projectId: string
@@ -87,8 +88,6 @@ interface CardRecord {
 
 interface EditCardState {
   card: CardRecord
-  draft: string
-  error?: string
 }
 
 interface LoadingState {
@@ -1216,46 +1215,25 @@ const StageSectionBase: ForwardRefRenderFunction<
 
   const handleEditCard = useCallback(
     (card: CardRecord) => {
-      setEditState({
-        card,
-        draft: JSON.stringify(card.content ?? {}, null, 2),
-        error: undefined,
-      })
+      setEditState({ card })
     },
     []
   )
-
-  const handleEditDraftChange = useCallback((value: string) => {
-    setEditState((previous) =>
-      previous ? { ...previous, draft: value, error: undefined } : previous
-    )
-  }, [])
 
   const closeEditModal = useCallback(() => {
     if (isSavingEdit) return
     setEditState(null)
   }, [isSavingEdit])
 
-  const handleSaveEdit = useCallback(async () => {
+  const handleSaveEdit = useCallback(async (content: Record<string, any>) => {
     if (!editState) return
 
     setIsSavingEdit(true)
     try {
-      const parsed = JSON.parse(editState.draft)
-      await saveCard(editState.card.id, parsed)
+      await saveCard(editState.card.id, content)
       setEditState(null)
     } catch (error) {
-      setEditState((previous) =>
-        previous
-          ? {
-              ...previous,
-              error:
-                error instanceof Error
-                  ? error.message
-                  : 'Não foi possível interpretar o JSON fornecido.',
-            }
-          : previous
-      )
+      console.error('Error saving card:', error)
     } finally {
       setIsSavingEdit(false)
     }
@@ -1332,9 +1310,8 @@ const StageSectionBase: ForwardRefRenderFunction<
       : {}
 
     return (
-      <CardActionsProvider value={actionHandlers}>
+      <CardActionsProvider key={card?.id ?? cardType} value={actionHandlers}>
         <CardComponent
-          key={card?.id ?? cardType}
           cardId={card?.id ?? `${stage.id}-${cardType}`}
           {...componentProps}
           onAiClick={card ? () => emitReferenceCard(card) : undefined}
@@ -1482,61 +1459,16 @@ const StageSectionBase: ForwardRefRenderFunction<
 
       {editState &&
         createPortal(
-          <div
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 px-4"
-            onClick={closeEditModal}
-            role="presentation"
-          >
-            <div
-              className="w-full max-w-3xl bg-[#0F1115] border border-white/10 rounded-xl shadow-2xl"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <div>
-                  <h2 className="text-lg font-semibold">Editar card</h2>
-                  <p className="text-xs text-[#E6E9F2]/50">
-                    Atualize o conteúdo em formato JSON. Apenas substitua os valores e mantenha as chaves esperadas.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={closeEditModal}
-                  className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="px-6 py-4 space-y-4">
-                <textarea
-                  className="w-full h-64 bg-[#0A0B0E] border border-white/10 rounded-lg text-sm p-3 font-mono resize-none focus:outline-none focus:border-[#7AA2FF]"
-                  value={editState.draft}
-                  onChange={(event) => handleEditDraftChange(event.target.value)}
-                  spellCheck={false}
-                />
-                {editState.error && (
-                  <div className="text-xs text-[#FF6B6B]">{editState.error}</div>
-                )}
-              </div>
-              <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-white/10">
-                <button
-                  type="button"
-                  className="px-4 py-2 text-sm text-[#E6E9F2]/70 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg"
-                  onClick={closeEditModal}
-                  disabled={isSavingEdit}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  className="px-4 py-2 text-sm font-semibold bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg disabled:opacity-60 disabled:cursor-not-allowed"
-                  onClick={handleSaveEdit}
-                  disabled={isSavingEdit}
-                >
-                  {isSavingEdit ? 'Salvando...' : 'Salvar alterações'}
-                </button>
-              </div>
-            </div>
-          </div>,
+          <CardEditModal
+            cardType={editState.card.card_type}
+            cardTitle={CARD_TITLES[editState.card.card_type] || editState.card.card_type}
+            content={editState.card.content}
+            stageColor={stageColor}
+            isOpen={!!editState}
+            isSaving={isSavingEdit}
+            onClose={closeEditModal}
+            onSave={handleSaveEdit}
+          />,
           document.body
         )}
 

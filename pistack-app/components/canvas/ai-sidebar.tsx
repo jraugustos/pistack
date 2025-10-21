@@ -2,12 +2,32 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Sparkles, Send } from 'lucide-react'
+import { CardReferenceBadge } from './card-reference-badge'
+import { MessageContent } from './message-content'
+import {
+  CARD_TITLES,
+  STAGE_COLORS,
+  STAGE_NAMES,
+  CARD_TO_STAGE,
+  CONTEXTUAL_SUGGESTIONS,
+  DEFAULT_SUGGESTIONS
+} from './ai-suggestions'
 
 interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
+  referencedCard?: {
+    cardType: string
+    cardTitle: string
+  }
+}
+
+interface ReferencedCard {
+  id: string
+  card_type: string
+  content: Record<string, any>
 }
 
 interface AiSidebarProps {
@@ -56,6 +76,17 @@ const formatValue = (value: unknown, indent = 0): string => {
   return `${prefix}${String(value)}`
 }
 
+// Mapeamento simplificado de schemas (apenas cards com arrays críticos)
+const CARD_SCHEMAS: Record<string, string> = {
+  'problem': 'painPoints: string[]',
+  'solution': 'differentiators: string[]',
+  'initial-kpis': 'kpis: {name, target}[]',
+  'validation-hypotheses': 'hypotheses: {label, category, statement, successMetric}[]',
+  'primary-persona': 'goals[], frustrations[], behaviors[]',
+  'benchmarking': 'competitors: object[]',
+  'user-stories': 'stories: object[]',
+}
+
 const formatCardReference = (cardType: string, cardId: string, content: Record<string, unknown>) => {
   const cardName = cardType
     .split('-')
@@ -67,13 +98,16 @@ const formatCardReference = (cardType: string, cardId: string, content: Record<s
       ? formatValue(content)
       : '- (card vazio)'
 
+  const schemaInfo = CARD_SCHEMAS[cardType]
+
   return [
-    `Analise o card ${cardName}`,
-    `ID: ${cardId}`,
-    'Conteúdo:',
-    formattedContent,
+    `📋 Card: ${cardName} (ID: ${cardId})`,
     '',
-    'Sugira melhorias focadas neste conteúdo.'
+    'Conteúdo atual:',
+    formattedContent,
+    schemaInfo ? `\n⚠️ Arrays esperados: ${schemaInfo}` : '',
+    '',
+    '⚠️ IMPORTANTE: Arrays devem ser JSON válido, não strings com \\n',
   ].join('\n')
 }
 
@@ -83,7 +117,9 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [threadId, setThreadId] = useState<string | null>(null)
   const [isHistoryLoading, setIsHistoryLoading] = useState(true)
+  const [referencedCard, setReferencedCard] = useState<ReferencedCard | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const summarizeFunctionCall = (call: { call?: string; result?: any }) => {
     if (!call) return ''
@@ -182,11 +218,11 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
       if (detail.stageNumber !== activeStage) return
       if (detail.projectId && detail.projectId !== projectId) return
 
-      const message = formatCardReference(detail.card.card_type, detail.card.id, detail.card.content ?? {})
-      setInput(message)
-      requestAnimationFrame(() => {
-        inputRef.current?.focus()
-      })
+      // Define o card referenciado
+      setReferencedCard(detail.card)
+
+      // Envia mensagem automaticamente
+      handleSendWithContext(detail.card)
     }
 
     window.addEventListener('pistack:ai:reference-card', handler as EventListener)
@@ -195,18 +231,29 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
     }
   }, [activeStage, projectId])
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading || isHistoryLoading) return
+  // Scroll automático para o fim das mensagens
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const handleSendWithContext = async (card: ReferencedCard) => {
+    if (isLoading || isHistoryLoading) return
+
+    const cardTitle = CARD_TITLES[card.card_type] || card.card_type
+    const contextMessage = formatCardReference(card.card_type, card.id, card.content ?? {})
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: input,
+      content: `Me ajude com este card: ${cardTitle}`,
       timestamp: new Date(),
+      referencedCard: {
+        cardType: card.card_type,
+        cardTitle: cardTitle,
+      },
     }
 
     setMessages((prev) => [...prev, userMessage])
-    setInput('')
     setIsLoading(true)
 
     try {
@@ -216,7 +263,127 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: input,
+          message: contextMessage,
+          projectId,
+          activeStage,
+          threadId,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response')
+      }
+
+      const data = await response.json()
+
+      if (data.threadId) {
+        setThreadId(data.threadId)
+      }
+
+      const functionSummaries: string[] = Array.isArray(data.functionCalls)
+        ? data.functionCalls
+            .map((call: { call?: string; result?: any }) =>
+              summarizeFunctionCall(call)
+            )
+            .filter(Boolean)
+        : []
+
+      let assistantContent =
+        typeof data.response === 'string' ? data.response.trim() : ''
+
+      if (functionSummaries.length > 0) {
+        const summaryText = functionSummaries.join('\n')
+        assistantContent = assistantContent
+          ? `${assistantContent}\n\n${summaryText}`
+          : summaryText
+      }
+
+      if (!assistantContent) {
+        assistantContent =
+          'Ação registrada. Verifique os cards para ver as atualizações.'
+      }
+
+      const hasCardMutation =
+        Array.isArray(data.functionCalls) &&
+        data.functionCalls.some(
+          (call: { call?: string; result?: any }) =>
+            call?.result?.success === true &&
+            (call.call === 'create_card' || call.call === 'update_card')
+        )
+
+      if (hasCardMutation) {
+        window.dispatchEvent(
+          new CustomEvent('pistack:cards:refresh', {
+            detail: {
+              projectId,
+              stageNumber: activeStage,
+            },
+          })
+        )
+      }
+
+      const assistantMessage: Message = {
+        id: data.messageId || crypto.randomUUID(),
+        role: 'assistant',
+        content: assistantContent,
+        timestamp: new Date(),
+      }
+
+      setMessages((prev) => [...prev, assistantMessage])
+    } catch (error) {
+      console.error('Error sending message:', error)
+      const errorMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content:
+          'Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.',
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading || isHistoryLoading) return
+
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: input,
+      timestamp: new Date(),
+      ...(referencedCard && {
+        referencedCard: {
+          cardType: referencedCard.card_type,
+          cardTitle: CARD_TITLES[referencedCard.card_type] || referencedCard.card_type,
+        },
+      }),
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+    setInput('')
+    setIsLoading(true)
+
+    try {
+      // Se houver card referenciado, inclui o contexto na mensagem
+      let messageToSend = input
+      if (referencedCard) {
+        const contextMessage = formatCardReference(
+          referencedCard.card_type,
+          referencedCard.id,
+          referencedCard.content ?? {}
+        )
+        messageToSend = `${contextMessage}\n\nPergunta do usuário: ${input}`
+      }
+
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: messageToSend,
           projectId,
           activeStage,
           threadId,
@@ -306,6 +473,16 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
     }
   }
 
+  const stageColor = STAGE_COLORS[activeStage] || '#7AA2FF'
+  const suggestions = referencedCard
+    ? CONTEXTUAL_SUGGESTIONS[referencedCard.card_type] || DEFAULT_SUGGESTIONS
+    : DEFAULT_SUGGESTIONS
+
+  const handleQuickSuggestion = (suggestionText: string) => {
+    setInput(suggestionText)
+    inputRef.current?.focus()
+  }
+
   return (
     <aside className="w-96 border-l border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
       {/* Header */}
@@ -318,6 +495,17 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
             <h3 className="font-semibold text-sm">Copiloto do Projeto</h3>
           </div>
         </div>
+
+        {/* Referenced Card Badge */}
+        {referencedCard && (
+          <CardReferenceBadge
+            cardType={referencedCard.card_type}
+            cardTitle={CARD_TITLES[referencedCard.card_type] || referencedCard.card_type}
+            stageName={STAGE_NAMES[CARD_TO_STAGE[referencedCard.card_type]] || `Etapa ${activeStage}`}
+            stageColor={stageColor}
+            onRemove={() => setReferencedCard(null)}
+          />
+        )}
       </div>
 
       {/* Messages Area */}
@@ -351,14 +539,24 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
                 </div>
               )}
               <div className="flex-1">
+                {/* Referenced Card Badge in Message */}
+                {message.role === 'user' && message.referencedCard && (
+                  <div className="mb-1 flex items-center gap-1.5 text-xs text-[#E6E9F2]/50">
+                    <span>📎</span>
+                    <span>{message.referencedCard.cardTitle}</span>
+                  </div>
+                )}
                 <div
-                  className={`rounded-lg p-3 text-sm leading-relaxed whitespace-pre-line ${
+                  className={`rounded-lg p-3 text-sm leading-relaxed ${
                     message.role === 'assistant'
                       ? 'bg-white/5'
                       : 'bg-[#7AA2FF]/10 ml-auto'
                   }`}
                 >
-                  {message.content}
+                  <MessageContent
+                    content={message.content}
+                    isAssistant={message.role === 'assistant'}
+                  />
                 </div>
               </div>
             </div>
@@ -381,7 +579,43 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
+
+      {/* Quick Suggestions */}
+      {!isHistoryLoading && messages.length > 0 && suggestions.length > 0 && (
+        <div className="px-4 py-3 border-t border-white/5">
+          <div className="text-xs font-medium text-[#E6E9F2]/40 mb-2">
+            Sugestões rápidas:
+          </div>
+          <div className="space-y-2">
+            {suggestions.slice(0, 3).map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => handleQuickSuggestion(suggestion.text)}
+                disabled={isLoading}
+                className="w-full text-left px-3 py-2 text-xs border rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: `${stageColor}08`,
+                  borderColor: `${stageColor}20`,
+                  color: `${stageColor}`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${stageColor}15`
+                  e.currentTarget.style.borderColor = `${stageColor}40`
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = `${stageColor}08`
+                  e.currentTarget.style.borderColor = `${stageColor}20`
+                }}
+              >
+                <span>{suggestion.icon}</span>
+                <span>{suggestion.text}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Input Area */}
       <div className="p-4 border-t border-white/5">

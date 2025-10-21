@@ -231,7 +231,7 @@ export async function POST(request: NextRequest) {
       console.error('Assistant env map:', STAGE_ASSISTANT_ENV_MAP)
       return NextResponse.json(
         {
-          error: `No AI assistant configured for stage ${stageNumber}. Expected environment variable ${ASSISTANT_ENV_MAP[stageNumber]}.`,
+          error: `No AI assistant configured for stage ${stageNumber}. Check environment variables.`,
         },
         { status: 400 }
       )
