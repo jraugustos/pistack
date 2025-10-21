@@ -106,6 +106,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const stageProject = Array.isArray(stage.project)
+      ? stage.project[0]
+      : stage.project
+
+    if (!stageProject) {
+      console.error('Stage is missing related project information', {
+        stageId,
+        stage,
+      })
+      return NextResponse.json(
+        { error: 'Stage project relationship is invalid' },
+        { status: 500 }
+      )
+    }
+
     const initialContent =
       content && Object.keys(content).length > 0 ? content : {}
 
@@ -137,7 +152,7 @@ export async function POST(request: NextRequest) {
 
     const result = await generateCardWithAssistant({
       supabase,
-      projectId: stage.project.id,
+      projectId: stageProject.id,
       stageId: stage.id,
       stageNumber: stage.stage_number,
       stageName: stage.stage_name,

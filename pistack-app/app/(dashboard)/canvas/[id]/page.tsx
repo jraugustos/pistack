@@ -7,9 +7,9 @@ import {
 import { CanvasWorkspace } from '@/components/canvas/canvas-workspace'
 
 interface CanvasPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 async function getProject(
