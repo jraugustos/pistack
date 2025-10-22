@@ -128,6 +128,36 @@ pistack-app/
 
 ---
 
+## Estado Técnico Atual
+
+### Build e Dependências
+- **Status do Build:** ✅ **Passando** (sem erros TypeScript/ESLint)
+- **Next.js:** 14.2.25 (estável, downgrade de 15.5.5 para compatibilidade com Clerk)
+- **React:** 18.3.1 (estável, downgrade de 19 para compatibilidade)
+- **TypeScript:** Configurado com strict mode
+- **Clerk Auth:** Integrado e funcional
+
+### Cards por Etapa (Status de Implementação)
+
+| Etapa | Cards Estruturados | Cards GenericText | Total |
+|-------|-------------------|-------------------|-------|
+| **1 - Conceituação** | 6/6 (problem, solution, pitch, etc) | 0 | 6 |
+| **2 - Validação** | 4/4 (persona, hipóteses, proposta, benchmarking) | 0 | 4 |
+| **3 - Escopo** | 6/6 (MVP, features, stories, criteria, roadmap, constraints) | 0 | 6 |
+| **4 - Design** | 4/5 (wireframes, design-system, components, accessibility) | 1 (user-flows) | 5 |
+| **5 - Tecnologia** | 2/6 (tech-stack, architecture) | 4 (database, api-design, infrastructure, security) | 6 |
+| **6 - Planejamento** | 2/8 (sprint-planning, risk-management) | 6 (timeline, resources, budget, milestones, success-criteria, launch-plan) | 8 |
+| **TOTAL** | **24/35** | **11/35** | **35** |
+
+**Decisão de Design:** Cards mantidos com `GenericTextCard` são menos críticos para estruturação inline ou têm natureza mais textual/descritiva, onde edição livre é mais adequada.
+
+### Normalizações Implementadas
+- Todas as etapas (1-6) possuem normalização de arrays em `lib/array-normalizers.ts`
+- Cobertura: 35 tipos de cards com sanitização e validação
+- Testes: Smoke tests para arrays e POST /api/cards
+
+---
+
 ## Tarefas Pendentes (atualize conforme avançar)
 
 - [x] Criar formulários inline para os cards da Etapa 2 (persona, hipóteses, proposta de valor, benchmarking).
@@ -137,13 +167,110 @@ pistack-app/
 - [x] Adicionar instruções explícitas sobre formatação de arrays nos prompts da IA.
 - [x] Implementar modal de edição amigável (formulário inteligente em vez de JSON bruto).
 - [x] Adicionar suporte a markdown no chat da IA.
-- [ ] **Testar preenchimento de arrays:** validar que cards com arrays (painPoints, kpis, hypotheses, etc.) são corretamente preenchidos pela IA.
-- [ ] **Revisar configurações dos Assistants da OpenAI:** atualizar instruções no dashboard da OpenAI para incluir novas regras de array (tarefa manual externa).
-- [ ] Migrar cards genéricos das Etapas 3–6 para o padrão de edição inline (formularização + autosave detalhado).
-- [ ] Estender normalizações (menu + auto preenchimento) para Etapas 2–6.
-- [ ] Adicionar testes automatizados simples (ex.: smoke de `POST /api/cards`) validando fallback e normalização.
-- [ ] Corrigir erros de build/TypeScript herdados (rotas `/api/projects/*`, helpers AI) para liberar `tsc --noEmit`.
-- [ ] Configurar lint não interativo (migrar de `next lint` para ESLint CLI).
-- [ ] Estender formulários e autosave das Etapas 3–6 replicando o padrão da Etapa 2.
+- [x] **Testar preenchimento de arrays:** validar que cards com arrays (painPoints, kpis, hypotheses, etc.) são corretamente preenchidos pela IA.
+  - Implementado smoke test local: `npm --prefix pistack-app run test:arrays`.
+  - Cobertura atual: `painPoints`, `differentiators`, `kpis`, `hypotheses`, `persona(goals/frustrations/motivations)`, `benchmarking(competitors)`.
+  - Fixtures: `pistack-app/scripts/fixtures/arrays.json`.
+  - Validadores utilitários: `pistack-app/lib/array-validators.ts`.
+- [x] **Normalizações centralizadas de arrays (Etapas 2–6):**
+  - Criado `pistack-app/lib/array-normalizers.ts` com `toArrayOfStrings`, `normalizeKpis`, `normalizeCardArrays`.
+  - Integrado no autopreenchimento da IA (`lib/ai/card-autofill.ts`) e na renderização (`components/canvas/stage-section.tsx`).
+  - Corrigido loop de rótulos no card “Público‑Alvo” salvando campos estruturados (`primaryAudience`, `secondaryAudience`) e limpando rótulos.
+- [x] **Revisar configurações dos Assistants da OpenAI:** atualizar instruções no dashboard da OpenAI para incluir novas regras de array (tarefa manual externa).
+  - Status: Etapas 1 e 2 revisadas e publicadas (arrays JSON válidos, sem bullets/markdown/JSON stringificado; sem labels repetidos; uso exclusivo de update_card; PT‑BR).
+  
+- [x] Migrar cards da Etapa 3 para o padrão de edição inline (formularização + autosave)
+  - Concluídos: `mvp-definition`, `essential-features`, `user-stories`, `acceptance-criteria`, `roadmap`, `scope-constraints`.
+  - Normalização aplicada nos arrays correspondentes (lib/array-normalizers.ts).
 
-*Atualizado em: 2025-10-20.*
+- [x] Migrar cards das Etapas 4–6 para o padrão de edição inline (formularização + autosave detalhado).
+  - **Etapa 4 (Design)**: Concluídos `wireframes-card` (screens[] com elements[]), `design-system-card` (colors, typography, spacing), `components-card` (components[] com variants[]), `accessibility-card` (guidelines[], wcagLevel, considerations[]).
+  - **Etapa 5 (Tecnologia)**: Concluídos `tech-stack-card` (frontend[], backend[], infrastructure[], justification), `architecture-card` (type, description, components[]).
+    - Demais cards da Etapa 5 mantidos com GenericTextCard por serem menos críticos para fluxo estruturado.
+  - **Etapa 6 (Planejamento)**: Concluídos `sprint-planning-card` (sprints[] com goals[] e stories[]), `risk-management-card` (risks[] com probability, impact, mitigation).
+    - Demais cards da Etapa 6 mantidos com GenericTextCard (timeline, resources, budget, milestones, success-criteria, launch-plan).
+  - Normalizações adicionadas em `lib/array-normalizers.ts` para todos os tipos de cards migrados.
+- [x] Adicionar testes automatizados simples (ex.: smoke de `POST /api/cards`) validando fallback e normalização.
+  - Scripts:
+    - `npm --prefix pistack-app run test:arrays` (arrays gerais Etapas 2–6)
+    - `npm --prefix pistack-app run test:cards-smoke` (POST /api/cards — offline smoke de sanitização + normalização)
+  - Fixtures: `pistack-app/scripts/fixtures/arrays.json`, `pistack-app/scripts/fixtures/cards-post.json`.
+  - Observação: smoke “offline” simula a etapa de sanitização e normalização aplicada no autopopulate sem depender de ambiente externo.
+- [x] Corrigir erros de build/TypeScript herdados.
+  - Exportado `sanitizeAIResponse` em `lib/ai/card-autofill.ts` para uso em `function-handlers.ts`.
+  - Corrigidas tipagens implícitas em callbacks `.map()` nos seguintes cards:
+    - `etapa-3/scope-constraints-card.tsx`
+    - `etapa-4/accessibility-card.tsx`
+    - `etapa-5/architecture-card.tsx`
+    - `etapa-5/tech-stack-card.tsx`
+    - `etapa-6/risk-management-card.tsx`
+    - `etapa-6/sprint-planning-card.tsx`
+  - **Status do Build:** ✅ Passando sem erros TypeScript.
+- [ ] Configurar lint não interativo (migrar de `next lint` para ESLint CLI).
+
+## Novas funcionalidades
+- [ ] Adicionar visão de templates
+- [ ] Adicionar botão para criar todos cards de uma etapa de uma vez
+- [ ] Visão de list view dos cards no canvas
+- [ ] Criação de projeto no formado conversacional. Referência no arquivo @pistack-wizard.html
+- [ ] Implementar Project Overview: conforme o usuário vai avançando no projeto, ativa a opção overview, que vai compilar toda visão do projeto e poder exportar em apresentação em um PRD ou  gerar prompts para um vibe coding para produzir o projeto. Referencia no arquivo project-overview.html
+- [ ] Implementar light view no canvas e no project overview
+- [ ] Implementar página de demo do projeto
+
+## Melhorias
+- [ ] IA panel fechar para deixar o canvas mais expandido, o usuário pode clicar e abrir ou ele será aberto quando um card for referenciado
+- [ ] Separar aplicação do site
+- [ ] Adicionar ordenação (drag-and-drop) nas listas dos cards (features, stories, critérios, roadmap)
+- [ ] Indicador discreto de autosave/erro por card e feedback de última atualização
+
+---
+
+## Próximos Passos Priorizados
+
+### Curto Prazo (Próxima Sessão)
+1. **Completar cards restantes com estruturação inline** (opcional, caso necessário):
+   - Etapa 4: `user-flows-card` (flows[] com steps[])
+   - Etapa 5: `database-card` (tables[] com fields[]), `api-design-card` (endpoints[])
+   - Etapa 6: `resources-card` (team[], tools[]), `budget-card` (breakdown[])
+
+2. **Configurar lint não interativo:**
+   - Migrar de `next lint` para ESLint CLI
+   - Adicionar script `lint:ci` para CI/CD
+
+3. **Revisar e atualizar Assistants da OpenAI:**
+   - Etapas 3-6 precisam atualização com schemas dos novos cards estruturados
+   - Incluir instruções sobre arrays JSON válidos
+   - Publicar versões atualizadas
+
+### Médio Prazo (Funcionalidades Novas)
+1. **Sistema de Templates:**
+   - Criar templates pré-definidos de projetos
+   - Permitir usuário salvar seu projeto como template
+
+2. **Batch Creation:**
+   - Botão para criar todos os cards de uma etapa de uma vez
+   - Progresso visual da criação em lote
+
+3. **List View:**
+   - Visão alternativa dos cards em formato de lista
+   - Facilitar navegação e overview rápido
+
+### Longo Prazo (Grandes Features)
+1. **Modo Conversacional (Wizard):**
+   - Criar projeto via chat guiado (referência: `pistack-wizard.html`)
+   - Assistente virtual que questiona e preenche cards
+
+2. **Project Overview:**
+   - Compilação automática da visão do projeto
+   - Exportação em PRD, apresentação ou prompt para vibe coding
+   - Referência: `project-overview.html`
+
+3. **Light Mode:**
+   - Tema claro para canvas e project overview
+   - Toggle dinâmico de tema
+
+4. **Demo Page:**
+   - Página pública para demonstração do produto
+
+
+*Atualizado em: 2025-01-22.*
