@@ -14,6 +14,7 @@ import {
   CARD_TYPES_BY_STAGE,
   CARD_TYPE_DESCRIPTIONS,
 } from './functions'
+import { sanitizeAIResponse } from './card-autofill'
 
 /**
  * Creates a new card in the database
@@ -144,11 +145,21 @@ export async function handleUpdateCard(
       }
     }
 
+    // SANITIZAR CONTEÚDO ANTES DE SALVAR
+    const sanitizedContent = sanitizeAIResponse(args.content, card.card_type)
+
+    console.log('[FunctionHandler][UpdateCard] Sanitizando conteúdo', {
+      cardId: args.card_id,
+      cardType: card.card_type,
+      before: JSON.stringify(args.content).substring(0, 100),
+      after: JSON.stringify(sanitizedContent).substring(0, 100),
+    })
+
     // Update the card
     const { data: updatedCard, error: updateError } = await supabase
       .from('cards')
       .update({
-        content: args.content,
+        content: sanitizedContent,
         updated_at: new Date().toISOString(),
       })
       .eq('id', args.card_id)

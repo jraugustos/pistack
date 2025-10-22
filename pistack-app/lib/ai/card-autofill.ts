@@ -5,6 +5,7 @@ import {
   getStageAssistantId,
 } from '@/lib/ai/assistants'
 import { executeFunctionCall } from '@/lib/ai/function-handlers'
+import { normalizeCardArrays } from '@/lib/array-normalizers'
 import { CARD_TYPE_DESCRIPTIONS } from '@/lib/ai/functions'
 
 interface BuildPromptParams {
@@ -92,6 +93,20 @@ function buildPrompt({
     '5. Exemplo CORRETO de painPoints: ["Dificuldade em X", "Problema com Y"]',
     '6. Exemplo ERRADO: "- Dificuldade em X\\n- Problema com Y"',
     '',
+    '🚫 ERROS COMUNS QUE VOCÊ DEVE EVITAR:',
+    '1. NUNCA repita labels: "Primário: Primário: Primário: texto" ❌',
+    '2. NUNCA retorne JSON como string: "{\\"field\\":\\"value\\"}" ❌',
+    '3. NUNCA misture formatos: campo deve ser string OU objeto, não ambos',
+    '4. NUNCA adicione formatação extra, markdown ou comentários',
+    '',
+    'Exemplos de OUTPUT CORRETO:',
+    `- primaryAudience: "Arqueiros profissionais buscando melhorar desempenho" ✅`,
+    `- kpis: [{"name": "Taxa de conversão", "target": "5%"}] ✅`,
+    '',
+    'Exemplos de OUTPUT INCORRETO:',
+    `- primaryAudience: "Primário: Primário: Arqueiros..." ❌`,
+    `- primaryAudience: "{\\"primaryAudience\\":\\"Arqueiros...\\"}" ❌`,
+    '',
     `⚠️ VALIDAÇÃO CRÍTICA:`,
     `- Certifique-se de que está gerando o card tipo "${cardType}"`,
     `- NÃO gere conteúdo de outros tipos de card`,
@@ -104,12 +119,84 @@ function buildPrompt({
     `- Utilize stage=${stageNumber} e card_type="${cardType}".`,
     '- Inclua TODOS os campos esperados no schema acima.',
     '- Respeite os tipos de dados: strings, arrays, objetos.',
+    '- NUNCA adicione labels repetidos, JSON embutido ou formatação extra.',
     '- Não responda com texto livre; execute apenas a função.',
   ].join('\n')
 }
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Sanitiza resposta da IA removendo padrões problemáticos
+ */
+export function sanitizeAIResponse(content: any, cardType: string): any {
+  if (!content || typeof content !== 'object') {
+    return content
+  }
+
+  const sanitized = { ...content }
+
+  // Iterar sobre todos os campos do objeto
+  Object.keys(sanitized).forEach((key) => {
+    const value = sanitized[key]
+
+    if (typeof value === 'string') {
+      let cleaned = value
+
+      // 1. Remover JSON embutido em strings
+      // Se o valor inteiro é um JSON, tentar parsear
+      if (cleaned.trim().startsWith('{') && cleaned.trim().endsWith('}')) {
+        try {
+          const parsed = JSON.parse(cleaned)
+          sanitized[key] = parsed
+          return // Substituir valor com objeto parseado
+        } catch {
+          // Se não conseguir parsear, continuar com sanitização
+        }
+      }
+
+      // 2. Remover padrões repetidos em QUALQUER posição
+      // Ex: "Primário: Primário: Primário: texto" ou "texto Primário: Primário:"
+      const repeatedPatternStart = /^(\w+:\s*){3,}/gi
+      cleaned = cleaned.replace(repeatedPatternStart, '')
+
+      // Detecta padrões como "word: word: word:" em qualquer posição
+      cleaned = cleaned.replace(/(\w+):\s*\1:\s*\1:/gi, '')
+
+      // 3. Remover palavras repetidas consecutivamente (3+ vezes)
+      cleaned = cleaned.replace(/\b(\w+)(\s+\1){2,}\b/gi, '$1')
+
+      // 4. Limpar espaços múltiplos
+      cleaned = cleaned.replace(/\s{2,}/g, ' ').trim()
+
+      // 5. Remover JSON parcial no meio do texto
+      // Ex: "texto {"field":"value"} mais texto"
+      cleaned = cleaned.replace(/\{[^}]*"[^"]*"[^}]*\}/g, '')
+
+      sanitized[key] = cleaned
+    } else if (Array.isArray(value)) {
+      // Sanitizar cada item do array
+      sanitized[key] = value.map((item) => {
+        if (typeof item === 'string') {
+          return item
+            .replace(/^(\w+:\s*){3,}/gi, '')
+            .replace(/\b(\w+)(\s+\1){2,}\b/gi, '$1')
+            .replace(/\s{2,}/g, ' ')
+            .trim()
+        } else if (typeof item === 'object') {
+          return sanitizeAIResponse(item, cardType)
+        }
+        return item
+      })
+    } else if (typeof value === 'object' && value !== null) {
+      // Recursivamente sanitizar objetos aninhados
+      sanitized[key] = sanitizeAIResponse(value, cardType)
+    }
+  })
+
+  return sanitized
 }
 
 function validateCardSchema(cardType: string, content: any): boolean {
@@ -806,6 +893,34 @@ export async function generateCardWithAssistant({
       success: false,
       error:
         'Assistente executou, mas o card não foi encontrado. Verifique se o assistant chamou update_card corretamente.',
+    }
+  }
+
+  // SANITIZAR CONTEÚDO ANTES DE VALIDAR
+  const sanitizedContent = sanitizeAIResponse(card.content, cardType)
+  // NORMALIZAR ARRAYS CONFORME O TIPO DE CARD
+  const normalizedContent = normalizeCardArrays(cardType, sanitizedContent)
+
+  console.log('[AI][Sanitization]', {
+    cardId,
+    cardType,
+    before: JSON.stringify(card.content).substring(0, 150),
+    after: JSON.stringify(sanitizedContent).substring(0, 150),
+  })
+
+  // Atualizar card com conteúdo sanitizado se houve mudanças
+  const needsSave = JSON.stringify(card.content) !== JSON.stringify(normalizedContent)
+  if (needsSave) {
+    const { error: updateError } = await supabase
+      .from('cards')
+      .update({ content: normalizedContent, updated_at: new Date().toISOString() })
+      .eq('id', cardId)
+
+    if (updateError) {
+      console.error('[AI][Sanitization] Erro ao salvar conteúdo sanitizado:', updateError)
+    } else {
+      card.content = normalizedContent
+      console.log('[AI][Sanitization] Conteúdo sanitizado/normalizado salvo com sucesso')
     }
   }
 

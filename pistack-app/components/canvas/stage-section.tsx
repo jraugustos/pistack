@@ -465,6 +465,37 @@ function extractAudienceFromString(text: string) {
   }
 }
 
+function removeRepeatedPatterns(text: string): string {
+  if (!text || typeof text !== 'string') return text
+
+  let cleaned = text
+
+  // 1. Remove JSON embutido em strings
+  // Ex: "texto {"field":"value"} mais texto"
+  cleaned = cleaned.replace(/\{[^}]*"[^"]*"[^}]*\}/g, '')
+
+  // 2. Remove padrões repetidos no INÍCIO
+  // Ex: "Primário: Primário: Primário: texto"
+  const match = cleaned.match(/^(\w+):\s*/)
+  if (match) {
+    const word = match[1]
+    const repeatedPattern = new RegExp(`^(${word}:\\s*)+`, 'gi')
+    cleaned = cleaned.replace(repeatedPattern, '')
+  }
+
+  // 3. Remove padrões repetidos em QUALQUER posição
+  // Ex: "texto Palavra: Palavra: Palavra: mais texto"
+  cleaned = cleaned.replace(/(\w+):\s*\1:\s*\1:/gi, '')
+
+  // 4. Remove palavras repetidas consecutivamente (3+ vezes)
+  cleaned = cleaned.replace(/\b(\w+)(\s+\1){2,}\b/gi, '$1')
+
+  // 5. Limpar espaços múltiplos
+  cleaned = cleaned.replace(/\s{2,}/g, ' ')
+
+  return cleaned.trim()
+}
+
 function normalizeCardContent(cardType: string, content: any) {
   if (!content) return {}
 
@@ -647,7 +678,7 @@ function normalizeCardContent(cardType: string, content: any) {
 
       return {
         ...data,
-        problem,
+        problem: removeRepeatedPatterns(problem),
         painPoints: normalizedPainPoints,
       }
     }
@@ -701,7 +732,7 @@ function normalizeCardContent(cardType: string, content: any) {
 
       return {
         ...data,
-        solution,
+        solution: removeRepeatedPatterns(solution),
         differentiators: normalizedDifferentiators,
       }
     }
@@ -786,8 +817,8 @@ function normalizeCardContent(cardType: string, content: any) {
 
       return {
         ...data,
-        primaryAudience: primaryAudience || '',
-        secondaryAudience: secondaryAudience || '',
+        primaryAudience: removeRepeatedPatterns(primaryAudience || ''),
+        secondaryAudience: removeRepeatedPatterns(secondaryAudience || ''),
       }
     }
 
