@@ -61,6 +61,14 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [showOnlyFilled, setShowOnlyFilled] = useState(false)
   const [zoom, setZoom] = useState(100)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    // Restore from localStorage
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('pistack:ai-sidebar-open')
+      return saved ? JSON.parse(saved) : false
+    }
+    return false
+  })
   const stageRefs = useRef<Record<number, HTMLDivElement | null>>({})
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
@@ -109,6 +117,25 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
     },
     []
   )
+
+  // Save sidebar state to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pistack:ai-sidebar-open', JSON.stringify(isSidebarOpen))
+    }
+  }, [isSidebarOpen])
+
+  // Listen for auto-open events when user clicks Sparkles
+  useEffect(() => {
+    const handleAutoOpen = () => {
+      setIsSidebarOpen(true)
+    }
+
+    window.addEventListener('pistack:ai:reference-card', handleAutoOpen)
+    return () => {
+      window.removeEventListener('pistack:ai:reference-card', handleAutoOpen)
+    }
+  }, [])
 
   useEffect(() => {
     const container = scrollContainerRef.current
@@ -215,7 +242,12 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
           registerStageRef={registerStageRef}
         />
 
-        <AiSidebar projectId={project.id} activeStage={activeStage} />
+        <AiSidebar
+          projectId={project.id}
+          activeStage={activeStage}
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
       </div>
     </div>
   )

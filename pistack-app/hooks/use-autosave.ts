@@ -1,4 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
+
+export type SaveStatus = 'idle' | 'pending' | 'saving' | 'saved' | 'error'
 
 interface UseAutosaveOptions {
   delay?: number // Delay in milliseconds before saving
@@ -6,11 +8,11 @@ interface UseAutosaveOptions {
 }
 
 /**
- * Hook for autosaving with debouncing
+ * Hook for autosaving with debouncing and status tracking
  *
  * @param value - The value to autosave
  * @param options - Configuration options
- * @returns Object with saving state and manual save function
+ * @returns Object with saving state, status, last saved time, and manual save function
  */
 export function useAutosave<T>(value: T, options: UseAutosaveOptions) {
   const { delay = 1000, onSave } = options
@@ -18,15 +20,33 @@ export function useAutosave<T>(value: T, options: UseAutosaveOptions) {
   const previousValueRef = useRef<T>(value)
   const isSavingRef = useRef(false)
 
+  // Estados observáveis
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+
   const save = useCallback(async () => {
     if (isSavingRef.current) return
 
     isSavingRef.current = true
+    setSaveStatus('saving')
+    setError(null)
+
     try {
       await onSave(value)
       previousValueRef.current = value
-    } catch (error) {
-      console.error('Autosave error:', error)
+      setLastSaved(new Date())
+      setSaveStatus('saved')
+
+      // Auto-hide "saved" status após 2 segundos
+      setTimeout(() => {
+        setSaveStatus((current) => (current === 'saved' ? 'idle' : current))
+      }, 2000)
+    } catch (err) {
+      console.error('Autosave error:', err)
+      const error = err instanceof Error ? err : new Error('Failed to save')
+      setError(error)
+      setSaveStatus('error')
     } finally {
       isSavingRef.current = false
     }
@@ -40,6 +60,9 @@ export function useAutosave<T>(value: T, options: UseAutosaveOptions) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
+
+    // Marca como pendente (esperando debounce)
+    setSaveStatus('pending')
 
     // Set new timeout
     timeoutRef.current = setTimeout(() => {
@@ -56,6 +79,9 @@ export function useAutosave<T>(value: T, options: UseAutosaveOptions) {
 
   return {
     isSaving: isSavingRef.current,
+    saveStatus,
+    lastSaved,
+    error,
     save, // Manual save function
   }
 }

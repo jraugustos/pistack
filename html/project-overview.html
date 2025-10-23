@@ -1,0 +1,1116 @@
+<html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Overview — PIStack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; }
+      
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+      }
+      
+      .animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
+      .animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
+      .animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
+      .animate-delay-4 { animation-delay: 0.4s; opacity: 0; }
+    </style>
+  </head>
+  <body class="bg-[#0A0B0E] text-[#E6E9F2] antialiased overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0F1115]/80 backdrop-blur-xl">
+      <nav class="h-14 px-6 flex items-center justify-between max-w-7xl mx-auto">
+        <div class="flex items-center gap-4">
+          <a href="#" class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </a>
+          <div class="flex items-center gap-3">
+            <div class="text-sm font-semibold tracking-tight">Project Overview</div>
+            <div class="flex items-center gap-1.5 px-2 py-1 bg-[#7AA2FF]/10 rounded-md">
+              <div class="w-1.5 h-1.5 rounded-full bg-[#7AA2FF]"></div>
+              <span class="text-xs text-[#7AA2FF]">22/25 Cards</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+            Preview
+          </button>
+          <div class="w-px h-6 bg-white/5 mx-1"></div>
+          <button id="export-prd-btn" class="px-3 py-1.5 text-xs font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            Export PRD
+          </button>
+          <button id="generate-presentation-btn" class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center gap-1.5">
+            <i data-lucide="presentation" class="w-3.5 h-3.5"></i>
+            Generate Presentation
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="pt-14">
+      <div class="max-w-7xl mx-auto px-6 py-16">
+        <!-- Hero Header -->
+        <div class="text-center mb-16 animate-fade-in-up">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-[#7AA2FF]/10 to-[#5AD19A]/10 border border-[#7AA2FF]/20 rounded-full mb-6">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#7AA2FF]"></i>
+            <span class="text-xs font-medium text-[#7AA2FF]">Overview Completo do Projeto</span>
+          </div>
+          <h1 class="text-5xl font-semibold tracking-tight mb-4">FinControl</h1>
+          <p class="text-xl text-[#E6E9F2]/60 max-w-2xl mx-auto leading-relaxed">
+            App de controle financeiro pessoal com categorização inteligente
+          </p>
+        </div>
+
+        <!-- Completion Progress -->
+        <div class="max-w-4xl mx-auto mb-20 animate-fade-in-up animate-delay-1">
+          <div class="bg-[#151821] rounded-2xl border border-white/5 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-semibold mb-1">Progresso do Projeto</h3>
+                <p class="text-sm text-[#E6E9F2]/60">22 de 25 cards preenchidos</p>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-semibold text-[#5AD19A]">88%</div>
+                <div class="text-xs text-[#E6E9F2]/40">Completo</div>
+              </div>
+            </div>
+            <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-[#7AA2FF] to-[#5AD19A] rounded-full" style="width: 88%"></div>
+            </div>
+            <div class="grid grid-cols-5 gap-3 mt-6">
+              <div class="text-center">
+                <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/30 flex items-center justify-center mx-auto mb-2">
+                  <i data-lucide="check" class="w-5 h-5 text-[#5AD19A]"></i>
+                </div>
+                <div class="text-xs font-medium mb-0.5">Etapa 1</div>
+                <div class="text-xs text-[#5AD19A]">6/6</div>
+              </div>
+              <div class="text-center">
+                <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/30 flex items-center justify-center mx-auto mb-2">
+                  <i data-lucide="check" class="w-5 h-5 text-[#5AD19A]"></i>
+                </div>
+                <div class="text-xs font-medium mb-0.5">Etapa 2</div>
+                <div class="text-xs text-[#5AD19A]">4/4</div>
+              </div>
+              <div class="text-center">
+                <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/30 flex items-center justify-center mx-auto mb-2">
+                  <i data-lucide="check" class="w-5 h-5 text-[#5AD19A]"></i>
+                </div>
+                <div class="text-xs font-medium mb-0.5">Etapa 3</div>
+                <div class="text-xs text-[#5AD19A]">6/6</div>
+              </div>
+              <div class="text-center">
+                <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/30 flex items-center justify-center mx-auto mb-2">
+                  <i data-lucide="check" class="w-5 h-5 text-[#5AD19A]"></i>
+                </div>
+                <div class="text-xs font-medium mb-0.5">Etapa 4</div>
+                <div class="text-xs text-[#5AD19A]">6/6</div>
+              </div>
+              <div class="text-center">
+                <div class="w-10 h-10 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/30 flex items-center justify-center mx-auto mb-2">
+                  <i data-lucide="alert-circle" class="w-5 h-5 text-[#FFC24B]"></i>
+                </div>
+                <div class="text-xs font-medium mb-0.5">Etapa 5</div>
+                <div class="text-xs text-[#FFC24B]">0/3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Missing Cards Alert -->
+        <div class="max-w-4xl mx-auto mb-12 animate-fade-in-up animate-delay-2">
+          <div class="bg-gradient-to-r from-[#FFC24B]/5 to-[#FFC24B]/0 border border-[#FFC24B]/20 rounded-xl p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/30 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-[#FFC24B]"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[#FFC24B] mb-2">3 cards pendentes na Etapa 5: Planejamento</h3>
+                <p class="text-sm text-[#E6E9F2]/70 mb-3">
+                  Complete estes cards para ter uma visão completa de roadmap, cronograma e orçamento do projeto.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-3 py-1.5 bg-white/5 rounded-lg text-xs border border-white/10 flex items-center gap-1.5">
+                    <i data-lucide="calendar" class="w-3 h-3 text-[#FFC24B]"></i>
+                    Roadmap &amp; Milestones
+                  </span>
+                  <span class="px-3 py-1.5 bg-white/5 rounded-lg text-xs border border-white/10 flex items-center gap-1.5">
+                    <i data-lucide="clock" class="w-3 h-3 text-[#FFC24B]"></i>
+                    Cronograma
+                  </span>
+                  <span class="px-3 py-1.5 bg-white/5 rounded-lg text-xs border border-white/10 flex items-center gap-1.5">
+                    <i data-lucide="dollar-sign" class="w-3 h-3 text-[#FFC24B]"></i>
+                    Orçamento
+                  </span>
+                </div>
+                <button class="mt-4 px-4 py-2 bg-[#FFC24B] hover:bg-[#EDB33D] text-[#0F1115] rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  Preencher cards pendentes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story Section -->
+        <div class="mb-20 animate-fade-in-up animate-delay-3">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-semibold tracking-tight mb-3">A História do Projeto</h2>
+            <p class="text-[#E6E9F2]/60">Uma narrativa completa do conceito à execução</p>
+          </div>
+
+          <!-- Stage 1: Ideia Base -->
+          <div class="mb-16">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 rounded-xl bg-[#7AA2FF]/10 border border-[#7AA2FF]/30 flex items-center justify-center">
+                  <i data-lucide="lightbulb" class="w-6 h-6 text-[#7AA2FF]"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-[#7AA2FF] font-medium">Etapa 1</div>
+                  <h3 class="text-2xl font-semibold tracking-tight">Ideia Base</h3>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-[#5AD19A]/10 rounded-lg border border-[#5AD19A]/30">
+                <i data-lucide="check-circle" class="w-4 h-4 text-[#5AD19A]"></i>
+                <span class="text-sm font-medium text-[#5AD19A]">Completo</span>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+              <!-- Pitch Card -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#7AA2FF]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                    <i data-lucide="message-square" class="w-5 h-5 text-[#7AA2FF]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#7AA2FF] font-medium mb-1">Pitch</div>
+                    <h4 class="font-semibold text-lg">A Visão</h4>
+                  </div>
+                </div>
+                <p class="text-[#E6E9F2]/80 leading-relaxed text-lg italic">
+                  "Uma forma simples e intuitiva de entender para onde vai seu dinheiro, com insights automáticos que ajudam você a economizar mais."
+                </p>
+              </div>
+
+              <!-- Problem Card -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#7AA2FF]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-[#FF6B6B]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#FF6B6B] font-medium mb-1">Problema</div>
+                    <h4 class="font-semibold text-lg">O Desafio</h4>
+                  </div>
+                </div>
+                <p class="text-[#E6E9F2]/70 leading-relaxed mb-4">
+                  Pessoas têm dificuldade em acompanhar gastos mensais, não sabem onde estão gastando demais e não conseguem criar hábitos de economia sustentáveis.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2.5 py-1 bg-[#FF6B6B]/10 text-[#FF6B6B] rounded-md text-xs">Falta de visibilidade</span>
+                  <span class="px-2.5 py-1 bg-[#FF6B6B]/10 text-[#FF6B6B] rounded-md text-xs">Trabalho manual</span>
+                  <span class="px-2.5 py-1 bg-[#FF6B6B]/10 text-[#FF6B6B] rounded-md text-xs">Desmotivação</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Solution -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#7AA2FF]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                    <i data-lucide="zap" class="w-5 h-5 text-[#5AD19A]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#5AD19A] font-medium mb-1">Solução</div>
+                    <h4 class="font-semibold">A Resposta</h4>
+                  </div>
+                </div>
+                <p class="text-sm text-[#E6E9F2]/70 leading-relaxed mb-3">
+                  App mobile com categorização automática via IA, dashboard visual e sugestões personalizadas de economia.
+                </p>
+                <div class="space-y-2">
+                  <div class="flex items-start gap-2 text-xs text-[#E6E9F2]/60">
+                    <i data-lucide="check" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                    <span>Categorização automática com IA</span>
+                  </div>
+                  <div class="flex items-start gap-2 text-xs text-[#E6E9F2]/60">
+                    <i data-lucide="check" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                    <span>Insights em linguagem natural</span>
+                  </div>
+                  <div class="flex items-start gap-2 text-xs text-[#E6E9F2]/60">
+                    <i data-lucide="check" class="w-3 h-3 text-[#5AD19A] mt-0.5"></i>
+                    <span>Gamificação de metas</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Target Audience -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#7AA2FF]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                    <i data-lucide="users" class="w-5 h-5 text-[#9B8AFB]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#9B8AFB] font-medium mb-1">Público</div>
+                    <h4 class="font-semibold">Para Quem</h4>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-1">Primário</div>
+                    <p class="text-sm text-[#E6E9F2]/70">Jovens profissionais 25-35 anos, renda R$ 3-8k</p>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-1">Secundário</div>
+                    <p class="text-sm text-[#E6E9F2]/70">Autônomos e freelancers</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- KPIs -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#7AA2FF]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-[#FFC24B]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#FFC24B] font-medium mb-1">KPIs</div>
+                    <h4 class="font-semibold">Metas</h4>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center p-2 bg-white/5 rounded">
+                    <span class="text-xs text-[#E6E9F2]/60">MAU</span>
+                    <span class="text-sm font-semibold">10k</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-white/5 rounded">
+                    <span class="text-xs text-[#E6E9F2]/60">Retenção D7</span>
+                    <span class="text-sm font-semibold">40%</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-white/5 rounded">
+                    <span class="text-xs text-[#E6E9F2]/60">Trans/mês</span>
+                    <span class="text-sm font-semibold">30+</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-white/5 rounded">
+                    <span class="text-xs text-[#E6E9F2]/60">NPS</span>
+                    <span class="text-sm font-semibold">50+</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 2: Entendimento -->
+          <div class="mb-16">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 rounded-xl bg-[#5AD19A]/10 border border-[#5AD19A]/30 flex items-center justify-center">
+                  <i data-lucide="brain" class="w-6 h-6 text-[#5AD19A]"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-[#5AD19A] font-medium">Etapa 2</div>
+                  <h3 class="text-2xl font-semibold tracking-tight">Entendimento</h3>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-[#5AD19A]/10 rounded-lg border border-[#5AD19A]/30">
+                <i data-lucide="check-circle" class="w-4 h-4 text-[#5AD19A]"></i>
+                <span class="text-sm font-medium text-[#5AD19A]">Completo</span>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Value Proposition -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#5AD19A]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                    <i data-lucide="gem" class="w-5 h-5 text-[#5AD19A]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#5AD19A] font-medium mb-1">Proposta de Valor</div>
+                    <h4 class="font-semibold text-lg">O Diferencial</h4>
+                  </div>
+                </div>
+                <p class="text-[#E6E9F2]/80 leading-relaxed text-lg italic mb-4">
+                  "Entenda seus gastos sem esforço e economize mais com insights que fazem sentido para você"
+                </p>
+                <div class="space-y-2">
+                  <div class="flex items-start gap-2">
+                    <i data-lucide="zap" class="w-4 h-4 text-[#5AD19A] mt-0.5"></i>
+                    <p class="text-sm text-[#E6E9F2]/70">Zero trabalho manual - IA faz tudo</p>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <i data-lucide="brain" class="w-4 h-4 text-[#5AD19A] mt-0.5"></i>
+                    <p class="text-sm text-[#E6E9F2]/70">Insights personalizados e acionáveis</p>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <i data-lucide="trophy" class="w-4 h-4 text-[#5AD19A] mt-0.5"></i>
+                    <p class="text-sm text-[#E6E9F2]/70">Gamificação que motiva economia</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Primary Persona -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#5AD19A]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-[#5AD19A]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#5AD19A] font-medium mb-1">Persona Primária</div>
+                    <h4 class="font-semibold text-lg">Marina, 28 anos</h4>
+                  </div>
+                </div>
+                <p class="text-sm text-[#E6E9F2]/60 mb-4">Designer em startup • R$ 5.5k/mês</p>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-1.5">Objetivos</div>
+                    <p class="text-sm text-[#E6E9F2]/70">Economizar para viagem, reduzir gastos com delivery, criar reserva de emergência</p>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-1.5">Frustrações</div>
+                    <p class="text-sm text-[#E6E9F2]/70">Planilhas confusas, esquece de anotar gastos, não consegue manter consistência</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Validation Hypotheses -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#5AD19A]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                    <i data-lucide="clipboard-check" class="w-5 h-5 text-[#5AD19A]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#5AD19A] font-medium mb-1">Hipóteses</div>
+                    <h4 class="font-semibold text-lg">Para Validar</h4>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/90 mb-1">H1: Problema</div>
+                    <p class="text-sm text-[#E6E9F2]/60">70% dos usuários não sabem quanto gastam por categoria</p>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/90 mb-1">H2: Solução</div>
+                    <p class="text-sm text-[#E6E9F2]/60">Categorização automática reduz fricção em 80%</p>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/90 mb-1">H3: Valor</div>
+                    <p class="text-sm text-[#E6E9F2]/60">Insights aumentam economia em 15% ao mês</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Benchmarking -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#5AD19A]/30 transition-all">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 text-[#5AD19A]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#5AD19A] font-medium mb-1">Benchmarking</div>
+                    <h4 class="font-semibold text-lg">Concorrência</h4>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="p-3 bg-white/5 rounded-lg">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-sm font-medium">Organizze</span>
+                      <span class="text-xs text-[#E6E9F2]/40">Manual</span>
+                    </div>
+                    <p class="text-xs text-[#E6E9F2]/60">Foco em controle manual, sem IA</p>
+                  </div>
+                  <div class="p-3 bg-white/5 rounded-lg">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-sm font-medium">Guiabolso</span>
+                      <span class="text-xs text-[#E6E9F2]/40">Automático</span>
+                    </div>
+                    <p class="text-xs text-[#E6E9F2]/60">Integração bancária, mas UX complexa</p>
+                  </div>
+                  <div class="p-3 bg-[#5AD19A]/10 border border-[#5AD19A]/20 rounded-lg">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-sm font-medium text-[#5AD19A]">FinControl</span>
+                      <span class="text-xs text-[#5AD19A]">IA + Simples</span>
+                    </div>
+                    <p class="text-xs text-[#E6E9F2]/70">Auto + insights inteligentes + gamificação</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 3: Escopo -->
+          <div class="mb-16">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 rounded-xl bg-[#FFC24B]/10 border border-[#FFC24B]/30 flex items-center justify-center">
+                  <i data-lucide="layout-grid" class="w-6 h-6 text-[#FFC24B]"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-[#FFC24B] font-medium">Etapa 3</div>
+                  <h3 class="text-2xl font-semibold tracking-tight">Escopo</h3>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-[#5AD19A]/10 rounded-lg border border-[#5AD19A]/30">
+                <i data-lucide="check-circle" class="w-4 h-4 text-[#5AD19A]"></i>
+                <span class="text-sm font-medium text-[#5AD19A]">Completo</span>
+              </div>
+            </div>
+
+            <div class="bg-[#151821] rounded-xl border border-white/5 p-6">
+              <div class="mb-6">
+                <h4 class="font-semibold text-lg mb-4">Features Principais</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="p-4 bg-white/5 rounded-lg border border-white/5">
+                    <div class="flex items-start gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="scan-line" class="w-4 h-4 text-[#7AA2FF]"></i>
+                      </div>
+                      <div>
+                        <h5 class="font-medium mb-1">Categorização Automática</h5>
+                        <p class="text-xs text-[#E6E9F2]/60">IA categoriza transações automaticamente com 95% de precisão</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-4 bg-white/5 rounded-lg border border-white/5">
+                    <div class="flex items-start gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-[#5AD19A]"></i>
+                      </div>
+                      <div>
+                        <h5 class="font-medium mb-1">Dashboard Visual</h5>
+                        <p class="text-xs text-[#E6E9F2]/60">Visualização clara e intuitiva de gastos por categoria e período</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-4 bg-white/5 rounded-lg border border-white/5">
+                    <div class="flex items-start gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-[#9B8AFB]"></i>
+                      </div>
+                      <div>
+                        <h5 class="font-medium mb-1">Insights Inteligentes</h5>
+                        <p class="text-xs text-[#E6E9F2]/60">Sugestões personalizadas para economia baseadas em padrões de gasto</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-4 bg-white/5 rounded-lg border border-white/5">
+                    <div class="flex items-start gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="target" class="w-4 h-4 text-[#FFC24B]"></i>
+                      </div>
+                      <div>
+                        <h5 class="font-medium mb-1">Metas e Gamificação</h5>
+                        <p class="text-xs text-[#E6E9F2]/60">Sistema de conquistas e metas para motivar economia sustentável</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 4: Design & Tech -->
+          <div class="mb-16">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 rounded-xl bg-[#FF6B6B]/10 border border-[#FF6B6B]/30 flex items-center justify-center">
+                  <i data-lucide="code-2" class="w-6 h-6 text-[#FF6B6B]"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-[#FF6B6B] font-medium">Etapa 4</div>
+                  <h3 class="text-2xl font-semibold tracking-tight">Design &amp; Tecnologia</h3>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-[#5AD19A]/10 rounded-lg border border-[#5AD19A]/30">
+                <i data-lucide="check-circle" class="w-4 h-4 text-[#5AD19A]"></i>
+                <span class="text-sm font-medium text-[#5AD19A]">Completo</span>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Tech Stack -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                    <i data-lucide="layers" class="w-5 h-5 text-[#FF6B6B]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#FF6B6B] font-medium mb-1">Tech Stack</div>
+                    <h4 class="font-semibold text-lg">Tecnologias</h4>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-2">Frontend</div>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1.5 bg-[#7AA2FF]/10 text-[#7AA2FF] rounded-lg text-xs border border-[#7AA2FF]/20">React Native</span>
+                      <span class="px-3 py-1.5 bg-[#7AA2FF]/10 text-[#7AA2FF] rounded-lg text-xs border border-[#7AA2FF]/20">TypeScript</span>
+                      <span class="px-3 py-1.5 bg-[#7AA2FF]/10 text-[#7AA2FF] rounded-lg text-xs border border-[#7AA2FF]/20">Tailwind</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-2">Backend</div>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1.5 bg-[#5AD19A]/10 text-[#5AD19A] rounded-lg text-xs border border-[#5AD19A]/20">Node.js</span>
+                      <span class="px-3 py-1.5 bg-[#5AD19A]/10 text-[#5AD19A] rounded-lg text-xs border border-[#5AD19A]/20">PostgreSQL</span>
+                      <span class="px-3 py-1.5 bg-[#5AD19A]/10 text-[#5AD19A] rounded-lg text-xs border border-[#5AD19A]/20">Redis</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-2">AI/ML</div>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1.5 bg-[#9B8AFB]/10 text-[#9B8AFB] rounded-lg text-xs border border-[#9B8AFB]/20">OpenAI GPT-4</span>
+                      <span class="px-3 py-1.5 bg-[#9B8AFB]/10 text-[#9B8AFB] rounded-lg text-xs border border-[#9B8AFB]/20">TensorFlow</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Design System -->
+              <div class="bg-[#151821] rounded-xl border border-white/5 p-6">
+                <div class="flex items-start gap-3 mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                    <i data-lucide="palette" class="w-5 h-5 text-[#FF6B6B]"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs text-[#FF6B6B] font-medium mb-1">Design System</div>
+                    <h4 class="font-semibold text-lg">Identidade Visual</h4>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-2">Cores Principais</div>
+                    <div class="flex gap-2">
+                      <div class="w-12 h-12 rounded-lg bg-[#7AA2FF] border border-white/10" title="#7AA2FF"></div>
+                      <div class="w-12 h-12 rounded-lg bg-[#5AD19A] border border-white/10" title="#5AD19A"></div>
+                      <div class="w-12 h-12 rounded-lg bg-[#FF6B6B] border border-white/10" title="#FF6B6B"></div>
+                      <div class="w-12 h-12 rounded-lg bg-[#FFC24B] border border-white/10" title="#FFC24B"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-[#E6E9F2]/40 mb-2">Princípios</div>
+                    <div class="space-y-1.5 text-sm text-[#E6E9F2]/70">
+                      <div class="flex items-center gap-2">
+                        <div class="w-1 h-1 rounded-full bg-[#7AA2FF]"></div>
+                        <span>Minimalista e limpo</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <div class="w-1 h-1 rounded-full bg-[#5AD19A]"></div>
+                        <span>Feedback visual imediato</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <div class="w-1 h-1 rounded-full bg-[#FFC24B]"></div>
+                        <span>Hierarquia clara de informação</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 5: Planejamento - Missing -->
+          <div class="mb-16">
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex items-center gap-3 flex-1">
+                <div class="w-12 h-12 rounded-xl bg-[#9B8AFB]/10 border border-[#9B8AFB]/30 flex items-center justify-center">
+                  <i data-lucide="calendar" class="w-6 h-6 text-[#9B8AFB]"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-[#9B8AFB] font-medium">Etapa 5</div>
+                  <h3 class="text-2xl font-semibold tracking-tight">Planejamento</h3>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-[#FFC24B]/10 rounded-lg border border-[#FFC24B]/30">
+                <i data-lucide="clock" class="w-4 h-4 text-[#FFC24B]"></i>
+                <span class="text-sm font-medium text-[#FFC24B]">Pendente</span>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-[#9B8AFB]/5 to-transparent border border-[#9B8AFB]/20 rounded-xl p-8 text-center">
+              <div class="w-16 h-16 rounded-2xl bg-[#9B8AFB]/10 border border-[#9B8AFB]/30 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="calendar-clock" class="w-8 h-8 text-[#9B8AFB]"></i>
+              </div>
+              <h4 class="text-xl font-semibold mb-2">Complete esta etapa para finalizar</h4>
+              <p class="text-[#E6E9F2]/60 mb-6 max-w-lg mx-auto">
+                Adicione informações de roadmap, cronograma e orçamento para ter uma visão completa do planejamento do projeto.
+              </p>
+              <button class="px-6 py-3 bg-[#9B8AFB] hover:bg-[#8A79EA] text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Preencher Planejamento
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Actions -->
+        <div class="mb-12 animate-fade-in-up animate-delay-4">
+          <div class="text-center mb-8">
+            <h2 class="text-3xl font-semibold tracking-tight mb-3">Próximos Passos</h2>
+            <p class="text-[#E6E9F2]/60">Exporte seu projeto em diferentes formatos</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <!-- Generate Presentation -->
+            <button id="presentation-card" class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#7AA2FF]/30 transition-all text-left group">
+              <div class="w-12 h-12 rounded-xl bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i data-lucide="presentation" class="w-6 h-6 text-[#7AA2FF]"></i>
+              </div>
+              <h3 class="font-semibold text-lg mb-2">Gerar Apresentação</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Crie uma apresentação profissional em slides prontos para investidores e stakeholders
+              </p>
+              <div class="flex items-center gap-2 text-sm text-[#7AA2FF] font-medium">
+                <span>Gerar agora</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </button>
+
+            <!-- Export PRD -->
+            <button id="prd-card" class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#5AD19A]/30 transition-all text-left group">
+              <div class="w-12 h-12 rounded-xl bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i data-lucide="file-text" class="w-6 h-6 text-[#5AD19A]"></i>
+              </div>
+              <h3 class="font-semibold text-lg mb-2">Exportar PRD</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Documento técnico completo com todas as especificações do produto para o time de desenvolvimento
+              </p>
+              <div class="flex items-center gap-2 text-sm text-[#5AD19A] font-medium">
+                <span>Baixar PRD</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </button>
+
+            <!-- Copy Prompts -->
+            <button id="prompts-card" class="bg-[#151821] rounded-xl border border-white/5 p-6 hover:border-[#9B8AFB]/30 transition-all text-left group">
+              <div class="w-12 h-12 rounded-xl bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i data-lucide="code-2" class="w-6 h-6 text-[#9B8AFB]"></i>
+              </div>
+              <h3 class="font-semibold text-lg mb-2">Copiar Prompts</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Prompts otimizados para ferramentas de vibe coding como v0, bolt.new e Cursor
+              </p>
+              <div class="flex items-center gap-2 text-sm text-[#9B8AFB] font-medium">
+                <span>Ver prompts</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Presentation Modal -->
+    <div id="presentation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-6">
+      <div class="bg-[#151821] border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+              <i data-lucide="presentation" class="w-5 h-5 text-[#7AA2FF]"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-lg">Gerar Apresentação</h3>
+              <p class="text-sm text-[#E6E9F2]/60">Escolha o formato e estilo</p>
+            </div>
+          </div>
+          <button class="close-modal w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1">
+          <div class="space-y-6">
+            <div>
+              <label class="text-sm font-medium mb-3 block">Formato</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button class="p-4 bg-white/5 hover:bg-[#7AA2FF]/10 border border-white/10 hover:border-[#7AA2FF]/30 rounded-xl transition-all text-left">
+                  <div class="font-medium mb-1">Pitch Deck</div>
+                  <div class="text-xs text-[#E6E9F2]/60">10-15 slides para investidores</div>
+                </button>
+                <button class="p-4 bg-white/5 hover:bg-[#7AA2FF]/10 border border-white/10 hover:border-[#7AA2FF]/30 rounded-xl transition-all text-left">
+                  <div class="font-medium mb-1">Overview Executivo</div>
+                  <div class="text-xs text-[#E6E9F2]/60">5-7 slides resumidos</div>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-3 block">Estilo Visual</label>
+              <div class="grid grid-cols-3 gap-3">
+                <button class="p-3 bg-white/5 hover:bg-[#7AA2FF]/10 border border-white/10 hover:border-[#7AA2FF]/30 rounded-lg transition-all text-center">
+                  <div class="text-sm font-medium">Minimalista</div>
+                </button>
+                <button class="p-3 bg-white/5 hover:bg-[#7AA2FF]/10 border border-white/10 hover:border-[#7AA2FF]/30 rounded-lg transition-all text-center">
+                  <div class="text-sm font-medium">Corporativo</div>
+                </button>
+                <button class="p-3 bg-white/5 hover:bg-[#7AA2FF]/10 border border-white/10 hover:border-[#7AA2FF]/30 rounded-lg transition-all text-center">
+                  <div class="text-sm font-medium">Moderno</div>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-3 block">Incluir</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#7AA2FF]">
+                  <span class="text-sm">Todas as etapas preenchidas</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#7AA2FF]">
+                  <span class="text-sm">Personas e benchmarking</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#7AA2FF]">
+                  <span class="text-sm">Métricas e KPIs detalhados</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border-t border-white/5 flex gap-3">
+          <button class="close-modal flex-1 px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg font-medium transition-colors">
+            Cancelar
+          </button>
+          <button class="flex-1 px-4 py-2.5 bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Gerar Apresentação
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRD Modal -->
+    <div id="prd-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-6">
+      <div class="bg-[#151821] border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-5 h-5 text-[#5AD19A]"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-lg">Exportar PRD</h3>
+              <p class="text-sm text-[#E6E9F2]/60">Product Requirements Document</p>
+            </div>
+          </div>
+          <button class="close-modal w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1">
+          <div class="space-y-6">
+            <div>
+              <label class="text-sm font-medium mb-3 block">Formato de Exportação</label>
+              <div class="grid grid-cols-3 gap-3">
+                <button class="p-4 bg-white/5 hover:bg-[#5AD19A]/10 border border-white/10 hover:border-[#5AD19A]/30 rounded-xl transition-all text-center">
+                  <i data-lucide="file-text" class="w-6 h-6 text-[#5AD19A] mx-auto mb-2"></i>
+                  <div class="text-sm font-medium">PDF</div>
+                </button>
+                <button class="p-4 bg-white/5 hover:bg-[#5AD19A]/10 border border-white/10 hover:border-[#5AD19A]/30 rounded-xl transition-all text-center">
+                  <i data-lucide="file" class="w-6 h-6 text-[#5AD19A] mx-auto mb-2"></i>
+                  <div class="text-sm font-medium">DOCX</div>
+                </button>
+                <button class="p-4 bg-white/5 hover:bg-[#5AD19A]/10 border border-white/10 hover:border-[#5AD19A]/30 rounded-xl transition-all text-center">
+                  <i data-lucide="code" class="w-6 h-6 text-[#5AD19A] mx-auto mb-2"></i>
+                  <div class="text-sm font-medium">Markdown</div>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-3 block">Seções do PRD</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" disabled="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">Executive Summary</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" disabled="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">Problem &amp; Solution</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" disabled="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">User Personas &amp; Research</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" disabled="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">Features &amp; Requirements</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" disabled="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">Technical Architecture</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors">
+                  <input type="checkbox" checked="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">Success Metrics &amp; KPIs</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-colors opacity-50">
+                  <input type="checkbox" disabled="" class="w-4 h-4 rounded border-white/20 bg-white/5 text-[#5AD19A]">
+                  <span class="text-sm">Timeline &amp; Budget <span class="text-[#FFC24B] text-xs">(Preencha Etapa 5)</span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border-t border-white/5 flex gap-3">
+          <button class="close-modal flex-1 px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg font-medium transition-colors">
+            Cancelar
+          </button>
+          <button class="flex-1 px-4 py-2.5 bg-[#5AD19A] hover:bg-[#4BC088] text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Exportar PRD
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prompts Modal -->
+    <div id="prompts-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-6">
+      <div class="bg-[#151821] border border-white/10 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+              <i data-lucide="code-2" class="w-5 h-5 text-[#9B8AFB]"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-lg">Prompts para Vibe Coding</h3>
+              <p class="text-sm text-[#E6E9F2]/60">Copie e cole em ferramentas de AI coding</p>
+            </div>
+          </div>
+          <button class="close-modal w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1">
+          <div class="space-y-4">
+            <!-- v0 Prompt -->
+            <div class="border border-white/10 rounded-xl overflow-hidden">
+              <div class="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 flex items-center justify-center">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-[#9B8AFB]"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium">v0 by Vercel</div>
+                    <div class="text-xs text-[#E6E9F2]/60">Prompt otimizado para UI</div>
+                  </div>
+                </div>
+                <button class="copy-prompt px-3 py-1.5 bg-[#9B8AFB]/10 hover:bg-[#9B8AFB]/20 text-[#9B8AFB] rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  Copiar
+                </button>
+              </div>
+              <div class="p-4 bg-[#0A0B0E] font-mono text-xs text-[#E6E9F2]/80 leading-relaxed">
+Create a React Native mobile app for personal finance management called "FinControl".
+
+Key features:
+- Automatic AI-powered transaction categorization
+- Visual dashboard with spending insights
+- Personalized savings suggestions
+- Gamification with goals and achievements
+
+Target users: Young professionals (25-35) earning R$ 3-8k/month
+
+Tech stack: React Native, TypeScript, Tailwind
+Design: Minimalist, clean, immediate visual feedback
+Color palette: Blues (#7AA2FF), greens (#5AD19A), warm accents
+
+Create the main dashboard screen showing:
+1. Monthly spending summary with category breakdown
+2. AI-generated insights card
+3. Progress towards savings goals
+4. Quick transaction input
+              </div>
+            </div>
+
+            <!-- Bolt.new Prompt -->
+            <div class="border border-white/10 rounded-xl overflow-hidden">
+              <div class="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 flex items-center justify-center">
+                    <i data-lucide="zap" class="w-4 h-4 text-[#FFC24B]"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium">Bolt.new</div>
+                    <div class="text-xs text-[#E6E9F2]/60">Prompt para fullstack</div>
+                  </div>
+                </div>
+                <button class="copy-prompt px-3 py-1.5 bg-[#FFC24B]/10 hover:bg-[#FFC24B]/20 text-[#FFC24B] rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  Copiar
+                </button>
+              </div>
+              <div class="p-4 bg-[#0A0B0E] font-mono text-xs text-[#E6E9F2]/80 leading-relaxed">
+Build a full-stack personal finance management app "FinControl".
+
+Backend requirements:
+- Node.js + Express API
+- PostgreSQL database with Redis caching
+- OpenAI GPT-4 integration for transaction categorization
+- User authentication with JWT
+- RESTful endpoints for transactions, categories, insights, goals
+
+Frontend requirements:
+- React with TypeScript
+- Tailwind CSS for styling
+- Chart.js for data visualization
+- Real-time updates with WebSockets
+
+Core features to implement:
+1. Transaction CRUD with auto-categorization
+2. Dashboard with spending analytics
+3. AI-powered insights generation
+4. Goal tracking with progress visualization
+5. User profile and settings
+
+Start with a working MVP focusing on transaction management and basic dashboard.
+              </div>
+            </div>
+
+            <!-- Cursor Prompt -->
+            <div class="border border-white/10 rounded-xl overflow-hidden">
+              <div class="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#5AD19A]/10 flex items-center justify-center">
+                    <i data-lucide="code" class="w-4 h-4 text-[#5AD19A]"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium">Cursor AI</div>
+                    <div class="text-xs text-[#E6E9F2]/60">Prompt para desenvolvimento iterativo</div>
+                  </div>
+                </div>
+                <button class="copy-prompt px-3 py-1.5 bg-[#5AD19A]/10 hover:bg-[#5AD19A]/20 text-[#5AD19A] rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  Copiar
+                </button>
+              </div>
+              <div class="p-4 bg-[#0A0B0E] font-mono text-xs text-[#E6E9F2]/80 leading-relaxed">
+Project: FinControl - Personal Finance Management App
+
+Context:
+- Target users are young professionals who struggle with manual expense tracking
+- Main pain points: lack of visibility, manual work, lack of motivation
+- Solution: AI-powered automatic categorization + actionable insights + gamification
+
+Tech Stack:
+- Frontend: React Native, TypeScript, Tailwind CSS
+- Backend: Node.js, PostgreSQL, Redis
+- AI: OpenAI GPT-4 for categorization and insights
+- Mobile-first approach
+
+Phase 1 - Core Features:
+1. Create transaction model and API endpoints (CRUD)
+2. Implement OpenAI integration for auto-categorization
+3. Build dashboard with spending breakdown by category
+4. Add basic data visualization (pie/bar charts)
+
+Design principles:
+- Minimalist and clean interface
+- Immediate visual feedback
+- Clear information hierarchy
+- Color coding: Blue (#7AA2FF) for primary, Green (#5AD19A) for success
+
+Let's start with setting up the project structure and transaction management.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border-t border-white/5">
+          <button class="close-modal w-full px-4 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg font-medium transition-colors">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      // Modal handlers
+      const presentationBtn = document.getElementById('presentation-card');
+      const prdBtn = document.getElementById('prd-card');
+      const promptsBtn = document.getElementById('prompts-card');
+      const generatePresentationBtn = document.getElementById('generate-presentation-btn');
+      const exportPrdBtn = document.getElementById('export-prd-btn');
+
+      const presentationModal = document.getElementById('presentation-modal');
+      const prdModal = document.getElementById('prd-modal');
+      const promptsModal = document.getElementById('prompts-modal');
+
+      function openModal(modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        lucide.createIcons();
+      }
+
+      function closeModal(modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      presentationBtn.addEventListener('click', () => openModal(presentationModal));
+      prdBtn.addEventListener('click', () => openModal(prdModal));
+      promptsBtn.addEventListener('click', () => openModal(promptsModal));
+      generatePresentationBtn.addEventListener('click', () => openModal(presentationModal));
+      exportPrdBtn.addEventListener('click', () => openModal(prdModal));
+
+      document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const modal = e.target.closest('.fixed');
+          closeModal(modal);
+        });
+      });
+
+      // Close modal on backdrop click
+      [presentationModal, prdModal, promptsModal].forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            closeModal(modal);
+          }
+        });
+      });
+
+      // Copy prompt functionality
+      document.querySelectorAll('.copy-prompt').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const promptText = e.target.closest('.border').querySelector('.font-mono').textContent;
+          navigator.clipboard.writeText(promptText.trim()).then(() => {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i> Copiado!';
+            lucide.createIcons();
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              lucide.createIcons();
+            }, 2000);
+          });
+        });
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          [presentationModal, prdModal, promptsModal].forEach(modal => {
+            closeModal(modal);
+          });
+        }
+      });
+    </script>
+  
+</body></html>

@@ -24,6 +24,9 @@ interface BaseCardProps {
 
   // Optional Metadata
   metadata?: ReactNode
+
+  // Optional Save Indicator
+  saveIndicator?: ReactNode
 }
 
 export interface CardActionsContextValue {
@@ -58,6 +61,7 @@ export function BaseCard({
   onDelete,
   footer,
   metadata,
+  saveIndicator,
 }: BaseCardProps) {
   const contextActions = useContext(CardActionsContext)
   const effectiveOnEdit = onEdit ?? contextActions.onEdit
@@ -65,7 +69,7 @@ export function BaseCard({
 
   return (
     <div
-      className="bg-[#151821] rounded-xl border p-5 hover:border-opacity-50 transition-all hover:shadow-lg group"
+      className="bg-[#151821] rounded-xl border p-5 hover:border-opacity-50 transition-all hover:shadow-lg group relative"
       style={{
         borderColor: `${stageColor}30`,
         boxShadow: `0 0 0 0 ${stageColor}05`,
@@ -79,6 +83,13 @@ export function BaseCard({
         e.currentTarget.style.boxShadow = `0 0 0 0 ${stageColor}05`
       }}
     >
+      {/* Save Indicator - Positioned absolutely in top-right corner */}
+      {saveIndicator && (
+        <div className="absolute top-2 right-2 z-10">
+          {saveIndicator}
+        </div>
+      )}
+
       {/* Header - Icon, Title, Actions */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-2">

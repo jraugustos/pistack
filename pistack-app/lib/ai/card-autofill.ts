@@ -7,6 +7,7 @@ import {
 import { executeFunctionCall } from '@/lib/ai/function-handlers'
 import { normalizeCardArrays } from '@/lib/array-normalizers'
 import { CARD_TYPE_DESCRIPTIONS } from '@/lib/ai/functions'
+import { AIRequestCache } from '@/lib/ai/request-cache'
 
 interface BuildPromptParams {
   project: {
@@ -605,6 +606,10 @@ IMPORTANTE: risks DEVE ser array de objetos.`,
 IMPORTANTE: phases DEVE ser array de objetos, activities/channels/metrics DEVEM ser arrays de strings.`,
 }
 
+// Cache global para requisições de IA
+// Evita múltiplas requisições simultâneas com os mesmos parâmetros
+const aiCache = new AIRequestCache()
+
 async function generateFallbackContent(options: GenerateCardOptions & {
   project: any
   stages: any[]
@@ -693,25 +698,38 @@ Regras:
   }
 }
 
-export async function generateCardWithAssistant({
-  supabase,
-  projectId,
-  stageId,
-  stageNumber,
-  stageName,
-  cardType,
-  userId,
-  cardId,
-}: GenerateCardOptions) {
-  const assistantId = getStageAssistantId(stageNumber)
+export async function generateCardWithAssistant(options: GenerateCardOptions) {
+  const {
+    supabase,
+    projectId,
+    stageId,
+    stageNumber,
+    stageName,
+    cardType,
+    userId,
+    cardId,
+  } = options
 
-  if (!assistantId) {
-    const envKey = getStageAssistantEnvKey(stageNumber)
-    return {
-      success: false,
-      error: `Assistente da etapa ${stageNumber} não configurado (defina ${envKey} no .env).`,
-    }
+  // Chave para deduplicação: evita múltiplas requisições simultâneas
+  // para o mesmo card
+  const cacheKey = {
+    projectId,
+    stageNumber,
+    cardType,
+    cardId,
   }
+
+  // Usa o cache para deduplicar requisições
+  return aiCache.deduplicate(cacheKey, async () => {
+    const assistantId = getStageAssistantId(stageNumber)
+
+    if (!assistantId) {
+      const envKey = getStageAssistantEnvKey(stageNumber)
+      return {
+        success: false,
+        error: `Assistente da etapa ${stageNumber} não configurado (defina ${envKey} no .env).`,
+      }
+    }
 
   const { data: project, error: projectError } = await supabase
     .from('projects')
@@ -997,8 +1015,9 @@ export async function generateCardWithAssistant({
     }
   }
 
-  return {
-    success: true,
-    card,
-  }
+    return {
+      success: true,
+      card,
+    }
+  }) // Fecha a função deduplicate
 }

@@ -12,6 +12,7 @@ import {
 import { createPortal } from 'react-dom'
 import { Plus, Sparkles, Check, Info, Lightbulb, X } from 'lucide-react'
 import type { ComponentType } from 'react'
+import { useAIButtonGuard } from '@/hooks/use-debounced-ai'
 import {
   ProjectNameCard,
   PitchCard,
@@ -61,6 +62,7 @@ import {
 } from '@/components/canvas/cards/etapa-6'
 import { CardActionsProvider, CardActionsContextValue } from '@/components/canvas/cards/base-card'
 import { CardEditModal } from '@/components/canvas/card-edit-modal'
+import { normalizeCardArrays } from '@/lib/array-normalizers'
 
 interface StageSectionProps {
   projectId: string
@@ -476,19 +478,22 @@ function removeRepeatedPatterns(text: string): string {
 
   // 2. Remove padrões repetidos no INÍCIO
   // Ex: "Primário: Primário: Primário: texto"
-  const match = cleaned.match(/^(\w+):\s*/)
+  const match = cleaned.match(/^([\p{L}\p{N}_-]+):\s*/u)
   if (match) {
     const word = match[1]
-    const repeatedPattern = new RegExp(`^(${word}:\\s*)+`, 'gi')
+    const repeatedPattern = new RegExp(`^(?:${word}:\\s*)+`, 'iu')
     cleaned = cleaned.replace(repeatedPattern, '')
   }
 
+  // 2.1. Tratar rótulos conhecidos com acento no início
+  cleaned = cleaned.replace(/^(?:Prim[áa]rio|Secund[áa]rio)\s*:\s*/iu, '')
+
   // 3. Remove padrões repetidos em QUALQUER posição
   // Ex: "texto Palavra: Palavra: Palavra: mais texto"
-  cleaned = cleaned.replace(/(\w+):\s*\1:\s*\1:/gi, '')
+  cleaned = cleaned.replace(/([\p{L}\p{N}_-]+):\s*\1:\s*\1:/giu, '')
 
   // 4. Remove palavras repetidas consecutivamente (3+ vezes)
-  cleaned = cleaned.replace(/\b(\w+)(\s+\1){2,}\b/gi, '$1')
+  cleaned = cleaned.replace(/\b([\p{L}\p{N}_-]+)(\s+\1){2,}\b/giu, '$1')
 
   // 5. Limpar espaços múltiplos
   cleaned = cleaned.replace(/\s{2,}/g, ' ')
@@ -555,12 +560,12 @@ function normalizeCardContent(cardType: string, content: any) {
           'markdown',
         ]) || ''
 
-      return {
+      return normalizeCardArrays(cardType, {
         ...data,
         projectName,
         description,
         createdAt: data.createdAt || data.created_at || data.metadata?.createdAt,
-      }
+      })
     }
 
     case 'pitch': {
@@ -590,10 +595,10 @@ function normalizeCardContent(cardType: string, content: any) {
         pitch = ''
       }
 
-      return {
+      return normalizeCardArrays(cardType, {
         ...data,
         pitch,
-      }
+      })
     }
 
     case 'problem': {
@@ -676,11 +681,11 @@ function normalizeCardContent(cardType: string, content: any) {
         }
       }
 
-      return {
+      return normalizeCardArrays(cardType, {
         ...data,
         problem: removeRepeatedPatterns(problem),
         painPoints: normalizedPainPoints,
-      }
+      })
     }
 
     case 'solution': {
@@ -730,11 +735,11 @@ function normalizeCardContent(cardType: string, content: any) {
         }
       }
 
-      return {
+      return normalizeCardArrays(cardType, {
         ...data,
         solution: removeRepeatedPatterns(solution),
         differentiators: normalizedDifferentiators,
-      }
+      })
     }
 
     case 'target-audience': {
@@ -815,11 +820,11 @@ function normalizeCardContent(cardType: string, content: any) {
         }
       }
 
-      return {
+      return normalizeCardArrays(cardType, {
         ...data,
         primaryAudience: removeRepeatedPatterns(primaryAudience || ''),
         secondaryAudience: removeRepeatedPatterns(secondaryAudience || ''),
-      }
+      })
     }
 
     case 'initial-kpis': {
@@ -839,14 +844,14 @@ function normalizeCardContent(cardType: string, content: any) {
 
       const normalizedKpis = normalizeKpis(source)
 
-      return {
+      return normalizeCardArrays(cardType, {
         ...data,
         kpis: normalizedKpis,
-      }
+      })
     }
 
     default:
-      return data
+      return normalizeCardArrays(cardType, data)
   }
 }
 
@@ -863,6 +868,9 @@ const StageSectionBase: ForwardRefRenderFunction<
   const [loadingState, setLoadingState] = useState<LoadingState>(() =>
     createLoadingState(false)
   )
+
+  // Hook para prevenir cliques múltiplos no botão de IA
+  const { canClick } = useAIButtonGuard()
 
   const cardsByType = useMemo(() => {
     const lookup: Record<string, CardRecord> = {}
@@ -1324,6 +1332,13 @@ const StageSectionBase: ForwardRefRenderFunction<
     setIsAddMenuOpen(false)
 
     if (getCardByType(cardType)) {
+      return
+    }
+
+    // Previne cliques múltiplos rápidos no botão de adicionar card
+    const buttonId = `add-card-${stage.id}-${cardType}`
+    if (!canClick(buttonId)) {
+      console.log('[StageSection] Bloqueando criação de card duplicada')
       return
     }
 

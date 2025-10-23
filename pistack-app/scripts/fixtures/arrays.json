@@ -1,0 +1,98 @@
+{
+  "problem": {
+    "painPoints": "- Dificuldade de treinar\n- Falta de histórico;\n- Inconsistência de dados"
+  },
+  "solution": {
+    "differentiators": "• Personalização avançada;\n• Análises em tempo real;\n• Integração com wearables"
+  },
+  "initial-kpis": {
+    "kpis": "{\n  \"kpis\": [\n    { \"name\": \"Usuários ativos mensais\", \"target\": \"1000\" },\n    { \"name\": \"Retenção mensal\", \"target\": \"80%\" }\n  ]\n}"
+  },
+  "validation-hypotheses": {
+    "hypotheses": [
+      {
+        "label": "H1",
+        "category": "Problema",
+        "statement": "Atletas perdem consistência por falta de feedback",
+        "successMetric": "80% citam a dor nas entrevistas"
+      },
+      "H2: Solução – Implementar treinos guiados"
+    ]
+  },
+  "primary-persona": {
+    "goals": "- Evoluir pontuação;\n- Treinar regularmente",
+    "frustrations": ["Falta de histórico", "Padrões confusos"],
+    "motivations": "Melhor desempenho; Reconhecimento"
+  },
+  "value-proposition": {
+    "benefits": "- Ganho de eficiência; - Menos erros"
+  },
+  "benchmarking": {
+    "competitors": [
+      "CompetidorX: preço R$29",
+      {"name": "Competidor Y", "strengths": ["Comunidade"], "weaknesses": ["Sem métricas"], "pricing": "Freemium"}
+    ]
+  },
+  "essential-features": {
+    "features": ["Cadastro rápido", {"name": "Relatórios"}]
+  },
+  "user-flows": {
+    "flows": [
+      {"name": "Onboarding", "steps": "- Abrir app\n- Conectar conta\n- Confirmar dados"}
+    ]
+  },
+  "architecture": {
+    "components": ["API Gateway", {"name": "Service Users", "responsibility": "Auth"}]
+  },
+  "database": {
+    "tables": [{"name": "users", "fields": "id; email; created_at"}]
+  },
+  "api-design": {
+    "endpoints": ["GET /api/users", {"method": "POST", "path": "/api/users", "description": "Create"}]
+  },
+  "infrastructure": {
+    "services": "Vercel; Supabase",
+    "monitoring": ["Sentry", "OpenTelemetry"]
+  },
+  "security": {
+    "measures": "- Rate limiting\n- WAF\n- DDoS protection",
+    "compliance": ["LGPD", "GDPR"]
+  },
+  "timeline": {
+    "milestones": [
+      {"name": "MVP", "deliverables": "Login; Dashboard; Relatórios"},
+      "Alpha Release"
+    ]
+  },
+  "resources": {
+    "team": [
+      {"role": "Frontend", "skills": "React; TypeScript"},
+      "Backend Developer"
+    ],
+    "tools": ["GitHub", "Figma", "Slack"]
+  },
+  "budget": {
+    "breakdown": [
+      {"category": "Infraestrutura", "value": "1000"},
+      "Marketing: R$ 5000"
+    ]
+  },
+  "milestones": {
+    "milestones": [
+      {"title": "Beta Launch", "deliverable": "Sistema funcional"},
+      "MVP Completo"
+    ]
+  },
+  "success-criteria": {
+    "criteria": [
+      {"metric": "MAU", "target": "1000"},
+      "Retenção > 80%"
+    ]
+  },
+  "launch-plan": {
+    "phases": [
+      {"name": "Pre-launch", "activities": "Testar; Preparar docs"},
+      "Soft Launch"
+    ]
+  }
+}

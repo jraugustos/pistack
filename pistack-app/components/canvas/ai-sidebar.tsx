@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Sparkles, Send } from 'lucide-react'
+import { Sparkles, Send, X } from 'lucide-react'
 import { CardReferenceBadge } from './card-reference-badge'
 import { MessageContent } from './message-content'
 import {
@@ -33,6 +33,8 @@ interface ReferencedCard {
 interface AiSidebarProps {
   projectId: string
   activeStage: number
+  isOpen: boolean
+  onToggle: () => void
 }
 
 const formatValue = (value: unknown, indent = 0): string => {
@@ -111,7 +113,7 @@ const formatCardReference = (cardType: string, cardId: string, content: Record<s
   ].join('\n')
 }
 
-export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
+export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -205,6 +207,20 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
       isMounted = false
     }
   }, [projectId, activeStage])
+
+  // Handle ESC key to close sidebar
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onToggle()
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape)
+    return () => {
+      window.removeEventListener('keydown', handleEscape)
+    }
+  }, [isOpen, onToggle])
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -483,17 +499,41 @@ export function AiSidebar({ projectId, activeStage }: AiSidebarProps) {
     inputRef.current?.focus()
   }
 
+  // Collapsed state
+  if (!isOpen) {
+    return (
+      <aside className="w-14 border-l border-white/5 bg-[#0F1115] flex flex-col items-center py-4 transition-all duration-300">
+        <button
+          onClick={onToggle}
+          className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7AA2FF]/20 to-[#5AD19A]/20 border border-[#7AA2FF]/30 flex items-center justify-center hover:from-[#7AA2FF]/30 hover:to-[#5AD19A]/30 transition-all"
+          aria-label="Abrir Copiloto do Projeto"
+          title="Abrir Copiloto (clique no ✨ em qualquer card)"
+        >
+          <Sparkles className="w-5 h-5 text-[#7AA2FF]" />
+        </button>
+      </aside>
+    )
+  }
+
   return (
-    <aside className="w-96 border-l border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
+    <aside className="w-96 border-l border-white/5 bg-[#0F1115] flex flex-col transition-all duration-300">
       {/* Header */}
       <div className="p-4 border-b border-white/5">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7AA2FF]/20 to-[#5AD19A]/20 border border-[#7AA2FF]/30 flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-[#7AA2FF]" />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="font-semibold text-sm">Copiloto do Projeto</h3>
           </div>
+          <button
+            onClick={onToggle}
+            className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors"
+            aria-label="Fechar Copiloto"
+            title="Fechar (ESC)"
+          >
+            <X className="w-4 h-4 text-[#E6E9F2]/60" />
+          </button>
         </div>
 
         {/* Referenced Card Badge */}

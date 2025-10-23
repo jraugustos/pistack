@@ -1,0 +1,187 @@
+{
+  "problem": {
+    "content": {
+      "problem": "Usuários demoram para consolidar treinos de arco e perderam histórico.",
+      "painPoints": "- Falta histórico consolidado\n- Planilhas confusas;\n- Erros de anotação"
+    }
+  },
+  "solution": {
+    "content": {
+      "solution": "App centraliza treinos e métricas.",
+      "differentiators": "• Insights automáticos;\n• Integração com sensores"
+    }
+  },
+  "target-audience": {
+    "content": {
+      "audience": "Primário: Arqueiros amadores com rotina de treinos. Secundário: Treinadores que acompanham atletas."
+    }
+  },
+  "initial-kpis": {
+    "content": {
+      "kpis": "{\n  \"kpis\": [\n    { \"name\": \"Usuários ativos mensais\", \"target\": \"1000\" },\n    { \"name\": \"Retenção mensal\", \"target\": \"80%\" }\n  ]\n}"
+    }
+  },
+  "validation-hypotheses": {
+    "content": {
+      "hypotheses": [
+        {
+          "label": "H1",
+          "category": "Problema",
+          "statement": "Atletas abandonam acompanhamento por falta de feedback imediato.",
+          "successMetric": "Validar com 10 entrevistas apontando lacuna no feedback.",
+          "confidence": "Média"
+        },
+        "H2: Solução — Treinos guiados reduzem o abandono"
+      ]
+    }
+  },
+  "primary-persona": {
+    "content": {
+      "persona": {
+        "name": "",
+        "role": "Arqueiro amador",
+        "goals": "- Evoluir pontuação;\n- Registrar cada treino",
+        "frustrations": ["Planilhas quebram", "Sem visão de evolução"],
+        "behaviors": ["Treina 3x por semana"],
+        "motivations": "Reconhecimento em torneios"
+      }
+    }
+  },
+  "value-proposition": {
+    "content": {
+      "proposition": {
+        "headline": "Métricas de arco claras em um só lugar.",
+        "valuePoints": [
+          { "text": "Relatórios automáticos", "icon": "zap" },
+          "Coaching com IA"
+        ]
+      }
+    }
+  },
+  "benchmarking": {
+    "content": {
+      "benchmarking": [
+        "AppX: Direto",
+        {
+          "name": "AppY",
+          "category": "Indireto",
+          "summary": "Acompanha treinos gerais",
+          "strengths": "Interface clara; Comunidade",
+          "weaknesses": ["Sem métricas específicas"],
+          "differentiator": "Especialização em arco e feedback imediato"
+        }
+      ]
+    }
+  }
+  ,
+  "acceptance-criteria": {
+    "content": {
+      "criteria": [
+        "Cadastro de usuário",
+        {"feature": "Login", "conditions": "- Recuperação de senha\n- Bloqueio após 5 tentativas"}
+      ]
+    }
+  },
+  "roadmap": {
+    "content": {
+      "phases": [
+        {"name": "Fase 1: MVP", "duration": "2-3 meses", "milestones": "Convite fechado; Primeiras métricas", "deliverables": ["Cadastro", "Relatórios"]}
+      ]
+    }
+  },
+  "database": {
+    "content": {
+      "type": "Relacional (SQL)",
+      "description": "PostgreSQL com Supabase para escalabilidade e RLS.",
+      "tables": [
+        {"name": "users", "description": "Usuários do sistema", "fields": [{"name": "id", "type": "uuid", "constraints": "PRIMARY KEY"}, {"name": "email", "type": "varchar", "constraints": "UNIQUE"}]},
+        "sessions"
+      ],
+      "relationships": ["users 1:N sessions", "users 1:N training_logs"]
+    }
+  },
+  "api-design": {
+    "content": {
+      "architecture": "REST",
+      "authentication": "JWT via Clerk",
+      "endpoints": [
+        {"method": "GET", "path": "/api/users", "description": "Lista usuários", "requestBody": "", "responseBody": "{\"users\": []}"},
+        "POST /api/training"
+      ]
+    }
+  },
+  "infrastructure": {
+    "content": {
+      "hosting": "Vercel",
+      "cicd": "GitHub Actions",
+      "monitoring": ["Sentry", "Vercel Analytics"],
+      "logging": ["CloudWatch", "Vercel Logs"],
+      "deployment": "Rolling"
+    }
+  },
+  "security": {
+    "content": {
+      "authentication": "JWT via Clerk",
+      "authorization": "RBAC",
+      "encryption": "AES-256 em repouso, TLS 1.3 em trânsito",
+      "measures": ["Rate limiting", "WAF", "DDoS protection"],
+      "compliance": ["LGPD", "GDPR"]
+    }
+  },
+  "timeline": {
+    "content": {
+      "startDate": "2025-01-01",
+      "endDate": "2025-06-30",
+      "milestones": [
+        {"name": "MVP", "date": "2025-03-15", "deliverables": ["Login", "Dashboard", "Relatórios"]},
+        "Beta Launch"
+      ]
+    }
+  },
+  "resources": {
+    "content": {
+      "team": [
+        {"role": "Frontend Developer", "quantity": 2, "skills": ["React", "TypeScript", "Tailwind"]},
+        "Backend Developer"
+      ],
+      "tools": ["GitHub", "Figma", "Slack", "Linear"],
+      "budget": "R$ 50.000 - R$ 100.000"
+    }
+  },
+  "budget": {
+    "content": {
+      "totalBudget": 75000,
+      "currency": "BRL",
+      "breakdown": [
+        {"category": "Infraestrutura", "description": "Vercel + Supabase", "value": 5000},
+        "Marketing: R$ 20000"
+      ]
+    }
+  },
+  "milestones": {
+    "content": {
+      "milestones": [
+        {"title": "Beta Launch", "date": "2025-03-01", "status": "Pendente", "deliverable": "Sistema funcional com feedback"},
+        "MVP Completo"
+      ]
+    }
+  },
+  "success-criteria": {
+    "content": {
+      "criteria": [
+        {"metric": "MAU", "target": "1.000 usuários ativos", "measurement": "Google Analytics"},
+        "Retenção > 80%"
+      ]
+    }
+  },
+  "launch-plan": {
+    "content": {
+      "launchDate": "2025-06-15",
+      "strategy": "Soft Launch",
+      "phases": [
+        {"name": "Pre-launch", "date": "2025-05-01", "activities": ["Testar com beta users", "Preparar docs", "Configurar analytics"]},
+        "Public Launch"
+      ]
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MessageSquare } from 'lucide-react'
 import { BaseCard } from '../base-card'
 import { useAutosave } from '@/hooks/use-autosave'
+import { SaveIndicatorCompact } from '@/components/canvas/save-indicator'
 
 interface PitchCardProps {
   cardId: string
@@ -45,7 +46,7 @@ export function PitchCard({
   }, [pitch, localPitch])
 
   // Autosave when content changes
-  useAutosave(localPitch, {
+  const { saveStatus, lastSaved, error } = useAutosave(localPitch, {
     delay: 2000,
     onSave: async (value) => {
       if (onSave && value.trim()) {
@@ -61,6 +62,13 @@ export function PitchCard({
       icon={MessageSquare}
       stageColor="#7AA2FF"
       onAiClick={onAiClick}
+      saveIndicator={
+        <SaveIndicatorCompact
+          status={saveStatus}
+          lastSaved={lastSaved}
+          error={error}
+        />
+      }
       footer={
         <div className="flex items-center gap-2">
           <button

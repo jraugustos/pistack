@@ -10,7 +10,9 @@ interface TargetAudienceCardProps {
   primaryAudience?: string
   secondaryAudience?: string
   onAiClick?: () => void
-  onSave?: (content: { audience: string }) => Promise<void>
+  onSave?: (
+    content: { primaryAudience?: string; secondaryAudience?: string; audience?: string }
+  ) => Promise<void>
 }
 
 /**
@@ -50,8 +52,11 @@ export function TargetAudienceCard({
       delay: 2000,
       onSave: async (data) => {
         if (onSave) {
-          const audience = `Primário: ${data.primary}\nSecundário: ${data.secondary}`
-          await onSave({ audience })
+          // Persist structured fields to avoid label duplication loops
+          await onSave({
+            primaryAudience: data.primary?.trim() || '',
+            secondaryAudience: data.secondary?.trim() || '',
+          })
         }
       },
     }
