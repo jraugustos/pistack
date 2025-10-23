@@ -92,8 +92,10 @@ Prioridade = (Impacto no Usuário × Diferenciação Competitiva) / Esforço de 
 | 1 | IA Panel Colapsável | ⭐⭐⭐⭐⭐ | 2-3h | ✅ **COMPLETO** |
 | 2 | Indicador de Autosave | ⭐⭐⭐⭐ | 3-4h | ✅ **COMPLETO** |
 | 3 | Batch Creation (Criar Etapa Completa) | ⭐⭐⭐⭐ | 4-6h | 🔴 Pendente |
+| 4 | Sugestões Rápidas Otimizadas (Carousel) | ⭐⭐⭐⭐ | 2-3h | 🔴 Pendente |
+| 5 | Botão Limpar Chat | ⭐⭐⭐⭐ | 1h | 🔴 Pendente |
 
-**Total estimado:** 9-13 horas (5-7h concluídas - 66% concluído)**
+**Total estimado:** 12-17 horas (5-7h concluídas - 41% concluído)**
 **Impacto esperado:** Canvas mais espaçoso, onboarding 70% mais rápido, redução de ansiedade do usuário
 
 **✅ Tarefas Concluídas:**
@@ -119,12 +121,14 @@ Prioridade = (Impacto no Usuário × Diferenciação Competitiva) / Esforço de 
 
 | # | Feature | Prioridade | Esforço | Status |
 |---|---------|-----------|---------|--------|
-| 4 | Project Overview (compilação básica) | ⭐⭐⭐⭐⭐ | 5h | 🔴 Pendente |
-| 5 | Export PRD | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
-| 6 | Export Pitch Deck Outline | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
-| 7 | List View dos Cards | ⭐⭐⭐⭐ | 6-8h | 🔴 Pendente |
+| 6 | Menções com @ para Referenciar Cards | ⭐⭐⭐⭐⭐ | 4-6h | 🔴 Pendente |
+| 7 | Command Palette com / (Atalhos) | ⭐⭐⭐⭐ | 3-4h | 🔴 Pendente |
+| 8 | Project Overview (compilação básica) | ⭐⭐⭐⭐⭐ | 5h | 🔴 Pendente |
+| 9 | Export PRD | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
+| 10 | Export Pitch Deck Outline | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
+| 11 | List View dos Cards | ⭐⭐⭐⭐ | 6-8h | 🔴 Pendente |
 
-**Total estimado:** 17-19 horas
+**Total estimado:** 24-31 horas
 **Impacto esperado:** Tangibilização do valor criado, uso profissional, compartilhamento viral
 
 ---
@@ -334,6 +338,233 @@ const { saveStatus, lastSaved, error } = useAutosave(localData, { ... })
 
 ---
 
+### 4. Sugestões Rápidas Otimizadas (Carousel) ⭐⭐⭐⭐
+
+**Esforço:** 2-3 horas
+**Impacto:** MÉDIO-ALTO
+**Status:** 🔴 Pendente
+
+#### Problema que Resolve
+- Sugestões rápidas ocupam muito espaço vertical no painel de IA
+- Em cards com muitas sugestões (ex: 4-6 itens), o chat fica espremido
+- Usuários precisam rolar para ver o histórico de mensagens
+- UX poluída visualmente
+
+#### Solução Proposta
+
+**Opção A: Carousel (RECOMENDADA)**
+- Mostra apenas 1 sugestão por vez
+- Navegação com setas (← →) ou dots
+- Auto-rotate a cada 5 segundos (opcional)
+- Animação suave de transição
+
+**Opção B: Collapse/Expand**
+- Seção de sugestões começa colapsada
+- Mostra apenas "💡 Ver sugestões rápidas (3)"
+- Click expande/colapsa todas as sugestões
+
+#### Implementação Técnica
+
+```typescript
+// components/canvas/quick-suggestions-carousel.tsx
+interface QuickSuggestionsCarouselProps {
+  suggestions: QuickSuggestion[]
+  onSelect: (text: string) => void
+  stageColor: string
+}
+
+export function QuickSuggestionsCarousel({ suggestions, onSelect, stageColor }: Props) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const currentSuggestion = suggestions[currentIndex]
+
+  const next = () => setCurrentIndex((i) => (i + 1) % suggestions.length)
+  const prev = () => setCurrentIndex((i) => (i - 1 + suggestions.length) % suggestions.length)
+
+  return (
+    <div className="flex items-center gap-2 p-3 bg-white/5 rounded-lg">
+      {/* Botão anterior */}
+      <button onClick={prev} className="p-1 hover:bg-white/10 rounded">
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      {/* Sugestão atual */}
+      <button
+        onClick={() => onSelect(currentSuggestion.text)}
+        className="flex-1 text-left px-3 py-2 hover:bg-white/10 rounded transition-colors"
+      >
+        <span className="mr-2">{currentSuggestion.icon}</span>
+        <span className="text-sm">{currentSuggestion.text}</span>
+      </button>
+
+      {/* Botão próximo */}
+      <button onClick={next} className="p-1 hover:bg-white/10 rounded">
+        <ChevronRight className="w-4 h-4" />
+      </button>
+
+      {/* Dots de navegação */}
+      <div className="flex gap-1">
+        {suggestions.map((_, i) => (
+          <div
+            key={i}
+            className={`w-1.5 h-1.5 rounded-full ${
+              i === currentIndex ? 'bg-white' : 'bg-white/30'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+#### Acceptance Criteria
+- [ ] Carousel mostra apenas 1 sugestão por vez
+- [ ] Navegação com setas funciona (prev/next)
+- [ ] Dots indicam posição atual
+- [ ] Transição suave entre sugestões (300ms)
+- [ ] Click na sugestão preenche input
+- [ ] Responsivo (funciona em mobile)
+- [ ] Auto-rotate desabilitado durante interação
+
+#### Arquivos Afetados
+- Novo componente: `components/canvas/quick-suggestions-carousel.tsx`
+- `components/canvas/ai-sidebar.tsx` (integrar carousel)
+- `components/canvas/ai-suggestions.ts` (mantém os dados)
+
+---
+
+### 5. Botão Limpar Chat ⭐⭐⭐⭐
+
+**Esforço:** 1 hora
+**Impacto:** MÉDIO
+**Status:** 🔴 Pendente
+
+#### Problema que Resolve
+- Não há como limpar o histórico de conversas
+- Conversas antigas poluem o contexto
+- Usuários querem "começar do zero" em nova sessão
+- Performance degrada com histórico muito longo
+
+#### Solução Proposta
+
+Botão "Limpar chat" no header do AI sidebar:
+- Ícone: 🗑️ ou Trash2
+- Confirmação antes de limpar (modal/toast)
+- Limpa mensagens do frontend + backend
+- Mantém estado colapsado/expandido do painel
+
+#### Implementação Técnica
+
+```typescript
+// No ai-sidebar.tsx
+const handleClearChat = async () => {
+  const confirmed = window.confirm(
+    'Tem certeza que deseja limpar todo o histórico de chat? Esta ação não pode ser desfeita.'
+  )
+
+  if (!confirmed) return
+
+  try {
+    // Limpar backend
+    await fetch(`/api/ai/history?projectId=${projectId}`, {
+      method: 'DELETE'
+    })
+
+    // Limpar frontend
+    setMessages([])
+    setReferencedCard(null)
+
+    // Feedback visual
+    toast.success('Chat limpo com sucesso')
+  } catch (error) {
+    console.error('Error clearing chat:', error)
+    toast.error('Erro ao limpar chat')
+  }
+}
+
+// No header do sidebar
+<div className="flex items-center justify-between p-4 border-b border-white/10">
+  <h2>Copiloto do Projeto</h2>
+  <div className="flex items-center gap-2">
+    <button
+      onClick={handleClearChat}
+      className="p-2 hover:bg-white/10 rounded transition-colors"
+      title="Limpar chat"
+    >
+      <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-400" />
+    </button>
+    <button onClick={onToggle}>
+      {/* Toggle button existente */}
+    </button>
+  </div>
+</div>
+```
+
+#### API Route
+
+```typescript
+// app/api/ai/history/route.ts - adicionar método DELETE
+export async function DELETE(request: NextRequest) {
+  try {
+    const { userId } = await auth()
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const searchParams = request.nextUrl.searchParams
+    const projectId = searchParams.get('projectId')
+
+    if (!projectId) {
+      return NextResponse.json(
+        { error: 'Missing projectId' },
+        { status: 400 }
+      )
+    }
+
+    const supabase = getServiceRoleClient()
+    const supabaseUserId = await ensureSupabaseUser(userId, supabase)
+
+    // Deletar todas as mensagens do projeto
+    const { error } = await supabase
+      .from('ai_chat_history')
+      .delete()
+      .eq('project_id', projectId)
+      .eq('user_id', supabaseUserId)
+
+    if (error) {
+      console.error('Error clearing chat:', error)
+      return NextResponse.json(
+        { error: 'Failed to clear chat' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Clear chat error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+```
+
+#### Acceptance Criteria
+- [ ] Botão visível no header do AI sidebar
+- [ ] Confirmação antes de limpar (evitar cliques acidentais)
+- [ ] Limpa mensagens do frontend imediatamente
+- [ ] Limpa histórico do backend (API DELETE)
+- [ ] Feedback visual de sucesso/erro
+- [ ] Não fecha o painel após limpar
+- [ ] Performance: limpar 100+ mensagens em < 1s
+
+#### Arquivos Afetados
+- `components/canvas/ai-sidebar.tsx` (botão + handler)
+- `app/api/ai/history/route.ts` (método DELETE)
+
+---
+
 ### 3. Batch Creation (Criar Etapa Completa) ⭐⭐⭐⭐
 
 **Esforço:** 4-6 horas
@@ -417,7 +648,337 @@ async function createAllCardsForStage(projectId: string, stageId: number) {
 
 ## 🎨 TIER 2: Diferenciação do Produto
 
-### 4. Project Overview ⭐⭐⭐⭐⭐
+### 6. Menções com @ para Referenciar Cards ⭐⭐⭐⭐⭐
+
+**Esforço:** 4-6 horas
+**Impacto:** MUITO ALTO
+**Status:** 🔴 Pendente
+
+#### Problema que Resolve
+- Referenciar cards requer clicar no botão Sparkles (✨)
+- Não é possível referenciar múltiplos cards na mesma mensagem
+- Fluxo interrompido ao procurar card específico
+- Falta de descobrimento de funcionalidade
+
+#### Solução Proposta
+
+Sistema de menções tipo Notion/Slack:
+- Digite `@` no input do chat → mostra autocomplete com todos os cards
+- Filtro em tempo real conforme digita (ex: `@prob` → mostra "Problem")
+- Seleciona card → anexa contexto automaticamente
+- Visual: badge inline mostrando card mencionado
+- Suporta múltiplas menções na mesma mensagem
+
+#### Implementação Técnica
+
+```typescript
+// components/canvas/card-mention-autocomplete.tsx
+interface CardMentionAutocompleteProps {
+  cards: CardRecord[]
+  onSelect: (card: CardRecord) => void
+  position: { top: number; left: number }
+  filter: string
+}
+
+export function CardMentionAutocomplete({ cards, onSelect, position, filter }: Props) {
+  const filteredCards = useMemo(() => {
+    const query = filter.toLowerCase()
+    return cards.filter(card => {
+      const title = CARD_TITLES[card.card_type].toLowerCase()
+      return title.includes(query)
+    })
+  }, [cards, filter])
+
+  return (
+    <div
+      className="absolute z-50 bg-[#1A1D29] border border-white/20 rounded-lg shadow-xl max-h-64 overflow-y-auto"
+      style={{ top: position.top, left: position.left }}
+    >
+      {filteredCards.map(card => {
+        const stageNumber = CARD_TO_STAGE[card.card_type]
+        const stageColor = STAGE_COLORS[stageNumber]
+
+        return (
+          <button
+            key={card.id}
+            onClick={() => onSelect(card)}
+            className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/5 transition-colors"
+          >
+            <div
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: stageColor }}
+            />
+            <span className="text-sm">{CARD_TITLES[card.card_type]}</span>
+            <span className="text-xs text-gray-400 ml-auto">
+              {STAGE_NAMES[stageNumber]}
+            </span>
+          </button>
+        )
+      })}
+
+      {filteredCards.length === 0 && (
+        <div className="px-3 py-2 text-sm text-gray-400">
+          Nenhum card encontrado
+        </div>
+      )}
+    </div>
+  )
+}
+
+// No ai-sidebar.tsx
+const [mentionFilter, setMentionFilter] = useState('')
+const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false)
+const [autocompletePosition, setAutocompletePosition] = useState({ top: 0, left: 0 })
+
+const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const value = e.target.value
+  setInput(value)
+
+  // Detectar @ e extrair filtro
+  const cursorPosition = e.target.selectionStart
+  const textBeforeCursor = value.slice(0, cursorPosition)
+  const atMatch = textBeforeCursor.match(/@(\w*)$/)
+
+  if (atMatch) {
+    setMentionFilter(atMatch[1])
+    setShowMentionAutocomplete(true)
+
+    // Calcular posição do autocomplete
+    const rect = e.target.getBoundingClientRect()
+    setAutocompletePosition({
+      top: rect.top - 200, // Acima do input
+      left: rect.left
+    })
+  } else {
+    setShowMentionAutocomplete(false)
+  }
+}
+
+const handleCardMention = (card: CardRecord) => {
+  // Substituir @filtro pelo placeholder do card
+  const newInput = input.replace(/@\w*$/, `@${card.card_type} `)
+  setInput(newInput)
+  setShowMentionAutocomplete(false)
+
+  // Adicionar card às referências
+  setMentionedCards(prev => [...prev, card])
+}
+```
+
+#### UI/UX Flow
+
+1. Usuário digita `@` no input
+2. Popup de autocomplete aparece acima do input
+3. Lista mostra todos os cards com cores das etapas
+4. Filtro em tempo real conforme digita (ex: `@prob`)
+5. Setas ↑↓ para navegar, Enter para selecionar
+6. Card selecionado → badge inline aparece
+7. Ao enviar mensagem → contexto de todos os cards mencionados é incluído
+
+#### Acceptance Criteria
+- [ ] Digitar @ abre autocomplete
+- [ ] Filtro funciona em tempo real
+- [ ] Navegação por teclado (↑↓ Enter)
+- [ ] Click seleciona card
+- [ ] Badge visual inline para cada card mencionado
+- [ ] Suporte a múltiplos cards na mesma mensagem
+- [ ] Contexto de todos os cards mencionados é enviado
+- [ ] Escape fecha autocomplete
+- [ ] Click fora fecha autocomplete
+
+#### Arquivos Afetados
+- Novo componente: `components/canvas/card-mention-autocomplete.tsx`
+- `components/canvas/ai-sidebar.tsx` (lógica de detecção @)
+- `components/canvas/ai-suggestions.ts` (helper para buscar cards)
+
+---
+
+### 7. Command Palette com / (Atalhos) ⭐⭐⭐⭐
+
+**Esforço:** 3-4 horas
+**Impacto:** MÉDIO-ALTO
+**Status:** 🔴 Pendente
+
+#### Problema que Resolve
+- Funcionalidades avançadas não são descobríveis
+- Usuários power users querem atalhos de teclado
+- Ações comuns requerem muitos cliques
+- Falta de CLI-like experience para devs
+
+#### Solução Proposta
+
+Command palette ativado com `/` no input do chat:
+- Digite `/` → mostra lista de comandos disponíveis
+- Filtro em tempo real
+- Comandos executam ações do sistema
+- Visual similar a Slack/Discord
+
+#### Comandos Disponíveis
+
+**Chat & IA:**
+- `/clear` → Limpar histórico de chat
+- `/help` → Mostrar ajuda sobre comandos
+
+**Cards:**
+- `/create [tipo]` → Criar card específico
+- `/batch [etapa]` → Criar todos os cards da etapa
+
+**Export:**
+- `/export-prd` → Exportar PRD
+- `/export-deck` → Exportar Pitch Deck outline
+- `/overview` → Abrir Project Overview
+
+**Templates:**
+- `/templates` → Ver galeria de templates
+- `/save-template` → Salvar projeto como template
+
+#### Implementação Técnica
+
+```typescript
+// components/canvas/command-palette.tsx
+interface Command {
+  name: string
+  description: string
+  icon: string
+  execute: () => void | Promise<void>
+  aliases?: string[]
+}
+
+const COMMANDS: Command[] = [
+  {
+    name: 'clear',
+    description: 'Limpar histórico de chat',
+    icon: '🗑️',
+    execute: async () => {
+      await handleClearChat()
+    }
+  },
+  {
+    name: 'batch',
+    description: 'Criar todos os cards de uma etapa',
+    icon: '✨',
+    execute: async () => {
+      // Prompt para escolher etapa
+      const stage = await promptStageSelection()
+      await batchCreateStage(stage)
+    }
+  },
+  {
+    name: 'export-prd',
+    description: 'Exportar documento PRD',
+    icon: '📄',
+    execute: async () => {
+      window.open(`/projects/${projectId}/export/prd`, '_blank')
+    }
+  },
+  {
+    name: 'overview',
+    description: 'Abrir visão geral do projeto',
+    icon: '📊',
+    execute: () => {
+      router.push(`/projects/${projectId}/overview`)
+    }
+  },
+  {
+    name: 'help',
+    description: 'Mostrar ajuda sobre comandos',
+    icon: '❓',
+    execute: () => {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: generateHelpMessage()
+      }])
+    }
+  }
+]
+
+export function CommandPalette({ onSelect, filter, position }: Props) {
+  const filteredCommands = useMemo(() => {
+    const query = filter.toLowerCase()
+    return COMMANDS.filter(cmd =>
+      cmd.name.includes(query) ||
+      cmd.description.toLowerCase().includes(query) ||
+      cmd.aliases?.some(alias => alias.includes(query))
+    )
+  }, [filter])
+
+  return (
+    <div
+      className="absolute z-50 bg-[#1A1D29] border border-white/20 rounded-lg shadow-xl max-h-64 overflow-y-auto"
+      style={{ top: position.top, left: position.left }}
+    >
+      {filteredCommands.map(cmd => (
+        <button
+          key={cmd.name}
+          onClick={() => onSelect(cmd)}
+          className="w-full flex items-center gap-3 px-3 py-2 hover:bg-white/5 transition-colors"
+        >
+          <span className="text-lg">{cmd.icon}</span>
+          <div className="flex-1 text-left">
+            <div className="text-sm font-medium">/{cmd.name}</div>
+            <div className="text-xs text-gray-400">{cmd.description}</div>
+          </div>
+        </button>
+      ))}
+
+      {filteredCommands.length === 0 && (
+        <div className="px-3 py-2 text-sm text-gray-400">
+          Comando não encontrado. Digite /help para ver todos.
+        </div>
+      )}
+    </div>
+  )
+}
+
+// No ai-sidebar.tsx
+const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const value = e.target.value
+  setInput(value)
+
+  // Detectar / no início da linha
+  if (value.startsWith('/')) {
+    const commandFilter = value.slice(1) // Remove o /
+    setCommandFilter(commandFilter)
+    setShowCommandPalette(true)
+  } else {
+    setShowCommandPalette(false)
+  }
+
+  // Lógica de @ existente...
+}
+
+const handleCommandSelect = async (command: Command) => {
+  setShowCommandPalette(false)
+  setInput('') // Limpa input
+
+  try {
+    await command.execute()
+  } catch (error) {
+    console.error(`Error executing command /${command.name}:`, error)
+    toast.error(`Erro ao executar comando /${command.name}`)
+  }
+}
+```
+
+#### Acceptance Criteria
+- [ ] Digitar / abre command palette
+- [ ] Lista mostra todos os comandos disponíveis
+- [ ] Filtro funciona em tempo real
+- [ ] Navegação por teclado (↑↓ Enter)
+- [ ] Comandos executam ações corretamente
+- [ ] Feedback visual de execução (loading, sucesso, erro)
+- [ ] `/help` mostra lista completa de comandos
+- [ ] Aliases funcionam (ex: `/cls` = `/clear`)
+- [ ] Escape fecha palette
+
+#### Arquivos Afetados
+- Novo componente: `components/canvas/command-palette.tsx`
+- Novo arquivo: `lib/commands/index.ts` (definição de comandos)
+- `components/canvas/ai-sidebar.tsx` (lógica de detecção /)
+
+---
+
+### 8. Project Overview ⭐⭐⭐⭐⭐
 
 **Esforço:** 5 horas (overview básico)
 **Impacto:** MUITO ALTO
