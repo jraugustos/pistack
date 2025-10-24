@@ -12,6 +12,8 @@ import { CanvasSidebar } from '@/components/canvas/canvas-sidebar'
 import { CanvasArea } from '@/components/canvas/canvas-area'
 import { CanvasAreaListView } from '@/components/canvas/canvas-area-list-view'
 import { AiSidebar } from '@/components/canvas/ai-sidebar'
+import { CommandPaletteModal } from '@/components/command-palette'
+import { useCommandPalette } from '@/hooks/use-command-palette'
 import { getTotalExpectedCards } from '@/lib/card-constants'
 import { getViewMode, setViewMode as saveViewMode, type ViewMode } from '@/lib/canvas-view-state'
 import type { CardRecord } from '@/lib/types/card'
@@ -124,6 +126,38 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
       window.removeEventListener('pistack:cards:refresh', handleRefresh)
     }
   }, [sortedStages])
+
+  // Command Palette
+  const commandPalette = useCommandPalette({
+    context: {
+      currentViewMode: viewMode,
+      currentStage: activeStage,
+      isAiSidebarOpen: isSidebarOpen,
+      showOnlyFilled,
+      onNavigateToStage: handleStageChange,
+      onToggleAiSidebar: () => setIsSidebarOpen(!isSidebarOpen),
+      onToggleViewMode: handleViewModeChange,
+      onToggleShowOnlyFilled: () => setShowOnlyFilled(!showOnlyFilled),
+      onZoomIn: () => setZoom(current => Math.min(150, current + 10)),
+      onZoomOut: () => setZoom(current => Math.max(60, current - 10)),
+      onRefreshCards: () => {
+        window.dispatchEvent(
+          new CustomEvent('pistack:cards:refresh', {
+            detail: { projectId: project.id, stageNumber: activeStage },
+          })
+        )
+      },
+      onClearSearch: () => setSearchTerm(''),
+      onGoToOverview: () => {
+        window.location.href = `/canvas/${project.id}/overview`
+      },
+      onExportProject: () => {
+        // TODO: Implement export functionality
+        alert('Funcionalidade de exportação em desenvolvimento')
+      },
+    },
+    enabled: true,
+  })
 
   // Calculate total expected cards
   const totalExpectedCards = useMemo(() => getTotalExpectedCards(), [])
@@ -352,6 +386,20 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
           allCards={allCards}
         />
       </div>
+
+      {/* Command Palette */}
+      <CommandPaletteModal
+        isOpen={commandPalette.isOpen}
+        searchQuery={commandPalette.searchQuery}
+        onSearchChange={commandPalette.setSearchQuery}
+        commands={commandPalette.filteredCommands}
+        selectedIndex={commandPalette.selectedIndex}
+        onSelectCommand={commandPalette.executeCommand}
+        onClose={commandPalette.close}
+        onNavigateDown={commandPalette.navigateDown}
+        onNavigateUp={commandPalette.navigateUp}
+        onExecuteSelected={commandPalette.executeSelected}
+      />
     </div>
   )
 }
