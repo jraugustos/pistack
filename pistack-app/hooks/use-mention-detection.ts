@@ -31,45 +31,19 @@ export function useMentionDetection({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   /**
-   * Calculate dropdown position based on cursor
+   * Calculate dropdown position based on textarea
+   * Position above textarea to avoid scrolling issues
    */
   const calculateDropdownPosition = useCallback(
     (textarea: HTMLTextAreaElement, cursorIndex: number) => {
-      // Create a mirror div to calculate cursor position
-      const mirror = document.createElement('div')
-      const computed = window.getComputedStyle(textarea)
-
-      // Copy textarea styles to mirror
-      mirror.style.position = 'absolute'
-      mirror.style.visibility = 'hidden'
-      mirror.style.whiteSpace = 'pre-wrap'
-      mirror.style.wordWrap = 'break-word'
-      mirror.style.font = computed.font
-      mirror.style.padding = computed.padding
-      mirror.style.border = computed.border
-      mirror.style.width = computed.width
-      mirror.style.lineHeight = computed.lineHeight
-
-      // Get text up to cursor
-      const textBeforeCursor = textarea.value.substring(0, cursorIndex)
-      mirror.textContent = textBeforeCursor
-
-      // Add span to measure cursor position
-      const span = document.createElement('span')
-      span.textContent = '|'
-      mirror.appendChild(span)
-
-      document.body.appendChild(mirror)
-
-      // Get textarea and span positions
       const textareaRect = textarea.getBoundingClientRect()
-      const spanRect = span.getBoundingClientRect()
 
-      // Calculate absolute viewport position (for fixed positioning with portal)
-      const top = spanRect.top + 20 // 20px below cursor
-      const left = spanRect.left
+      // Position dropdown above textarea (280px is approx dropdown height)
+      const top = textareaRect.top - 280
+      const left = textareaRect.left
 
-      document.body.removeChild(mirror)
+      console.log('[MentionDetection] Textarea rect:', textareaRect)
+      console.log('[MentionDetection] Calculated position - TOP:', top, 'LEFT:', left)
 
       return { top, left }
     },

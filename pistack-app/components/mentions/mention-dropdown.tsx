@@ -56,7 +56,7 @@ export function MentionDropdown({
     return (
       <div
         ref={dropdownRef}
-        className="fixed z-[9999] w-80 bg-red-600 border-4 border-yellow-400 rounded-lg shadow-2xl p-4"
+        className="fixed z-[9999] w-80 bg-[#13161C] border border-[#7AA2FF]/30 rounded-lg shadow-2xl p-4"
         style={{
           top: `${position.top}px`,
           left: `${position.left}px`,
@@ -80,7 +80,7 @@ export function MentionDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-[9999] w-80 max-h-64 overflow-y-auto bg-red-600 border-4 border-yellow-400 rounded-lg shadow-2xl"
+      className="fixed z-[9999] w-80 max-h-64 overflow-y-auto bg-[#13161C] border border-[#7AA2FF]/30 rounded-lg shadow-2xl"
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
