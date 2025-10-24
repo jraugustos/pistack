@@ -1,7 +1,7 @@
 # 🗺️ PIStack - Roadmap de Desenvolvimento
 
-**Última atualização:** 2025-10-23
-**Versão atual:** v1.0 (MVP Completo - 35/35 cards)
+**Última atualização:** 2025-10-24
+**Versão atual:** v1.0 (MVP Completo - 35/35 cards + Sistema de Progressão)
 
 ---
 
@@ -91,11 +91,11 @@ Prioridade = (Impacto no Usuário × Diferenciação Competitiva) / Esforço de 
 |---|---------|-----------|---------|--------|
 | 1 | IA Panel Colapsável | ⭐⭐⭐⭐⭐ | 2-3h | ✅ **COMPLETO** |
 | 2 | Indicador de Autosave | ⭐⭐⭐⭐ | 3-4h | ✅ **COMPLETO** |
-| 3 | Batch Creation (Criar Etapa Completa) | ⭐⭐⭐⭐ | 4-6h | 🔴 Pendente |
-| 4 | Sugestões Rápidas Otimizadas (Carousel) | ⭐⭐⭐⭐ | 2-3h | 🔴 Pendente |
-| 5 | Botão Limpar Chat | ⭐⭐⭐⭐ | 1h | 🔴 Pendente |
+| 3 | Batch Creation (Criar Etapa Completa) | ⭐⭐⭐⭐ | 4-6h | ✅ **COMPLETO** |
+| 4 | Sugestões Rápidas Otimizadas (Carousel) | ⭐⭐⭐⭐ | 2-3h | ✅ **COMPLETO** |
+| 5 | Botão Limpar Chat | ⭐⭐⭐⭐ | 1h | ✅ **COMPLETO** |
 
-**Total estimado:** 12-17 horas (5-7h concluídas - 41% concluído)**
+**Total estimado:** 12-17 horas (12-17h concluídas - 100% COMPLETO) 🎉**
 **Impacto esperado:** Canvas mais espaçoso, onboarding 70% mais rápido, redução de ansiedade do usuário
 
 **✅ Tarefas Concluídas:**
@@ -121,15 +121,35 @@ Prioridade = (Impacto no Usuário × Diferenciação Competitiva) / Esforço de 
 
 | # | Feature | Prioridade | Esforço | Status |
 |---|---------|-----------|---------|--------|
-| 6 | Menções com @ para Referenciar Cards | ⭐⭐⭐⭐⭐ | 4-6h | 🔴 Pendente |
-| 7 | Command Palette com / (Atalhos) | ⭐⭐⭐⭐ | 3-4h | 🔴 Pendente |
-| 8 | Project Overview (compilação básica) | ⭐⭐⭐⭐⭐ | 5h | 🔴 Pendente |
+| 8 | Project Overview (compilação básica) | ⭐⭐⭐⭐⭐ | 5h | ✅ **COMPLETO** |
+| 8.1 | Sistema de Progressão (50% Unlock) | ⭐⭐⭐⭐⭐ | 3-4h | ✅ **COMPLETO** |
+| 8.2 | Reorganização UX Batch Creation | ⭐⭐⭐⭐ | 2h | ✅ **COMPLETO** |
 | 9 | Export PRD | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
 | 10 | Export Pitch Deck Outline | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
-| 11 | List View dos Cards | ⭐⭐⭐⭐ | 6-8h | 🔴 Pendente |
+| 11 | List View dos Cards | ⭐⭐⭐⭐⭐ | 6-8h | 📋 **PLANEJADO** |
+| 6 | Menções com @ para Referenciar Cards | ⭐⭐⭐⭐⭐ | 4-6h | 📋 **PLANEJADO** |
+| 7 | Command Palette com / (Atalhos) | ⭐⭐⭐⭐ | 3-4h | 📋 **PLANEJADO** |
 
-**Total estimado:** 24-31 horas
-**Impacto esperado:** Tangibilização do valor criado, uso profissional, compartilhamento viral
+**Total estimado:** 29-38 horas (10-11h concluídas - 29% COMPLETO)
+**Impacto esperado:** Tangibilização do valor criado, uso profissional, compartilhamento viral, melhor onboarding
+
+**✅ Tarefas Concluídas:**
+
+**Tarefa 8.1 - Sistema de Progressão (50% Unlock):**
+- Barra de progresso visual na sidebar (X/35 cards)
+- Cores dinâmicas: amarelo <50%, verde ≥50%
+- Project Overview bloqueado até 50% dos cards criados
+- Mensagem informativa que desaparece ao atingir threshold
+- Botão Overview na sidebar com estados bloqueado/desbloqueado
+- Botão Overview no header desabilitado com tooltip dinâmico
+- Evento `pistack:cards:refresh` atualiza progresso em tempo real
+
+**Tarefa 8.2 - Reorganização UX Batch Creation:**
+- Botão "Criar Todos" movido para dentro do dropdown (última posição)
+- Modal com banner informativo sobre tempo de espera (~60s/card)
+- Timeout aumentado para 90s
+- Logs detalhados para debugging
+- Botão "Nova Etapa" removido da sidebar (simplificação)
 
 ---
 
@@ -342,7 +362,7 @@ const { saveStatus, lastSaved, error } = useAutosave(localData, { ... })
 
 **Esforço:** 2-3 horas
 **Impacto:** MÉDIO-ALTO
-**Status:** 🔴 Pendente
+**Status:** ✅ **COMPLETO** (2025-10-23)
 
 #### Problema que Resolve
 - Sugestões rápidas ocupam muito espaço vertical no painel de IA
@@ -418,18 +438,46 @@ export function QuickSuggestionsCarousel({ suggestions, onSelect, stageColor }: 
 ```
 
 #### Acceptance Criteria
-- [ ] Carousel mostra apenas 1 sugestão por vez
-- [ ] Navegação com setas funciona (prev/next)
-- [ ] Dots indicam posição atual
-- [ ] Transição suave entre sugestões (300ms)
-- [ ] Click na sugestão preenche input
-- [ ] Responsivo (funciona em mobile)
-- [ ] Auto-rotate desabilitado durante interação
+- [x] Carousel mostra apenas 1 sugestão por vez
+- [x] Dots indicam posição atual (setas removidas)
+- [x] Click na sugestão preenche input
+- [x] Responsivo (funciona em mobile)
+- [x] Desabilitado durante loading (isLoading)
+- [x] Esconde navegação quando há apenas 1 sugestão
+- [x] **Autoplay ativo:** avança automaticamente a cada 5s
+- [x] **Animação de transição:** fade + translateY (300ms)
+- [x] **Pausa autoplay:** ao clicar em dot ou sugestão
+- [x] **Dots animados:** expandem quando ativos + hover scale
+
+#### Implementação Realizada
+
+**Funcionalidades:**
+- Componente carousel criado com estado de índice atual
+- Dots indicadores clicáveis para navegação direta (setas removidas)
+- Sugestão renderizada com cores dinâmicas da etapa
+- Integrado no ai-sidebar substituindo lista vertical
+- **Autoplay:** avança automaticamente a cada 5 segundos
+- **Animações suaves:** transição com fade + translateY (300ms)
+
+**Comportamento:**
+- Mostra apenas 1 sugestão por vez (economiza ~60-80px verticais)
+- Navegação circular automática (última → primeira)
+- Dots animados: expandem quando ativos (6px → 16px largura)
+- Hover nos dots aumenta escala em 125%
+- Desabilitado automaticamente quando chat está loading
+- **Pausa autoplay:** ao clicar em dot ou sugestão
+- Auto-esconde dots se houver apenas 1 sugestão
+
+**Animações CSS:**
+- Transição de fade: `opacity: 0` → `opacity: 1`
+- Translação vertical: `translateY(-10px)` → `translateY(0)`
+- Duração: 300ms com `transition-all`
+- Dots com `transition-all duration-300` e `hover:scale-125`
 
 #### Arquivos Afetados
-- Novo componente: `components/canvas/quick-suggestions-carousel.tsx`
-- `components/canvas/ai-sidebar.tsx` (integrar carousel)
-- `components/canvas/ai-suggestions.ts` (mantém os dados)
+- ✅ **Novo**: `components/canvas/quick-suggestions-carousel.tsx` - Componente carousel
+- ✅ `components/canvas/ai-sidebar.tsx` - Integração do carousel (substituiu lista vertical)
+- ℹ️ `components/canvas/ai-suggestions.ts` - Mantido sem alterações (fonte de dados)
 
 ---
 
@@ -437,7 +485,7 @@ export function QuickSuggestionsCarousel({ suggestions, onSelect, stageColor }: 
 
 **Esforço:** 1 hora
 **Impacto:** MÉDIO
-**Status:** 🔴 Pendente
+**Status:** ✅ **COMPLETO** (2025-10-23)
 
 #### Problema que Resolve
 - Não há como limpar o histórico de conversas
@@ -551,40 +599,74 @@ export async function DELETE(request: NextRequest) {
 ```
 
 #### Acceptance Criteria
-- [ ] Botão visível no header do AI sidebar
-- [ ] Confirmação antes de limpar (evitar cliques acidentais)
-- [ ] Limpa mensagens do frontend imediatamente
-- [ ] Limpa histórico do backend (API DELETE)
-- [ ] Feedback visual de sucesso/erro
-- [ ] Não fecha o painel após limpar
+- [x] Botão visível no header do AI sidebar
+- [x] Confirmação antes de limpar (evitar cliques acidentais)
+- [x] Limpa mensagens do frontend imediatamente
+- [x] Limpa histórico do backend (API DELETE)
+- [x] Feedback visual de sucesso/erro
+- [x] Não fecha o painel após limpar
+- [x] Desabilitado quando não há mensagens ou durante loading
 - [ ] Performance: limpar 100+ mensagens em < 1s
 
+#### Implementação Realizada
+
+**Funcionalidades:**
+- Botão Trash2 adicionado ao header do sidebar (ao lado do botão X)
+- Handler `handleClearChat` com confirmação via window.confirm
+- DELETE endpoint criado em `/api/ai/history`
+- Limpa estado local (messages, referencedCard, input)
+- Validação de autenticação e autorização no backend
+
+**Comportamento:**
+- Botão desabilitado quando: sem mensagens OU isLoading = true
+- Confirmação antes de executar (previne cliques acidentais)
+- Limpa mensagens do Supabase (tabela `ai_messages`)
+- Limpa estado do React imediatamente após sucesso
+- Feedback de erro via alert() se requisição falhar
+- Sidebar permanece aberto após limpar
+
+**Backend (DELETE /api/ai/history):**
+- Recebe `projectId` e `stage` via query params
+- Autentica usuário com Clerk
+- Valida ownership do projeto
+- Busca thread correspondente ao projeto + etapa
+- Deleta todas as mensagens da thread
+- Retorna `{ success: true, deleted: count }`
+
 #### Arquivos Afetados
-- `components/canvas/ai-sidebar.tsx` (botão + handler)
-- `app/api/ai/history/route.ts` (método DELETE)
+- ✅ `components/canvas/ai-sidebar.tsx` - Botão Trash2, handler handleClearChat, import do ícone
+- ✅ `app/api/ai/history/route.ts` - Método DELETE adicionado (95 linhas)
 
 ---
 
 ### 3. Batch Creation (Criar Etapa Completa) ⭐⭐⭐⭐
 
-**Esforço:** 4-6 horas
+**Esforço:** 4-6 horas (+ 2h de melhorias UX)
 **Impacto:** ALTO
-**Status:** 🔴 Pendente
+**Status:** ✅ **COMPLETO** (2025-10-23) + **MELHORADO** (2025-10-24)
 
 #### Problema que Resolve
 - Criar 35 cards manualmente é tedioso
 - Usuários abandonam por friction inicial
 - Canvas vazio não mostra valor imediato
+- Usuários não entendiam que o processo levava tempo (~60s por card)
 
 #### Solução Proposta
-Botão no cabeçalho de cada etapa:
+Botão no dropdown de cada etapa:
 ```
-✨ Criar Todos os Cards da Etapa {N}
+✨ Criar Todos (X)
 ```
 - Cria todos os cards da etapa em sequência
 - Cada card é auto-preenchido pela IA
 - Progresso visual mostra criação em tempo real
 - Throttle de 500ms entre cards (evitar sobrecarga API)
+
+#### Melhorias Adicionadas (Sprint 2 - Tarefa 8.2)
+- **Botão movido para dropdown:** Última posição após separador (menos intrusivo)
+- **Banner informativo:** Explica que cada card leva ~60s para ser preenchido
+- **Timeout aumentado:** De 30s para 90s para evitar aborts prematuros
+- **Logs detalhados:** Console logs em cada etapa para debugging
+- **Melhor UX de espera:** Usuários entendem o processo e não ficam ansiosos
 
 #### Implementação Técnica
 ```typescript
@@ -631,18 +713,22 @@ async function createAllCardsForStage(projectId: string, stageId: number) {
   - Opção de cancelar (para etapas)
 
 #### Acceptance Criteria
-- [ ] Botão aparece no header de cada StageSection
-- [ ] Modal mostra progresso em tempo real
-- [ ] Throttle de 500ms entre criações
-- [ ] Cards são auto-preenchidos pela IA
-- [ ] Evento de refresh dispara ao final
-- [ ] Tratamento de erro se algum card falhar
-- [ ] Usuário pode cancelar operação
+- [x] Botão aparece no dropdown de cada StageSection (última posição)
+- [x] Modal mostra progresso em tempo real
+- [x] Throttle de 500ms entre criações
+- [x] Cards são auto-preenchidos pela IA
+- [x] Evento de refresh dispara ao final
+- [x] Tratamento de erro se algum card falhar
+- [x] Banner informativo sobre tempo de espera (~60s/card)
+- [x] Timeout de 90s para evitar aborts prematuros
+- [x] Logs detalhados para debugging
+- [ ] Usuário pode cancelar operação (nice-to-have futuro)
 
 #### Arquivos Afetados
-- `components/canvas/stage-section.tsx`
-- Novo componente: `components/canvas/batch-creation-modal.tsx`
-- `app/api/cards/route.ts` (verificar rate limiting)
+- ✅ `components/canvas/stage-section.tsx` - Dropdown reorganizado, logs adicionados
+- ✅ `components/canvas/batch-creation-modal.tsx` - Banner informativo adicionado
+- ✅ `lib/card-constants.ts` - Constantes centralizadas
+- ✅ `app/api/cards/route.ts` - Timeout handling melhorado
 
 ---
 
@@ -652,13 +738,48 @@ async function createAllCardsForStage(projectId: string, stageId: number) {
 
 **Esforço:** 4-6 horas
 **Impacto:** MUITO ALTO
-**Status:** 🔴 Pendente
+**Status:** 📋 **PLANEJADO** (Implementar SEGUNDO - após List View)
 
 #### Problema que Resolve
 - Referenciar cards requer clicar no botão Sparkles (✨)
 - Não é possível referenciar múltiplos cards na mesma mensagem
 - Fluxo interrompido ao procurar card específico
 - Falta de descobrimento de funcionalidade
+
+#### Por Que Implementar Depois da List View?
+
+✅ **Reuso de código:**
+- Usa `card-filters.ts` da List View
+- Usa `use-card-search.ts` para autocomplete
+- Componentes de busca já validados
+
+✅ **Experiência melhorada:**
+- Usuários já familiarizados com busca de cards
+- Padrões UX consistentes
+
+#### Quebra de Implementação
+
+**Fase 1: Detecção e Autocomplete (2-3h)**
+- Arquivos a criar:
+  - `components/canvas/card-mention-autocomplete.tsx`
+  - `hooks/use-mention-detection.ts`
+  - `lib/mention-parser.ts`
+
+**Fase 2: Seleção e Inserção (1-2h)**
+- Badges visuais para cards mencionados
+- Múltiplas menções suportadas
+- Componente `CardMentionBadge`
+
+**Fase 3: Envio de Contexto (1h)**
+- Integração com API `/api/ai/chat`
+- Payload estruturado com múltiplos cards
+- Limpeza de menções após envio
+
+**Fase 4: Navegação por Teclado (30min-1h)**
+- ↑↓ para navegar
+- Enter para selecionar
+- Escape para fechar
+- Tab para sair
 
 #### Solução Proposta
 
@@ -797,13 +918,48 @@ const handleCardMention = (card: CardRecord) => {
 
 **Esforço:** 3-4 horas
 **Impacto:** MÉDIO-ALTO
-**Status:** 🔴 Pendente
+**Status:** 📋 **PLANEJADO** (Implementar TERCEIRO - após Menções @)
 
 #### Problema que Resolve
 - Funcionalidades avançadas não são descobríveis
 - Usuários power users querem atalhos de teclado
 - Ações comuns requerem muitos cliques
 - Falta de CLI-like experience para devs
+
+#### Por Que Implementar Por Último?
+
+✅ **Máximo reuso:**
+- Usa autocomplete de Menções @
+- Usa filtros de List View
+- Integra ações de todas as features anteriores
+
+✅ **Feature para power users:**
+- Usuários já familiarizados com o sistema
+- Comandos consolidam funcionalidades existentes
+
+#### Quebra de Implementação
+
+**Fase 1: Estrutura de Comandos (1h)**
+- Arquivos a criar:
+  - `lib/commands/registry.ts`
+  - `lib/commands/definitions.ts`
+  - `components/canvas/command-palette.tsx`
+- 5+ comandos iniciais: clear-chat, batch-create, export-prd, goto-overview, help
+
+**Fase 2: Detecção e UI (1-2h)**
+- Hook `useCommandPalette`
+- Detecção de / no início da linha
+- Agrupamento por categoria (chat, cards, export, navigation)
+
+**Fase 3: Execução e Feedback (1h)**
+- Loading states durante execução
+- Toast de sucesso/erro
+- Animações de fechamento
+
+**Fase 4: Atalhos de Teclado (30min-1h) OPCIONAL**
+- Cmd/Ctrl+K abre palette
+- Atalhos principais (Cmd+Shift+C = clear chat)
+- Compatível Mac e Windows
 
 #### Solução Proposta
 
@@ -978,11 +1134,285 @@ const handleCommandSelect = async (command: Command) => {
 
 ---
 
+---
+
+## 🎯 Sprint 2 - Parte 2: Power User Features (Planejamento 2025-10-24)
+
+### Visão Geral
+
+Este planejamento detalha a implementação de 3 features altamente requisitadas que transformarão o PIStack em uma ferramenta profissional para power users:
+
+1. **List View dos Cards** (6-8h) - Base para navegação avançada
+2. **Menções com @** (4-6h) - Contexto rico para IA
+3. **Command Palette com /** (3-4h) - Produtividade máxima
+
+**Total estimado:** 13-18 horas (~3 semanas em part-time)
+
+### Ordem de Implementação Estratégica
+
+**Por que nesta ordem?**
+
+```
+List View → Menções @ → Command Palette
+   ↓            ↓             ↓
+Fundação   Reutiliza    Consolida tudo
+```
+
+**Justificativa técnica:**
+- List View cria componentes de busca/filtro reutilizáveis
+- Menções @ aproveita o sistema de busca já construído
+- Command Palette integra todas as funcionalidades anteriores
+
+**Justificativa de valor:**
+- Cada feature entrega valor incremental imediato
+- Menor risco de retrabalho
+- Validação progressiva com usuários
+
+### Cronograma Sugerido
+
+**Semana 1: List View (6-8h)**
+- Dia 1-2: Estrutura base + filtros (4-5h)
+- Dia 3-4: Ordenação + performance (2h)
+- Dia 5: Responsividade + polish (1h)
+
+**Semana 2: Menções @ (4-6h)**
+- Dia 1-2: Detecção + autocomplete (2-3h)
+- Dia 3: Seleção + badges (1-2h)
+- Dia 4: Envio de contexto + teclado (1.5h)
+
+**Semana 3: Command Palette (3-4h)**
+- Dia 1: Estrutura de comandos (1h)
+- Dia 2: UI + filtragem (1-2h)
+- Dia 3: Execução + feedback + atalhos (1-2h)
+
+### Benefícios Combinados
+
+**Para o Usuário:**
+1. 🚀 **Navegação 10x mais rápida** (List View + busca instantânea)
+2. 🧠 **Contexto rico para IA** (Menções @ múltiplas em uma mensagem)
+3. ⚡ **Produtividade máxima** (Command Palette para ações rápidas)
+
+**Para o Produto:**
+1. 🎨 **Diferenciação competitiva** (nenhum competitor tem essas 3 juntas)
+2. 📈 **Retenção aumentada** (power users ficam engajados)
+3. 🗣️ **Viral potential** (features "wow" que usuários compartilham)
+
+### Métricas de Sucesso
+
+**Sprint 2 - Parte 2:**
+- 60%+ dos usuários usam List View regularmente
+- 40%+ usam Menções @ em conversas com IA
+- 20%+ de power users descobrem Command Palette
+- Tempo médio por sessão aumenta 50%
+- NPS aumenta +15 pontos (vs baseline Sprint 2 - Parte 1)
+
+### Riscos e Mitigações
+
+| Risco | Probabilidade | Impacto | Mitigação |
+|-------|---------------|---------|-----------|
+| Performance com 100+ cards | Média | Alto | Virtualização com `react-window` |
+| Complexidade de estado | Média | Médio | Hooks customizados + Context API |
+| UX confusa (muitas features) | Baixa | Médio | Onboarding tooltips + comando /help |
+| Conflito de atalhos de teclado | Baixa | Baixo | Atalhos opcionais, / é único |
+| Retrabalho por dependências | Baixa | Alto | Ordem de implementação já otimizada |
+
+### Dependências Externas
+
+**Bibliotecas necessárias:**
+```json
+{
+  "react-window": "^1.8.10",          // Virtualização de listas
+  "react-hotkeys-hook": "^4.5.0",     // Atalhos de teclado (opcional)
+  "fuse.js": "^7.0.0"                  // Fuzzy search (opcional, se nativo não bastar)
+}
+```
+
+**Instalação:**
+```bash
+npm install react-window
+npm install -D @types/react-window
+
+# Opcionais
+npm install react-hotkeys-hook fuse.js
+```
+
+### Arquivos Novos vs Modificados
+
+**Novos arquivos (estimativa: 15-20 arquivos):**
+- List View: 8 arquivos
+- Menções @: 4 arquivos
+- Command Palette: 3 arquivos
+- Utils compartilhados: 2-3 arquivos
+
+**Modificados (estimativa: 3-5 arquivos):**
+- `canvas-workspace.tsx` (view mode toggle)
+- `ai-sidebar.tsx` (integração @ e /)
+- `canvas-header.tsx` (toggle grid/list opcional)
+
+### Checklist de Implementação
+
+**Antes de começar:**
+- [ ] Instalar dependências (`react-window`)
+- [ ] Criar branch `feature/power-user-features`
+- [ ] Revisar constantes em `lib/card-constants.ts`
+
+**Durante implementação:**
+- [ ] Commitar ao final de cada fase
+- [ ] Testar com 50+ cards mockados
+- [ ] Validar performance (Lighthouse)
+- [ ] Adicionar tooltips de onboarding
+
+**Antes de mergear:**
+- [ ] Build TypeScript passando
+- [ ] ESLint passando
+- [ ] Testes manuais em Chrome + Safari + Firefox
+- [ ] Teste mobile (responsividade)
+- [ ] Review de código
+- [ ] Atualizar documentação
+
+---
+
+## Sprint 2: Melhorias UX Adicionais (2025-10-24)
+
+### 8.1 Sistema de Progressão e Unlock (50%) ⭐⭐⭐⭐⭐
+
+**Esforço:** 3-4 horas
+**Impacto:** MUITO ALTO
+**Status:** ✅ **COMPLETO** (2025-10-24)
+
+#### Problema que Resolve
+- Usuários não sabem quanto falta para completar o projeto
+- Falta de gamificação/incentivo para preencher mais cards
+- Project Overview disponível antes do projeto estar minimamente estruturado
+- Falta de senso de progressão
+
+#### Solução Implementada
+
+**Barra de Progresso na Sidebar:**
+- Exibição visual: "X/35 cards criados"
+- Percentual com cores dinâmicas:
+  - Amarelo (#FFC24B) quando <50%
+  - Verde (#5AD19A) quando ≥50%
+- Barra de progresso animada (transição suave de 500ms)
+
+**Sistema de Unlock (50% threshold):**
+- Project Overview bloqueado até 18/35 cards criados (50%)
+- Mensagem informativa na sidebar:
+  - "💡 Complete 50% dos cards (18/35) para desbloquear o Project Overview"
+  - Desaparece automaticamente ao atingir threshold
+- Botões desabilitados quando <50%:
+  - Botão Overview na sidebar: mostra "Bloqueado (X%)"
+  - Botão Overview no header: desabilitado com tooltip dinâmico
+- Cálculo em tempo real via evento `pistack:cards:refresh`
+
+**Navegação Simplificada:**
+- Botão "Nova Etapa" removido da sidebar (feature não utilizada)
+- Botão "Project Overview" adicionado na sidebar
+- Estados visuais claros (bloqueado vs desbloqueado)
+
+#### Implementação Técnica
+
+**Arquivos Criados/Modificados:**
+- ✅ `canvas-workspace.tsx` - Cálculo de progresso e propagação via props
+- ✅ `canvas-sidebar.tsx` - Progress bar, mensagem informativa, botão Overview
+- ✅ `canvas-header.tsx` - Botão Overview com lógica de disable
+- ✅ `lib/card-constants.ts` - Função `getTotalExpectedCards()`
+
+**Fluxo de Dados:**
+```typescript
+// canvas-workspace.tsx
+const totalExpectedCards = useMemo(() => getTotalExpectedCards(), []) // 35
+const progressPercentage = Math.round((totalCardsCreated / totalExpectedCards) * 100)
+
+// Propaga para filhos
+<CanvasHeader progressPercentage={progressPercentage} />
+<CanvasSidebar totalCards={totalExpectedCards} completedCards={totalCardsCreated} />
+
+// canvas-sidebar.tsx e canvas-header.tsx
+const canAccessOverview = progressPercentage >= 50
+```
+
+#### Acceptance Criteria
+- [x] Barra de progresso exibe X/35 cards com percentual
+- [x] Cores mudam dinamicamente (amarelo → verde em 50%)
+- [x] Mensagem informativa aparece quando <50%
+- [x] Mensagem desaparece automaticamente ao atingir 50%
+- [x] Botão Overview na sidebar com estados visuais claros
+- [x] Botão Overview no header desabilitado quando <50%
+- [x] Tooltips informativos mostram progresso atual
+- [x] Cálculo atualiza em tempo real ao criar/deletar cards
+- [x] Navegação funcional entre Canvas ↔ Overview quando desbloqueado
+
+#### Impacto Esperado
+- **Engajamento:** Usuários preenchem mais cards para desbloquear Overview
+- **Onboarding:** Senso de progressão reduz abandono
+- **Qualidade:** Overview só é acessível com projeto minimamente estruturado
+- **UX:** Feedbacks visuais claros sobre estado do projeto
+
+---
+
+### 8.2 Reorganização UX Batch Creation ⭐⭐⭐⭐
+
+**Esforço:** 2 horas
+**Impacto:** MÉDIO-ALTO
+**Status:** ✅ **COMPLETO** (2025-10-24)
+
+#### Problema que Resolve
+- Botão "Criar Todos" muito visível causava uso excessivo
+- Usuários achavam que estava "travado" (não entendiam o tempo de espera)
+- Falta de feedback sobre quanto tempo levaria
+- Timeouts prematuros abortavam criação de cards
+
+#### Solução Implementada
+
+**Reorganização do Dropdown:**
+- Botão "Criar Todos" movido para última posição no dropdown
+- Separador visual antes do botão
+- Mostra contador: "Criar Todos (X)"
+- Só aparece quando há 2+ cards disponíveis
+
+**Melhor Comunicação de Espera:**
+- Banner informativo no modal: "⏱️ Cada card leva ~60s para ser preenchido pela IA. Aguarde..."
+- Exibido apenas durante criação (não após conclusão)
+- Cor azul suave para indicar informação (não alerta)
+
+**Melhorias Técnicas:**
+- Timeout aumentado de 30s para 90s
+- Logs detalhados em cada etapa:
+  - `[BatchCreate] Starting batch creation for stage: X`
+  - `[BatchCreate] Creating card X/Y: cardType`
+  - `[BatchCreate] Response status for cardType: 200`
+  - `[BatchCreate] Card created successfully: cardId`
+- AbortController com timeout configurável
+- Tratamento de erro mais específico
+
+#### Arquivos Modificados
+- ✅ `stage-section.tsx` - Dropdown reorganizado (linhas 1649-1697)
+- ✅ `batch-creation-modal.tsx` - Banner informativo adicionado
+- ✅ `stage-section.tsx` - Timeout e logs adicionados (linhas 1136-1146)
+
+#### Acceptance Criteria
+- [x] Botão "Criar Todos" é última opção no dropdown
+- [x] Separador visual antes do botão
+- [x] Banner informativo visível durante criação
+- [x] Timeout de 90s funciona sem aborts prematuros
+- [x] Logs detalhados em console para debugging
+- [x] Modal mostra progresso em tempo real
+- [x] Tratamento de erro específico por card
+
+#### Impacto Esperado
+- **UX:** Usuários entendem o tempo de espera
+- **Redução de Ansiedade:** Banner explica que é normal levar tempo
+- **Debug:** Logs facilitam identificação de problemas
+- **Confiabilidade:** Menos timeouts = menos frustrações
+
+---
+
 ### 8. Project Overview ⭐⭐⭐⭐⭐
 
 **Esforço:** 5 horas (overview básico)
 **Impacto:** MUITO ALTO
-**Status:** 🔴 Pendente
+**Status:** ✅ **COMPLETO** (2025-10-24)
 
 #### Problema que Resolve
 - Usuários não veem o "big picture" do projeto
@@ -990,7 +1420,7 @@ const handleCommandSelect = async (command: Command) => {
 - Canvas preenchido não gera artefato tangível
 
 #### Solução Proposta
-Página `/projects/[id]/overview` que compila todos os cards em documento estruturado:
+Página `/canvas/[id]/overview` que compila todos os cards em documento estruturado:
 
 **Seções:**
 1. **Overview Executivo** (cards da Etapa 1)
@@ -1000,34 +1430,54 @@ Página `/projects/[id]/overview` que compila todos os cards em documento estrut
 5. **Arquitetura Técnica** (cards da Etapa 5)
 6. **Plano de Execução** (cards da Etapa 6)
 
-#### Implementação Técnica
-```typescript
-// Rota: app/projects/[id]/overview/page.tsx
-export default async function ProjectOverviewPage({ params }) {
-  const cards = await getAllProjectCards(params.id)
-  const groupedByStage = groupCardsByStage(cards)
+#### Implementação Realizada
 
-  return (
-    <OverviewLayout>
-      <OverviewHeader project={project} />
+**Funcionalidades:**
+- Página de overview completa com hero header e progresso visual
+- Seções por etapa mostrando todos os cards preenchidos
+- Progress bar com cálculo de completude (X/35 cards)
+- Estados visuais diferentes (Completo, Em Andamento, Pendente)
+- Cards vazios mostram estado "empty" com call-to-action
+- Navegação bidirecional Canvas ↔ Overview
+- Animações de fade-in suaves
 
-      {Object.entries(groupedByStage).map(([stageId, cards]) => (
-        <StageOverview key={stageId} stage={stageId} cards={cards} />
-      ))}
+**Componentes Criados:**
+1. **`app/(dashboard)/canvas/[id]/overview/page.tsx`**: Página principal com SSR
+2. **`components/overview/project-overview.tsx`**: Container principal
+3. **`components/overview/overview-header.tsx`**: Hero section
+4. **`components/overview/progress-section.tsx`**: Barra de progresso com detalhes por etapa
+5. **`components/overview/stage-overview.tsx`**: Renderização de cada etapa
+6. **`components/overview/card-display.tsx`**: Display individual de cards
+7. **`components/overview/export-actions.tsx`**: Botões de export (placeholders para Tasks 9 e 10)
+8. **`lib/card-constants.ts`**: Constantes centralizadas (tipos, títulos, cores)
 
-      <ExportActions />
-    </OverviewLayout>
-  )
-}
-```
+**Navegação:**
+- Botão "Overview" adicionado no header do canvas
+- Botão "Canvas" adicionado no header do overview
+- Links de breadcrumb funcionais
 
 #### Acceptance Criteria
-- [ ] Compilação de todos os cards em documento único
-- [ ] Navegação por seções (etapas)
-- [ ] Cards vazios não aparecem
-- [ ] Markdown renderizado corretamente
-- [ ] Responsivo (desktop + mobile)
-- [ ] Print-friendly CSS
+- [x] Compilação de todos os cards em documento único
+- [x] Navegação por seções (etapas)
+- [x] Cards vazios mostram estado apropriado (não renderizam vazio)
+- [x] Conteúdo renderizado corretamente (texto, listas, objetos)
+- [x] Responsivo (desktop + mobile com grid adaptativo)
+- [ ] Print-friendly CSS (TODO: implementar em Sprint futura)
+
+#### Arquivos Criados/Modificados
+**Criados:**
+- ✅ `app/(dashboard)/canvas/[id]/overview/page.tsx`
+- ✅ `components/overview/project-overview.tsx`
+- ✅ `components/overview/overview-header.tsx`
+- ✅ `components/overview/progress-section.tsx`
+- ✅ `components/overview/stage-overview.tsx`
+- ✅ `components/overview/card-display.tsx`
+- ✅ `components/overview/export-actions.tsx`
+- ✅ `lib/card-constants.ts`
+
+**Modificados:**
+- ✅ `components/canvas/canvas-header.tsx` - Adicionado botão "Overview"
+- ✅ `app/globals.css` - Adicionadas animações fade-in-up e line-clamp
 
 #### Referência
 - Protótipo: `html/project-overview.html`
@@ -1170,16 +1620,56 @@ ${bullets.map(b => `- ${b}`).join('\n')}
 
 ---
 
-### 7. List View dos Cards ⭐⭐⭐⭐
+### 11. List View dos Cards ⭐⭐⭐⭐⭐
 
 **Esforço:** 6-8 horas
-**Impacto:** MÉDIO-ALTO
-**Status:** 🔴 Pendente
+**Impacto:** MUITO ALTO
+**Status:** 📋 **PLANEJADO** (Implementar PRIMEIRO - base para Tasks 6 e 7)
 
 #### Problema que Resolve
 - Navegação difícil em projetos grandes
 - Overview rápido é importante
 - Grid view não é ideal para busca/filtros
+- Falta de visão consolidada de todos os cards
+
+#### Por Que Implementar Primeiro?
+✅ **Fundação para outras features:**
+- Sistema de busca/filtro será reutilizado em Menções @ e Command Palette
+- Componentes de listagem servem como base
+- Menor risco de retrabalho
+
+✅ **Valor imediato para usuário:**
+- Navegação 10x mais rápida em projetos grandes
+- Overview completo em uma tela
+- Alternativa ao grid para diferentes contextos
+
+#### Quebra de Implementação
+
+**Fase 1: Estrutura Base (2h)**
+- Arquivos a criar:
+  - `components/canvas/list-view/list-view-container.tsx`
+  - `components/canvas/list-view/list-view-item.tsx`
+  - `components/canvas/list-view/view-mode-toggle.tsx`
+  - `lib/canvas-view-state.ts`
+
+**Fase 2: Filtros e Busca (2-3h)**
+- Arquivos a criar:
+  - `components/canvas/list-view/filters-bar.tsx`
+  - `components/canvas/list-view/search-input.tsx`
+  - `lib/card-filters.ts`
+  - `hooks/use-card-search.ts`
+
+**Fase 3: Ordenação e Performance (2h)**
+- Virtualização com `react-window` (50+ cards)
+- Memoização de cards filtrados
+- Debounce na busca (300ms)
+- Opções de ordenação: stage-asc, stage-desc, updated-desc, alphabetical, completion
+
+**Fase 4: Responsividade e Polish (1h)**
+- Layout responsivo mobile
+- Skeleton loading
+- Empty states
+- Transições suaves
 
 #### Solução Proposta
 Toggle entre Grid View (atual) e List View:
@@ -1187,17 +1677,32 @@ Toggle entre Grid View (atual) e List View:
 **List View mostra:**
 - Título do card
 - Etapa (com cor)
-- Status (vazio, preenchido, completo)
-- Última edição (timestamp)
+- Status (vazio, partial, completo)
+- Última edição (timestamp relativo)
 - Ações rápidas (editar, IA, excluir)
 
 **Features:**
-- Filtros: por etapa, por completude
-- Busca textual (busca no título e conteúdo)
-- Ordenação: alfabética, cronológica, por etapa
+- **Filtros:** por etapa (múltiplos), por status de completude
+- **Busca:** textual em tempo real (título + conteúdo)
+- **Ordenação:** 5 opções (etapa, data, alfabético, completude)
+- **Performance:** virtualização automática com 50+ cards
 
-#### Implementação
+#### Implementação Técnica
 ```typescript
+// Estado da view (localStorage)
+type ViewMode = 'grid' | 'list'
+
+interface ListViewItemProps {
+  card: CardRecord
+  stageName: string
+  stageColor: string
+  completionStatus: 'empty' | 'partial' | 'complete'
+  lastUpdated: Date
+  onEdit: () => void
+  onAI: () => void
+  onDelete: () => void
+}
+
 // Toggle view mode
 <ViewModeToggle
   mode={viewMode}
@@ -1205,12 +1710,16 @@ Toggle entre Grid View (atual) e List View:
   options={['grid', 'list']}
 />
 
-// List view component
-<ListView cards={cards}>
+// List view com virtualização
+<ListView cards={filteredCards} virtualize={cards.length > 50}>
   {cards.map(card => (
     <ListViewItem
       key={card.id}
       card={card}
+      stageName={STAGE_NAMES[getStageNumber(card.card_type)]}
+      stageColor={STAGE_COLORS[getStageNumber(card.card_type)]}
+      completionStatus={calculateCompletionStatus(card)}
+      lastUpdated={new Date(card.updated_at)}
       onEdit={() => handleEdit(card)}
       onAI={() => handleAI(card)}
       onDelete={() => handleDelete(card)}
@@ -1221,11 +1730,30 @@ Toggle entre Grid View (atual) e List View:
 
 #### Acceptance Criteria
 - [ ] Toggle grid/list persiste no localStorage
-- [ ] List view mostra todos os metadados
-- [ ] Filtros funcionam em ambos os modos
-- [ ] Busca em tempo real
-- [ ] Performance com 50+ cards
-- [ ] Responsivo (colapsa em mobile)
+- [ ] List view mostra todos os metadados relevantes
+- [ ] Filtros funcionam (etapa múltipla + status)
+- [ ] Busca em tempo real (debounced 300ms)
+- [ ] Ordenação com 5 opções funcionais
+- [ ] Performance com 100+ cards < 100ms
+- [ ] Virtualização ativa automaticamente (50+ cards)
+- [ ] Responsivo mobile (stack vertical)
+- [ ] Skeleton loading durante fetch
+- [ ] Empty states informativos
+
+#### Arquivos Afetados
+**Novos:**
+- `components/canvas/list-view/list-view-container.tsx`
+- `components/canvas/list-view/list-view-item.tsx`
+- `components/canvas/list-view/filters-bar.tsx`
+- `components/canvas/list-view/search-input.tsx`
+- `components/canvas/list-view/view-mode-toggle.tsx`
+- `lib/canvas-view-state.ts`
+- `lib/card-filters.ts`
+- `lib/card-sorting.ts`
+- `hooks/use-card-search.ts`
+
+**Modificados:**
+- `components/canvas/canvas-workspace.tsx` - Adicionar toggle e lógica de view mode
 
 ---
 
@@ -1720,5 +2248,5 @@ Tema claro para canvas e overview:
 
 ---
 
-**Última revisão:** 2025-10-23
-**Próxima revisão:** 2025-11-23 (ou após Sprint 1)
+**Última revisão:** 2025-10-24
+**Próxima revisão:** 2025-11-24 (ou após Sprint 2 completo)

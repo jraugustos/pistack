@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Sparkles, Send, X } from 'lucide-react'
+import { Sparkles, Send, X, Trash2 } from 'lucide-react'
 import { CardReferenceBadge } from './card-reference-badge'
 import { MessageContent } from './message-content'
+import { QuickSuggestionsCarousel } from './quick-suggestions-carousel'
 import {
   CARD_TITLES,
   STAGE_COLORS,
@@ -489,6 +490,35 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
     }
   }
 
+  const handleClearChat = async () => {
+    const confirmed = window.confirm(
+      'Tem certeza que deseja limpar todo o histórico de chat desta etapa? Esta ação não pode ser desfeita.'
+    )
+
+    if (!confirmed) return
+
+    try {
+      const response = await fetch(
+        `/api/ai/history?projectId=${projectId}&stage=${activeStage}`,
+        {
+          method: 'DELETE',
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to clear chat')
+      }
+
+      // Clear frontend state
+      setMessages([])
+      setReferencedCard(null)
+      setInput('')
+    } catch (error) {
+      console.error('Error clearing chat:', error)
+      alert('Erro ao limpar chat. Por favor, tente novamente.')
+    }
+  }
+
   const stageColor = STAGE_COLORS[activeStage] || '#7AA2FF'
   const suggestions = referencedCard
     ? CONTEXTUAL_SUGGESTIONS[referencedCard.card_type] || DEFAULT_SUGGESTIONS
@@ -526,14 +556,25 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
           <div className="flex-1">
             <h3 className="font-semibold text-sm">Copiloto do Projeto</h3>
           </div>
-          <button
-            onClick={onToggle}
-            className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors"
-            aria-label="Fechar Copiloto"
-            title="Fechar (ESC)"
-          >
-            <X className="w-4 h-4 text-[#E6E9F2]/60" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleClearChat}
+              disabled={messages.length === 0 || isLoading}
+              className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Limpar chat"
+              title="Limpar histórico de chat"
+            >
+              <Trash2 className="w-4 h-4 text-[#E6E9F2]/60 hover:text-red-400" />
+            </button>
+            <button
+              onClick={onToggle}
+              className="w-8 h-8 rounded-lg hover:bg-white/5 flex items-center justify-center transition-colors"
+              aria-label="Fechar Copiloto"
+              title="Fechar (ESC)"
+            >
+              <X className="w-4 h-4 text-[#E6E9F2]/60" />
+            </button>
+          </div>
         </div>
 
         {/* Referenced Card Badge */}
@@ -622,39 +663,14 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Suggestions */}
+      {/* Quick Suggestions Carousel */}
       {!isHistoryLoading && messages.length > 0 && suggestions.length > 0 && (
-        <div className="px-4 py-3 border-t border-white/5">
-          <div className="text-xs font-medium text-[#E6E9F2]/40 mb-2">
-            Sugestões rápidas:
-          </div>
-          <div className="space-y-2">
-            {suggestions.slice(0, 3).map((suggestion, index) => (
-              <button
-                key={index}
-                onClick={() => handleQuickSuggestion(suggestion.text)}
-                disabled={isLoading}
-                className="w-full text-left px-3 py-2 text-xs border rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  backgroundColor: `${stageColor}08`,
-                  borderColor: `${stageColor}20`,
-                  color: `${stageColor}`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = `${stageColor}15`
-                  e.currentTarget.style.borderColor = `${stageColor}40`
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = `${stageColor}08`
-                  e.currentTarget.style.borderColor = `${stageColor}20`
-                }}
-              >
-                <span>{suggestion.icon}</span>
-                <span>{suggestion.text}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <QuickSuggestionsCarousel
+          suggestions={suggestions}
+          onSelect={handleQuickSuggestion}
+          stageColor={stageColor}
+          isLoading={isLoading}
+        />
       )}
 
       {/* Input Area */}

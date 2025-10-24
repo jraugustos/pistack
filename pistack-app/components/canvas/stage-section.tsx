@@ -62,6 +62,7 @@ import {
 } from '@/components/canvas/cards/etapa-6'
 import { CardActionsProvider, CardActionsContextValue } from '@/components/canvas/cards/base-card'
 import { CardEditModal } from '@/components/canvas/card-edit-modal'
+import { BatchCreationModal } from '@/components/canvas/batch-creation-modal'
 import { normalizeCardArrays } from '@/lib/array-normalizers'
 
 interface StageSectionProps {
@@ -97,6 +98,23 @@ interface LoadingState {
   activeStep: number
   completedSteps: number[]
   messageIndex: number
+}
+
+type CardStatus = 'pending' | 'creating' | 'success' | 'error'
+
+interface BatchCard {
+  cardType: string
+  title: string
+  status: CardStatus
+  error?: string
+}
+
+interface BatchProgress {
+  current: number
+  total: number
+  currentCardType: string
+  currentCardTitle: string
+  cards: BatchCard[]
 }
 
 const LOADING_MESSAGES = [
@@ -868,6 +886,9 @@ const StageSectionBase: ForwardRefRenderFunction<
   const [loadingState, setLoadingState] = useState<LoadingState>(() =>
     createLoadingState(false)
   )
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
+  const [batchProgress, setBatchProgress] = useState<BatchProgress | null>(null)
+  const batchAbortRef = useRef(false)
 
   // Hook para prevenir cliques múltiplos no botão de IA
   const { canClick } = useAIButtonGuard()
@@ -1034,6 +1055,142 @@ const StageSectionBase: ForwardRefRenderFunction<
 
       return Boolean(value)
     })
+  }, [])
+
+  // Batch Creation Functions
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  const updateBatchCardStatus = useCallback(
+    (index: number, status: CardStatus, error?: string) => {
+      setBatchProgress((prev) => {
+        if (!prev) return prev
+
+        const updatedCards = [...prev.cards]
+        updatedCards[index] = {
+          ...updatedCards[index],
+          status,
+          error,
+        }
+
+        return {
+          ...prev,
+          current: status === 'success' || status === 'error' ? index + 1 : prev.current,
+          currentCardType: updatedCards[index].cardType,
+          currentCardTitle: updatedCards[index].title,
+          cards: updatedCards,
+        }
+      })
+    },
+    []
+  )
+
+  const handleBatchCreate = useCallback(async () => {
+    const cardTypes = STAGE_CARD_TYPES[stage.stage_number]
+
+    console.log('[BatchCreate] Starting batch creation for stage:', stage.stage_number)
+    console.log('[BatchCreate] Card types:', cardTypes)
+
+    if (!cardTypes || cardTypes.length === 0) {
+      console.log('[BatchCreate] No card types found, aborting')
+      return
+    }
+
+    // Inicializa progresso
+    setBatchProgress({
+      current: 0,
+      total: cardTypes.length,
+      currentCardType: '',
+      currentCardTitle: '',
+      cards: cardTypes.map((type) => ({
+        cardType: type,
+        title: CARD_TITLES[type] || type,
+        status: 'pending' as CardStatus,
+      })),
+    })
+
+    setIsBatchModalOpen(true)
+    batchAbortRef.current = false
+
+    // Loop de criação
+    for (let i = 0; i < cardTypes.length; i++) {
+      if (batchAbortRef.current) {
+        console.log('[BatchCreate] Aborted by user at index:', i)
+        break
+      }
+
+      const cardType = cardTypes[i]
+      console.log(`[BatchCreate] Creating card ${i + 1}/${cardTypes.length}: ${cardType}`)
+
+      // Atualiza para "creating"
+      updateBatchCardStatus(i, 'creating')
+
+      try {
+        const payload = {
+          stageId: stage.id,
+          cardType,
+          position: i,
+          autoPopulate: true,
+        }
+        console.log('[BatchCreate] Sending request with payload:', payload)
+
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 90000) // 90s timeout
+
+        const response = await fetch('/api/cards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        })
+
+        clearTimeout(timeoutId)
+
+        console.log(`[BatchCreate] Response status for ${cardType}:`, response.status)
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error(`[BatchCreate] Error response:`, errorText)
+          throw new Error(`HTTP ${response.status}: ${errorText}`)
+        }
+
+        const responseData = await response.json()
+        console.log(`[BatchCreate] Success for ${cardType}:`, responseData)
+
+        // Atualiza para "success"
+        updateBatchCardStatus(i, 'success')
+
+        // Throttle de 500ms entre requests (exceto no último)
+        if (i < cardTypes.length - 1) {
+          console.log('[BatchCreate] Waiting 500ms before next request...')
+          await delay(500)
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Erro desconhecido'
+        console.error(`[BatchCreate] Error creating ${cardType}:`, errorMessage)
+        updateBatchCardStatus(i, 'error', errorMessage)
+
+        // Continua mesmo com erro
+        if (i < cardTypes.length - 1) {
+          await delay(500)
+        }
+      }
+    }
+
+    console.log('[BatchCreate] All cards processed, refreshing...')
+    // Refresh cards ao final
+    await fetchCards({ silent: true })
+
+    // Aguarda 2s para mostrar resultado, depois fecha
+    console.log('[BatchCreate] Waiting 2s before closing modal...')
+    await delay(2000)
+    setIsBatchModalOpen(false)
+    console.log('[BatchCreate] Batch creation complete')
+  }, [stage.id, stage.stage_number, fetchCards, updateBatchCardStatus])
+
+  const handleBatchCancel = useCallback(() => {
+    batchAbortRef.current = true
+    setIsBatchModalOpen(false)
   }, [])
 
   const cardMatchesFilters = useCallback(
@@ -1491,6 +1648,7 @@ const StageSectionBase: ForwardRefRenderFunction<
 
           {isAddMenuOpen && hasSelectableCards && (
             <div className="absolute right-0 mt-2 w-60 rounded-lg border border-white/10 bg-[#0F1115] shadow-xl py-2 z-20">
+              {/* Cards individuais */}
               {selectableCardTypes.map((cardType) => (
                 <button
                   key={cardType}
@@ -1505,6 +1663,36 @@ const StageSectionBase: ForwardRefRenderFunction<
                   {CARD_TITLES[cardType] ?? 'Novo card'}
                 </button>
               ))}
+
+              {/* Opção Criar Todos como último item (se houver mais de 1 card disponível) */}
+              {selectableCardTypes.length > 1 && (
+                <>
+                  <div className="my-1 border-t border-white/5" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddMenuOpen(false)
+                      handleBatchCreate()
+                    }}
+                    disabled={isLoading || isBatchModalOpen}
+                    className={`w-full px-3 py-2 text-left text-sm font-medium transition-colors flex items-center gap-2 ${
+                      isLoading || isBatchModalOpen
+                        ? 'text-[#E6E9F2]/30 cursor-not-allowed'
+                        : 'hover:bg-white/10'
+                    }`}
+                    style={
+                      !isLoading && !isBatchModalOpen
+                        ? {
+                            color: stageColor,
+                          }
+                        : undefined
+                    }
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Criar Todos ({selectableCardTypes.length})
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -1647,6 +1835,15 @@ const StageSectionBase: ForwardRefRenderFunction<
           </div>,
           document.body
         )}
+
+      {/* Batch Creation Modal */}
+      <BatchCreationModal
+        isOpen={isBatchModalOpen}
+        onClose={handleBatchCancel}
+        progress={batchProgress}
+        stageColor={stage.stage_color}
+        stageName={stage.stage_name}
+      />
     </>
   )
 }

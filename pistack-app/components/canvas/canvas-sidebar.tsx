@@ -1,8 +1,11 @@
 'use client'
 
 import { FormEvent, useEffect, useMemo, useState } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, FileText } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { ViewModeToggle } from './list-view/view-mode-toggle'
+import type { ViewMode } from '@/lib/canvas-view-state'
 
 interface Stage {
   number: number
@@ -25,6 +28,10 @@ interface CanvasSidebarProps {
   onStageChange?: (stageNumber: number) => void
   stages?: Stage[]
   projectId?: string
+  totalCards?: number
+  completedCards?: number
+  viewMode?: ViewMode
+  onViewModeChange?: (mode: ViewMode) => void
 }
 
 export function CanvasSidebar({
@@ -32,7 +39,12 @@ export function CanvasSidebar({
   onStageChange,
   stages,
   projectId,
+  totalCards = 35,
+  completedCards = 0,
+  viewMode = 'grid',
+  onViewModeChange,
 }: CanvasSidebarProps) {
+  const router = useRouter()
   const [selectedStage, setSelectedStage] = useState(activeStage)
   const stageList = useMemo(() => stages ?? STAGES, [stages])
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
@@ -44,6 +56,10 @@ export function CanvasSidebar({
     () => stageList.find((stage) => stage.number === selectedStage),
     [stageList, selectedStage]
   )
+
+  // Calculate progress percentage
+  const progressPercentage = Math.round((completedCards / totalCards) * 100)
+  const canAccessOverview = progressPercentage >= 50
 
   useEffect(() => {
     setSelectedStage(activeStage)
@@ -117,11 +133,49 @@ export function CanvasSidebar({
   return (
     <>
       <aside className="w-64 border-r border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
-      {/* Header */}
+      {/* Header with Progress Bar */}
       <div className="p-4 border-b border-white/5">
-        <h2 className="text-xs font-semibold text-[#E6E9F2]/40 uppercase tracking-wider mb-3">
-          Etapas do Projeto
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xs font-semibold text-[#E6E9F2]/40 uppercase tracking-wider">
+            Etapas do Projeto
+          </h2>
+          {onViewModeChange && (
+            <ViewModeToggle mode={viewMode} onChange={onViewModeChange} />
+          )}
+        </div>
+
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-[#E6E9F2]/60">Progresso</span>
+            <span className="font-semibold" style={{
+              color: progressPercentage >= 50 ? '#5AD19A' : '#FFC24B'
+            }}>
+              {progressPercentage}%
+            </span>
+          </div>
+          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${progressPercentage}%`,
+                backgroundColor: progressPercentage >= 50 ? '#5AD19A' : '#FFC24B'
+              }}
+            />
+          </div>
+          <div className="text-xs text-[#E6E9F2]/40">
+            {completedCards}/{totalCards} cards criados
+          </div>
+
+          {/* Mensagem informativa sobre Overview (aparece apenas quando <50%) */}
+          {!canAccessOverview && (
+            <div className="mt-3 px-3 py-2 bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 rounded-lg">
+              <p className="text-xs text-[#7AA2FF] leading-relaxed">
+                💡 Complete 50% dos cards ({Math.ceil(totalCards * 0.5)}/{totalCards}) para desbloquear o Project Overview
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Stages List */}
@@ -169,21 +223,26 @@ export function CanvasSidebar({
         })}
       </div>
 
-      {/* Add New Stage Button */}
-        <div className="p-3 border-t border-white/5">
-          <button
-            onClick={handleNewStageClick}
-            disabled={isSubmittingRequest}
-            className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-              isSubmittingRequest
-                ? 'bg-white/10 text-[#E6E9F2]/40 cursor-not-allowed'
-                : 'bg-white/5 hover:bg-white/10'
-            }`}
-          >
-            <Plus className="w-4 h-4" />
-            Nova Etapa
-          </button>
-        </div>
+      {/* Overview Button */}
+      <div className="p-3 border-t border-white/5">
+        <button
+          onClick={() => {
+            if (canAccessOverview && projectId) {
+              router.push(`/canvas/${projectId}/overview`)
+            }
+          }}
+          disabled={!canAccessOverview}
+          title={!canAccessOverview ? `Complete ${Math.ceil(totalCards * 0.5)} cards (50%) para desbloquear` : 'Ver visão geral do projeto'}
+          className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+            canAccessOverview
+              ? 'bg-[#7AA2FF] hover:bg-[#6690E8] text-white'
+              : 'bg-white/5 text-[#E6E9F2]/30 cursor-not-allowed'
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          {canAccessOverview ? 'Project Overview' : `Bloqueado (${progressPercentage}%)`}
+        </button>
+      </div>
       </aside>
 
       {isRequestModalOpen && (

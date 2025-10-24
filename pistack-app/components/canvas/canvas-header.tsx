@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, History, Users, Download, X, Search, Filter, ZoomIn, ZoomOut } from 'lucide-react'
+import { ArrowLeft, History, Users, Download, X, Search, Filter, ZoomIn, ZoomOut, FileText } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useRouter } from 'next/navigation'
 
@@ -17,6 +17,7 @@ interface CanvasHeaderProps {
   zoom: number
   onZoomIn: () => void
   onZoomOut: () => void
+  progressPercentage?: number
 }
 
 export function CanvasHeader({
@@ -31,11 +32,13 @@ export function CanvasHeader({
   zoom,
   onZoomIn,
   onZoomOut,
+  progressPercentage = 0,
 }: CanvasHeaderProps) {
   const router = useRouter()
   const [shareFeedback, setShareFeedback] = useState<string | null>(null)
   const [exportFeedback, setExportFeedback] = useState<string | null>(null)
   const [isExporting, setIsExporting] = useState(false)
+  const canAccessOverview = progressPercentage >= 50
   const [isVersionsOpen, setIsVersionsOpen] = useState(false)
   const [isLoadingVersions, setIsLoadingVersions] = useState(false)
   const [versionsError, setVersionsError] = useState<string | null>(null)
@@ -273,6 +276,21 @@ export function CanvasHeader({
               </button>
 
               <div className="w-px h-6 bg-white/5 mx-1"></div>
+
+              <button
+                onClick={() => canAccessOverview && router.push(`/canvas/${projectId}/overview`)}
+                disabled={!canAccessOverview}
+                title={!canAccessOverview ? `Complete 50% dos cards para desbloquear (atual: ${progressPercentage}%)` : 'Ver visão geral do projeto'}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
+                  canAccessOverview
+                    ? 'text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5'
+                    : 'text-[#E6E9F2]/30 cursor-not-allowed'
+                }`}
+                aria-label="Ver overview do projeto"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                Overview
+              </button>
 
               <button
                 onClick={handleExport}

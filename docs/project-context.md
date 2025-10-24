@@ -104,6 +104,53 @@ pistack-app/
 
 ---
 
+## Sistema de Progressão e Gamificação (Sprint 2 - UX Improvements)
+
+### Barra de Progresso e Unlock do Overview
+
+**Implementado em:** Sprint 2 (2025-10-24)
+
+- **Progress Bar na Sidebar (`canvas-sidebar.tsx`):**
+  - Exibição visual de X/35 cards criados
+  - Percentual com cores dinâmicas:
+    - Amarelo (#FFC24B) quando <50%
+    - Verde (#5AD19A) quando ≥50%
+  - Barra de progresso animada com transições suaves
+
+- **Sistema de Unlock (50% threshold):**
+  - Project Overview bloqueado até que 50% dos cards sejam criados (18/35)
+  - Mensagem informativa na sidebar (desaparece automaticamente ao atingir 50%)
+  - Botões de Overview desabilitados quando <50% com tooltips explicativos
+  - Cálculo de progresso em tempo real via evento `pistack:cards:refresh`
+
+- **Navegação Melhorada:**
+  - Botão "Nova Etapa" removido da sidebar (simplificação)
+  - Botão "Project Overview" adicionado na sidebar (com estados bloqueado/desbloqueado)
+  - Botão "Overview" no header também respeita a lógica de unlock
+
+### Batch Creation UX
+
+**Implementado em:** Sprint 2 (2025-10-24)
+
+- **"Criar Todos" no Dropdown (`stage-section.tsx`):**
+  - Botão movido para dentro do dropdown de cada etapa (última posição após separador)
+  - Mostra contador de cards disponíveis: "Criar Todos (X)"
+  - Só aparece quando há 2+ cards disponíveis na etapa
+
+- **Modal de Progresso (`batch-creation-modal.tsx`):**
+  - Banner informativo: "⏱️ Cada card leva ~60s para ser preenchido pela IA"
+  - Progress bar visual mostrando X/Y cards criados
+  - Lista de cards com status (pendente/criando/completo)
+  - Animação de conclusão ao finalizar
+
+- **Melhorias Técnicas:**
+  - Timeout aumentado de 30s para 90s para evitar abort prematuro
+  - Logs detalhados em cada etapa do processo batch
+  - Tratamento robusto de erros com mensagens específicas
+  - Throttling automático entre criação de cards
+
+---
+
 ## Formatos Esperados (Etapa 1)
 
 | Card              | Campos obrigatórios (exemplo)                                                                                           |
@@ -175,6 +222,18 @@ pistack-app/
 - [x] **Normalizações centralizadas de arrays (Etapas 2–6):**
   - Criado `pistack-app/lib/array-normalizers.ts` com `toArrayOfStrings`, `normalizeKpis`, `normalizeCardArrays`.
   - Integrado no autopreenchimento da IA (`lib/ai/card-autofill.ts`) e na renderização (`components/canvas/stage-section.tsx`).
+- [x] **Sistema de Progressão e Unlock do Project Overview (50%):**
+  - Barra de progresso visual na sidebar mostrando X/35 cards criados
+  - Project Overview desbloqueado quando ≥50% dos cards estão criados
+  - Mensagem informativa na sidebar (desaparece ao atingir 50%)
+  - Botão Overview adicionado na sidebar (com estado bloqueado/desbloqueado)
+  - Botão Overview no header desabilitado quando <50% com tooltip dinâmico
+  - Cálculo de progresso integrado via evento `pistack:cards:refresh`
+- [x] **Batch Creation UX (Criar Todos os Cards):**
+  - Botão "Criar Todos" movido para dentro do dropdown de cada etapa (última posição)
+  - Modal de progresso com banner informativo (~60s por card)
+  - Timeout aumentado para 90s para evitar abort prematuro
+  - Logs detalhados para debugging do processo de criação em lote
   - Corrigido loop de rótulos no card “Público‑Alvo” salvando campos estruturados (`primaryAudience`, `secondaryAudience`) e limpando rótulos.
 - [x] **Revisar configurações dos Assistants da OpenAI:** atualizar instruções no dashboard da OpenAI para incluir novas regras de array (tarefa manual externa).
   - Status: Etapas 1 e 2 revisadas e publicadas (arrays JSON válidos, sem bullets/markdown/JSON stringificado; sem labels repetidos; uso exclusivo de update_card; PT‑BR).
@@ -230,10 +289,10 @@ pistack-app/
   - ✅ Script `lint` atualizado para `eslint . --ext .ts,.tsx --max-warnings 0`
   - ✅ Script `lint:fix` adicionado para auto-fix
 
-- [ ] IA panel fechar para deixar o canvas mais expandido, o usuário pode clicar e abrir ou ele será aberto quando um card for referenciado
+- [x] IA panel fechar para deixar o canvas mais expandido, o usuário pode clicar e abrir ou ele será aberto quando um card for referenciado ✅ **Sprint 1 - Tarefa 1**
 - [ ] Separar aplicação do site
 - [ ] Adicionar ordenação (drag-and-drop) nas listas dos cards (features, stories, critérios, roadmap)
-- [ ] Indicador discreto de autosave/erro por card e feedback de última atualização
+- [x] Indicador discreto de autosave/erro por card e feedback de última atualização ✅ **Sprint 1 - Tarefa 2**
 - [ ] Templates personalizados
 
 ---
@@ -315,18 +374,48 @@ pistack-app/
    - Incluir instruções sobre arrays JSON válidos
    - Publicar versões atualizadas
 
-### Médio Prazo (Funcionalidades Novas)
-1. **Sistema de Templates:**
+### Médio Prazo (Sprint 2 - Parte 2 - PLANEJADO)
+
+**🎯 Power User Features (13-18h total):**
+
+1. **List View dos Cards (6-8h)** - 📋 PLANEJADO
+   - Visão alternativa em formato de lista
+   - Filtros por etapa e status de completude
+   - Busca textual em tempo real (debounced 300ms)
+   - Ordenação: etapa, data, alfabético, completude
+   - Virtualização automática com 50+ cards
+   - Toggle grid/list persistente (localStorage)
+
+2. **Menções com @ (4-6h)** - 📋 PLANEJADO
+   - Autocomplete de cards ao digitar @
+   - Múltiplas menções na mesma mensagem
+   - Badges visuais para cards mencionados
+   - Envio de contexto estruturado para IA
+   - Navegação por teclado (↑↓ Enter Escape)
+
+3. **Command Palette com / (3-4h)** - 📋 PLANEJADO
+   - Atalhos rápidos para ações comuns
+   - Comandos: clear-chat, batch-create, export-prd, goto-overview, help
+   - Agrupamento por categoria
+   - Atalhos de teclado opcionais (Cmd+K)
+
+**Ordem de implementação:**
+1. List View (base para as outras)
+2. Menções @ (reutiliza busca da List View)
+3. Command Palette (consolida tudo)
+
+**Dependências:**
+```bash
+npm install react-window  # Virtualização de listas
+npm install react-hotkeys-hook fuse.js  # Opcionais
+```
+
+**Arquivos novos:** ~15-20 arquivos
+**Arquivos modificados:** 3-5 arquivos principais
+
+4. **Sistema de Templates:**
    - Criar templates pré-definidos de projetos
    - Permitir usuário salvar seu projeto como template
-
-2. **Batch Creation:**
-   - Botão para criar todos os cards de uma etapa de uma vez
-   - Progresso visual da criação em lote
-
-3. **List View:**
-   - Visão alternativa dos cards em formato de lista
-   - Facilitar navegação e overview rápido
 
 ### Longo Prazo (Grandes Features)
 1. **Modo Conversacional (Wizard):**
@@ -346,4 +435,4 @@ pistack-app/
    - Página pública para demonstração do produto
 
 
-*Atualizado em: 2025-01-22.*
+*Atualizado em: 2025-10-24.*

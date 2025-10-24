@@ -10,7 +10,10 @@ import {
 import { CanvasHeader } from '@/components/canvas/canvas-header'
 import { CanvasSidebar } from '@/components/canvas/canvas-sidebar'
 import { CanvasArea } from '@/components/canvas/canvas-area'
+import { CanvasAreaListView } from '@/components/canvas/canvas-area-list-view'
 import { AiSidebar } from '@/components/canvas/ai-sidebar'
+import { getTotalExpectedCards } from '@/lib/card-constants'
+import { getViewMode, setViewMode as saveViewMode, type ViewMode } from '@/lib/canvas-view-state'
 
 interface StageRecord {
   id: string
@@ -61,6 +64,14 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [showOnlyFilled, setShowOnlyFilled] = useState(false)
   const [zoom, setZoom] = useState(100)
+  const [totalCardsCreated, setTotalCardsCreated] = useState(0)
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    // Restore from localStorage
+    if (typeof window !== 'undefined') {
+      return getViewMode()
+    }
+    return 'grid'
+  })
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     // Restore from localStorage
     if (typeof window !== 'undefined') {
@@ -72,6 +83,50 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
   const stageRefs = useRef<Record<number, HTMLDivElement | null>>({})
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
+
+  // Handle view mode change
+  const handleViewModeChange = useCallback((mode: ViewMode) => {
+    setViewMode(mode)
+    saveViewMode(mode)
+  }, [])
+
+  // Calculate total expected cards
+  const totalExpectedCards = useMemo(() => getTotalExpectedCards(), [])
+
+  // Calculate progress percentage
+  const progressPercentage = useMemo(
+    () => Math.round((totalCardsCreated / totalExpectedCards) * 100),
+    [totalCardsCreated, totalExpectedCards]
+  )
+
+  // Fetch total cards count from all stages
+  const fetchTotalCards = useCallback(async () => {
+    try {
+      let total = 0
+      for (const stage of sortedStages) {
+        const response = await fetch(`/api/cards?stageId=${stage.id}`)
+        const data = await response.json()
+        total += (data.cards || []).length
+      }
+      setTotalCardsCreated(total)
+    } catch (error) {
+      console.error('Error counting total cards:', error)
+    }
+  }, [sortedStages])
+
+  // Initial load and listen for card updates
+  useEffect(() => {
+    fetchTotalCards()
+
+    const handleCardsRefresh = () => {
+      fetchTotalCards()
+    }
+
+    window.addEventListener('pistack:cards:refresh', handleCardsRefresh)
+    return () => {
+      window.removeEventListener('pistack:cards:refresh', handleCardsRefresh)
+    }
+  }, [fetchTotalCards])
 
   const activeStageData = useMemo(
     () =>
@@ -218,6 +273,7 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
         zoom={zoom}
         onZoomIn={() => setZoom((current) => Math.min(150, current + 10))}
         onZoomOut={() => setZoom((current) => Math.max(60, current - 10))}
+        progressPercentage={progressPercentage}
       />
 
       <div className="flex-1 flex pt-14 overflow-hidden">
@@ -226,21 +282,32 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
           onStageChange={handleStageChange}
           stages={sidebarStages}
           projectId={project.id}
+          totalCards={totalExpectedCards}
+          completedCards={totalCardsCreated}
+          viewMode={viewMode}
+          onViewModeChange={handleViewModeChange}
         />
 
-        <CanvasArea
-          projectId={project.id}
-          stages={sortedStages}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          showOnlyFilled={showOnlyFilled}
-          onToggleFilled={() => setShowOnlyFilled((previous) => !previous)}
-          zoom={zoom}
-          onZoomIn={() => setZoom((current) => Math.min(150, current + 10))}
-          onZoomOut={() => setZoom((current) => Math.max(60, current - 10))}
-          ref={scrollContainerRef}
-          registerStageRef={registerStageRef}
-        />
+        {viewMode === 'grid' ? (
+          <CanvasArea
+            projectId={project.id}
+            stages={sortedStages}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            showOnlyFilled={showOnlyFilled}
+            onToggleFilled={() => setShowOnlyFilled((previous) => !previous)}
+            zoom={zoom}
+            onZoomIn={() => setZoom((current) => Math.min(150, current + 10))}
+            onZoomOut={() => setZoom((current) => Math.max(60, current - 10))}
+            ref={scrollContainerRef}
+            registerStageRef={registerStageRef}
+          />
+        ) : (
+          <CanvasAreaListView
+            projectId={project.id}
+            stages={sortedStages}
+          />
+        )}
 
         <AiSidebar
           projectId={project.id}
