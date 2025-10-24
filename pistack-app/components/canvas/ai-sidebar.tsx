@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { Sparkles, Send, X, Trash2 } from 'lucide-react'
 import { CardReferenceBadge } from './card-reference-badge'
 import { MessageContent } from './message-content'
@@ -747,15 +748,18 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards =
           />
 
           {/* Mention Dropdown */}
-          {isMentionActive && mentionSuggestions.length > 0 && (
-            <MentionDropdown
-              suggestions={mentionSuggestions}
-              position={mentionPosition}
-              selectedIndex={mentionSelectedIndex}
-              onSelect={handleMentionSelect}
-              onClose={closeMention}
-            />
-          )}
+          {isMentionActive && mentionSuggestions.length > 0 && typeof window !== 'undefined' &&
+            createPortal(
+              <MentionDropdown
+                suggestions={mentionSuggestions}
+                position={mentionPosition}
+                selectedIndex={mentionSelectedIndex}
+                onSelect={handleMentionSelect}
+                onClose={closeMention}
+              />,
+              document.body
+            )
+          }
 
           <button
             onClick={handleSend}

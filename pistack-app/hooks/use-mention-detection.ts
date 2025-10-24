@@ -65,9 +65,9 @@ export function useMentionDetection({
       const textareaRect = textarea.getBoundingClientRect()
       const spanRect = span.getBoundingClientRect()
 
-      // Calculate relative position
-      const top = spanRect.top - textareaRect.top + textarea.scrollTop + 20 // 20px below cursor
-      const left = spanRect.left - textareaRect.left + textarea.scrollLeft
+      // Calculate absolute viewport position (for fixed positioning with portal)
+      const top = spanRect.top + 20 // 20px below cursor
+      const left = spanRect.left
 
       document.body.removeChild(mirror)
 
