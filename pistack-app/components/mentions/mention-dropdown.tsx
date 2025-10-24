@@ -46,13 +46,17 @@ export function MentionDropdown({
   }, [selectedIndex])
 
   // Always log when dropdown renders
-  console.log('[MentionDropdown] Rendering with', suggestions.length, 'suggestions at position', position)
+  console.log('[MentionDropdown] ========== RENDERING ==========')
+  console.log('[MentionDropdown] Suggestions:', suggestions.length)
+  console.log('[MentionDropdown] Position TOP:', position.top, 'px')
+  console.log('[MentionDropdown] Position LEFT:', position.left, 'px')
+  console.log('[MentionDropdown] ==================================')
 
   if (suggestions.length === 0) {
     return (
       <div
         ref={dropdownRef}
-        className="fixed z-[9999] w-80 bg-[#13161C] border-2 border-[#7AA2FF] rounded-lg shadow-2xl p-4"
+        className="fixed z-[9999] w-80 bg-red-600 border-4 border-yellow-400 rounded-lg shadow-2xl p-4"
         style={{
           top: `${position.top}px`,
           left: `${position.left}px`,
@@ -76,7 +80,7 @@ export function MentionDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-[9999] w-80 max-h-64 overflow-y-auto bg-[#13161C] border-2 border-[#7AA2FF] rounded-lg shadow-2xl"
+      className="fixed z-[9999] w-80 max-h-64 overflow-y-auto bg-red-600 border-4 border-yellow-400 rounded-lg shadow-2xl"
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
