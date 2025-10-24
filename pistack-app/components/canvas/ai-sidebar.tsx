@@ -729,8 +729,8 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards =
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Suggestions Carousel */}
-      {!isHistoryLoading && messages.length > 0 && suggestions.length > 0 && (
+      {/* Quick Suggestions Carousel - Show BEFORE first message */}
+      {!isHistoryLoading && messages.length === 0 && suggestions.length > 0 && (
         <QuickSuggestionsCarousel
           suggestions={suggestions}
           onSelect={handleQuickSuggestion}

@@ -81,10 +81,6 @@ export function QuickSuggestionsCarousel({
 
   return (
     <div className="px-4 py-3 border-t border-white/5">
-      <div className="text-xs font-medium text-[#E6E9F2]/40 mb-2">
-        Sugestões rápidas:
-      </div>
-
       {/* Sugestão atual com animação */}
       <div className="relative overflow-hidden">
         <button
