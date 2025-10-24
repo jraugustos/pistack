@@ -45,19 +45,30 @@ export function MentionDropdown({
     }
   }, [selectedIndex])
 
+  // Always log when dropdown renders
+  console.log('[MentionDropdown] Rendering with', suggestions.length, 'suggestions at position', position)
+
   if (suggestions.length === 0) {
     return (
       <div
         ref={dropdownRef}
-        className="fixed z-50 w-80 bg-[#13161C] border border-white/10 rounded-lg shadow-2xl p-3"
+        className="fixed z-[9999] w-80 bg-[#13161C] border-2 border-[#7AA2FF] rounded-lg shadow-2xl p-4"
         style={{
           top: `${position.top}px`,
           left: `${position.left}px`,
         }}
       >
-        <p className="text-sm text-[#E6E9F2]/40 text-center py-2">
-          Nenhum card encontrado
-        </p>
+        <div className="text-center">
+          <p className="text-sm text-[#E6E9F2] font-medium mb-1">
+            💡 Mencione Cards
+          </p>
+          <p className="text-xs text-[#E6E9F2]/60">
+            Digite @ seguido do nome do card para mencionar
+          </p>
+          <p className="text-xs text-[#E6E9F2]/40 mt-2">
+            {suggestions.length === 0 ? 'Nenhum card disponível' : 'Carregando...'}
+          </p>
+        </div>
       </div>
     )
   }
@@ -65,7 +76,7 @@ export function MentionDropdown({
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-50 w-80 max-h-64 overflow-y-auto bg-[#13161C] border border-white/10 rounded-lg shadow-2xl"
+      className="fixed z-[9999] w-80 max-h-64 overflow-y-auto bg-[#13161C] border-2 border-[#7AA2FF] rounded-lg shadow-2xl"
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
