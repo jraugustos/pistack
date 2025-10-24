@@ -127,38 +127,6 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
     }
   }, [sortedStages])
 
-  // Command Palette
-  const commandPalette = useCommandPalette({
-    context: {
-      currentViewMode: viewMode,
-      currentStage: activeStage,
-      isAiSidebarOpen: isSidebarOpen,
-      showOnlyFilled,
-      onNavigateToStage: handleStageChange,
-      onToggleAiSidebar: () => setIsSidebarOpen(!isSidebarOpen),
-      onToggleViewMode: handleViewModeChange,
-      onToggleShowOnlyFilled: () => setShowOnlyFilled(!showOnlyFilled),
-      onZoomIn: () => setZoom(current => Math.min(150, current + 10)),
-      onZoomOut: () => setZoom(current => Math.max(60, current - 10)),
-      onRefreshCards: () => {
-        window.dispatchEvent(
-          new CustomEvent('pistack:cards:refresh', {
-            detail: { projectId: project.id, stageNumber: activeStage },
-          })
-        )
-      },
-      onClearSearch: () => setSearchTerm(''),
-      onGoToOverview: () => {
-        window.location.href = `/canvas/${project.id}/overview`
-      },
-      onExportProject: () => {
-        // TODO: Implement export functionality
-        alert('Funcionalidade de exportação em desenvolvimento')
-      },
-    },
-    enabled: true,
-  })
-
   // Calculate total expected cards
   const totalExpectedCards = useMemo(() => getTotalExpectedCards(), [])
 
@@ -324,6 +292,38 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
     },
     []
   )
+
+  // Command Palette
+  const commandPalette = useCommandPalette({
+    context: {
+      currentViewMode: viewMode,
+      currentStage: activeStage,
+      isAiSidebarOpen: isSidebarOpen,
+      showOnlyFilled,
+      onNavigateToStage: handleStageChange,
+      onToggleAiSidebar: () => setIsSidebarOpen(!isSidebarOpen),
+      onToggleViewMode: handleViewModeChange,
+      onToggleShowOnlyFilled: () => setShowOnlyFilled(!showOnlyFilled),
+      onZoomIn: () => setZoom(current => Math.min(150, current + 10)),
+      onZoomOut: () => setZoom(current => Math.max(60, current - 10)),
+      onRefreshCards: () => {
+        window.dispatchEvent(
+          new CustomEvent('pistack:cards:refresh', {
+            detail: { projectId: project.id, stageNumber: activeStage },
+          })
+        )
+      },
+      onClearSearch: () => setSearchTerm(''),
+      onGoToOverview: () => {
+        window.location.href = `/canvas/${project.id}/overview`
+      },
+      onExportProject: () => {
+        // TODO: Implement export functionality
+        alert('Funcionalidade de exportação em desenvolvimento')
+      },
+    },
+    enabled: true,
+  })
 
   return (
     <div className="h-screen flex flex-col bg-[#0F1115] text-[#E6E9F2]">
