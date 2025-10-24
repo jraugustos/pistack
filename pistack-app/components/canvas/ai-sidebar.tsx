@@ -128,7 +128,13 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards =
   const [threadId, setThreadId] = useState<string | null>(null)
   const [isHistoryLoading, setIsHistoryLoading] = useState(true)
   const [referencedCard, setReferencedCard] = useState<ReferencedCard | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Only render portal on client
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Mentions functionality
   const {
@@ -748,7 +754,7 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards =
           />
 
           {/* Mention Dropdown */}
-          {isMentionActive && mentionSuggestions.length > 0 && typeof window !== 'undefined' &&
+          {isMounted && isMentionActive && mentionSuggestions.length > 0 &&
             createPortal(
               <MentionDropdown
                 suggestions={mentionSuggestions}
