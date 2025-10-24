@@ -753,8 +753,8 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards =
             ref={textareaRef}
           />
 
-          {/* Mention Dropdown */}
-          {isMounted && isMentionActive && mentionSuggestions.length > 0 &&
+          {/* Mention Dropdown - Show when active, even with 0 suggestions */}
+          {isMounted && isMentionActive &&
             createPortal(
               <MentionDropdown
                 suggestions={mentionSuggestions}
