@@ -14,6 +14,7 @@ import { CanvasAreaListView } from '@/components/canvas/canvas-area-list-view'
 import { AiSidebar } from '@/components/canvas/ai-sidebar'
 import { getTotalExpectedCards } from '@/lib/card-constants'
 import { getViewMode, setViewMode as saveViewMode, type ViewMode } from '@/lib/canvas-view-state'
+import type { CardRecord } from '@/lib/types/card'
 
 interface StageRecord {
   id: string
@@ -65,6 +66,7 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
   const [showOnlyFilled, setShowOnlyFilled] = useState(false)
   const [zoom, setZoom] = useState(100)
   const [totalCardsCreated, setTotalCardsCreated] = useState(0)
+  const [allCards, setAllCards] = useState<CardRecord[]>([])
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     // Restore from localStorage
     if (typeof window !== 'undefined') {
@@ -89,6 +91,39 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
     setViewMode(mode)
     saveViewMode(mode)
   }, [])
+
+  // Fetch all cards for mentions autocomplete
+  useEffect(() => {
+    const fetchAllCards = async () => {
+      try {
+        const allCardsData: CardRecord[] = []
+
+        for (const stage of sortedStages) {
+          const response = await fetch(`/api/cards?stageId=${stage.id}`)
+          const data = await response.json()
+          if (data.cards && Array.isArray(data.cards)) {
+            allCardsData.push(...data.cards)
+          }
+        }
+
+        setAllCards(allCardsData)
+      } catch (error) {
+        console.error('Error fetching cards for mentions:', error)
+      }
+    }
+
+    fetchAllCards()
+
+    // Listen for card updates
+    const handleRefresh = () => {
+      fetchAllCards()
+    }
+
+    window.addEventListener('pistack:cards:refresh', handleRefresh)
+    return () => {
+      window.removeEventListener('pistack:cards:refresh', handleRefresh)
+    }
+  }, [sortedStages])
 
   // Calculate total expected cards
   const totalExpectedCards = useMemo(() => getTotalExpectedCards(), [])
@@ -314,6 +349,7 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
           activeStage={activeStage}
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+          allCards={allCards}
         />
       </div>
     </div>

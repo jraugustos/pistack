@@ -1,10 +1,15 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Sparkles, Send, X, Trash2 } from 'lucide-react'
 import { CardReferenceBadge } from './card-reference-badge'
 import { MessageContent } from './message-content'
 import { QuickSuggestionsCarousel } from './quick-suggestions-carousel'
+import { MentionDropdown } from '@/components/mentions'
+import { useMentions } from '@/hooks/use-mentions'
+import { useMentionTracking } from '@/hooks/use-mention-tracking'
+import { buildMentionContext } from '@/lib/mention-context'
+import type { CardRecord } from '@/lib/types/card'
 import {
   CARD_TITLES,
   STAGE_COLORS,
@@ -36,6 +41,7 @@ interface AiSidebarProps {
   activeStage: number
   isOpen: boolean
   onToggle: () => void
+  allCards?: CardRecord[] // For @ mentions autocomplete
 }
 
 const formatValue = (value: unknown, indent = 0): string => {
@@ -114,15 +120,46 @@ const formatCardReference = (cardType: string, cardId: string, content: Record<s
   ].join('\n')
 }
 
-export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSidebarProps) {
+export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards = [] }: AiSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [threadId, setThreadId] = useState<string | null>(null)
   const [isHistoryLoading, setIsHistoryLoading] = useState(true)
   const [referencedCard, setReferencedCard] = useState<ReferencedCard | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Mentions functionality
+  const {
+    mentionedCards,
+    addMention,
+    clearMentions,
+    getMentionedCardIds,
+  } = useMentionTracking()
+
+  const handleMentionInsert = useCallback((cardId: string, cardType: string) => {
+    const card = allCards.find(c => c.id === cardId)
+    if (card) {
+      const title = CARD_TITLES[card.card_type] || card.card_type
+      addMention(cardId, cardType, title)
+    }
+  }, [allCards, addMention])
+
+  const {
+    isActive: isMentionActive,
+    suggestions: mentionSuggestions,
+    selectedIndex: mentionSelectedIndex,
+    position: mentionPosition,
+    handleInputChange: handleMentionInputChange,
+    handleKeyDown: handleMentionKeyDown,
+    handleSelect: handleMentionSelect,
+    closeMention,
+    textareaRef,
+  } = useMentions({
+    cards: allCards,
+    enabled: true,
+    onMentionInsert: handleMentionInsert,
+  })
 
   const summarizeFunctionCall = (call: { call?: string; result?: any }) => {
     if (!call) return ''
@@ -379,19 +416,28 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
     }
 
     setMessages((prev) => [...prev, userMessage])
+    const messageToSend = input
     setInput('')
     setIsLoading(true)
 
+    // Close mention dropdown if open
+    if (isMentionActive) {
+      closeMention()
+    }
+
     try {
+      // Build context from mentions
+      const mentionContext = buildMentionContext(messageToSend, allCards)
+
       // Se houver card referenciado, inclui o contexto na mensagem
-      let messageToSend = input
+      let finalMessage = mentionContext.enrichedMessage
       if (referencedCard) {
         const contextMessage = formatCardReference(
           referencedCard.card_type,
           referencedCard.id,
           referencedCard.content ?? {}
         )
-        messageToSend = `${contextMessage}\n\nPergunta do usuário: ${input}`
+        finalMessage = `${contextMessage}\n\nPergunta do usuário: ${finalMessage}`
       }
 
       const response = await fetch('/api/ai/chat', {
@@ -400,7 +446,7 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: messageToSend,
+          message: finalMessage,
           projectId,
           activeStage,
           threadId,
@@ -483,11 +529,24 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // First, check if mention dropdown is active
+    if (isMentionActive) {
+      handleMentionKeyDown(e)
+      // If key was handled by mention system, don't proceed
+      if (e.defaultPrevented) return
+    }
+
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     }
+  }
+
+  // Combined input change handler
+  const handleInputChangeWithMentions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value)
+    handleMentionInputChange(e)
   }
 
   const handleClearChat = async () => {
@@ -526,7 +585,7 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
 
   const handleQuickSuggestion = (suggestionText: string) => {
     setInput(suggestionText)
-    inputRef.current?.focus()
+    textareaRef.current?.focus()
   }
 
   // Collapsed state
@@ -676,20 +735,32 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
       {/* Input Area */}
       <div className="p-4 border-t border-white/5">
         <div className="relative">
-          <input
-            type="text"
+          <textarea
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onChange={handleInputChangeWithMentions}
+            onKeyDown={handleKeyPress}
             disabled={isLoading || isHistoryLoading}
-            placeholder="Pergunte algo ou peça ajuda..."
-            className="w-full px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors disabled:opacity-50"
-            ref={inputRef}
+            placeholder="Pergunte algo ou peça ajuda... (use @ para mencionar cards)"
+            className="w-full px-4 py-3 pr-12 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors disabled:opacity-50 resize-none"
+            rows={2}
+            ref={textareaRef}
           />
+
+          {/* Mention Dropdown */}
+          {isMentionActive && mentionSuggestions.length > 0 && (
+            <MentionDropdown
+              suggestions={mentionSuggestions}
+              position={mentionPosition}
+              selectedIndex={mentionSelectedIndex}
+              onSelect={handleMentionSelect}
+              onClose={closeMention}
+            />
+          )}
+
           <button
             onClick={handleSend}
             disabled={isLoading || isHistoryLoading || !input.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[#7AA2FF] hover:bg-[#6690E8] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2 bottom-2 w-8 h-8 flex items-center justify-center bg-[#7AA2FF] hover:bg-[#6690E8] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Enviar mensagem"
           >
             <Send className="w-4 h-4 text-white" />
@@ -697,14 +768,15 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle }: AiSideba
         </div>
 
         <div className="flex items-center gap-2 mt-2 text-xs text-[#E6E9F2]/40">
-          <kbd className="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">
-            Cmd
-          </kbd>
-          <span>+</span>
-          <kbd className="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">
-            K
-          </kbd>
-          <span>para comandos rápidos</span>
+          <span>
+            <kbd className="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">@</kbd> mencionar card
+          </span>
+          <span>•</span>
+          <span>
+            <kbd className="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">Cmd</kbd>
+            <span> + </span>
+            <kbd className="px-1.5 py-0.5 bg-white/5 rounded text-[10px]">K</kbd> comandos
+          </span>
         </div>
       </div>
     </aside>
