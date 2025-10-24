@@ -81,7 +81,10 @@ export function useMentionDetection({
    */
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (!enabled) return
+      if (!enabled) {
+        console.log('[MentionDetection] Disabled')
+        return
+      }
 
       const textarea = e.target
       textareaRef.current = textarea
@@ -89,13 +92,18 @@ export function useMentionDetection({
       const value = textarea.value
       const cursorIndex = textarea.selectionStart
 
+      console.log('[MentionDetection] Input:', value, 'Cursor:', cursorIndex)
+
       // Find last @ before cursor
       const textBeforeCursor = value.substring(0, cursorIndex)
       const lastAtIndex = textBeforeCursor.lastIndexOf(triggerChar)
 
+      console.log('[MentionDetection] lastAtIndex:', lastAtIndex)
+
       // Check if @ is valid trigger
       if (lastAtIndex === -1) {
         // No @ found
+        console.log('[MentionDetection] No @ found')
         if (trigger.active) {
           setTrigger({ active: false, query: '', position: { top: 0, left: 0 }, cursorIndex: -1 })
         }
@@ -126,6 +134,8 @@ export function useMentionDetection({
       // Valid mention trigger!
       const query = textAfterAt
       const position = calculateDropdownPosition(textarea, cursorIndex)
+
+      console.log('[MentionDetection] ACTIVATING! Query:', query, 'Position:', position)
 
       setTrigger({
         active: true,

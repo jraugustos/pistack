@@ -11,7 +11,7 @@ import { CanvasHeader } from '@/components/canvas/canvas-header'
 import { CanvasSidebar } from '@/components/canvas/canvas-sidebar'
 import { CanvasArea } from '@/components/canvas/canvas-area'
 import { CanvasAreaListView } from '@/components/canvas/canvas-area-list-view'
-import { AiSidebar } from '@/components/canvas/ai-sidebar'
+import { AiSidebarClient } from '@/components/canvas/ai-sidebar-client'
 import { CommandPaletteModal } from '@/components/command-palette'
 import { useCommandPalette } from '@/hooks/use-command-palette'
 import { getTotalExpectedCards } from '@/lib/card-constants'
@@ -378,7 +378,7 @@ export function CanvasWorkspace({ project, stages }: CanvasWorkspaceProps) {
           />
         )}
 
-        <AiSidebar
+        <AiSidebarClient
           projectId={project.id}
           activeStage={activeStage}
           isOpen={isSidebarOpen}
