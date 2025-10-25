@@ -104,7 +104,11 @@ export function MentionDropdown({
           return (
             <button
               key={suggestion.id}
-              onClick={() => onSelect(suggestion)}
+              onMouseDown={(e) => {
+                e.preventDefault() // Prevent blur
+                console.log('[MentionDropdown] Button mousedown! Suggestion:', suggestion)
+                onSelect(suggestion)
+              }}
               className={`w-full flex items-start gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
                 isSelected
                   ? 'bg-[#7AA2FF]/20 border border-[#7AA2FF]/30'
