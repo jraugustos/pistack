@@ -36,13 +36,19 @@ export function useMentions({ cards, enabled = true, onMentionInsert }: UseMenti
   // Handle mention selection
   const handleSelect = useCallback(
     (suggestion: { id: string; cardType: string; title: string }) => {
+      console.log('[useMentions] handleSelect called with:', suggestion)
+
       // Insert mention text (e.g., "@Público-alvo")
       insertMention(`@${suggestion.title}`)
+
+      console.log('[useMentions] Calling onMentionInsert')
 
       // Notify parent about mention
       if (onMentionInsert) {
         onMentionInsert(suggestion.id, suggestion.cardType)
       }
+
+      console.log('[useMentions] handleSelect complete')
     },
     [insertMention, onMentionInsert]
   )

@@ -141,10 +141,18 @@ export function useMentionDetection({
    */
   const insertMention = useCallback(
     (mentionText: string) => {
-      if (!textareaRef.current || !trigger.active) return
+      console.log('[MentionDetection] insertMention called with:', mentionText)
+
+      if (!textareaRef.current || !trigger.active) {
+        console.log('[MentionDetection] Cannot insert - no textarea or not active')
+        return
+      }
 
       const textarea = textareaRef.current
       const value = textarea.value
+
+      console.log('[MentionDetection] Current value:', value)
+      console.log('[MentionDetection] Cursor index:', trigger.cursorIndex)
 
       // Replace @query with mention
       const beforeMention = value.substring(0, trigger.cursorIndex)
@@ -153,15 +161,33 @@ export function useMentionDetection({
       const newValue = beforeMention + mentionText + ' ' + afterCursor
       const newCursorPos = beforeMention.length + mentionText.length + 1
 
+      console.log('[MentionDetection] New value:', newValue)
+      console.log('[MentionDetection] New cursor pos:', newCursorPos)
+
       // Update textarea value
       textarea.value = newValue
 
       // Set cursor position
       textarea.setSelectionRange(newCursorPos, newCursorPos)
 
-      // Trigger change event
-      const event = new Event('input', { bubbles: true })
-      textarea.dispatchEvent(event)
+      // Trigger React's onChange by dispatching input event
+      // Use native event with proper React hooks
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLTextAreaElement.prototype,
+        'value'
+      )?.set
+
+      if (nativeInputValueSetter) {
+        nativeInputValueSetter.call(textarea, newValue)
+      }
+
+      // Dispatch both input and change events to ensure React picks it up
+      const inputEvent = new Event('input', { bubbles: true })
+      const changeEvent = new Event('change', { bubbles: true })
+      textarea.dispatchEvent(inputEvent)
+      textarea.dispatchEvent(changeEvent)
+
+      console.log('[MentionDetection] Events dispatched')
 
       // Close dropdown
       setTrigger({ active: false, query: '', position: { top: 0, left: 0 }, cursorIndex: -1 })
