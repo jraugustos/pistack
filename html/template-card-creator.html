@@ -1,0 +1,1450 @@
+<html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates — PIStack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+  </head>
+  <body class="bg-[#0F1115] text-[#E6E9F2] antialiased overflow-x-hidden transition-colors duration-200" data-theme="dark">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0F1115]/80 backdrop-blur-xl transition-colors duration-200">
+      <nav class="h-14 px-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <button id="back-btn" class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </button>
+          <div class="flex items-center gap-3">
+            <div id="page-title" class="text-sm font-semibold tracking-tight">
+              Templates de Projeto
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Theme Switcher -->
+          <div class="flex items-center gap-1 p-1 bg-white/5 rounded-lg mr-2">
+            <button id="theme-dark" class="w-7 h-7 flex items-center justify-center rounded hover:bg-white/10 transition-colors bg-white/10">
+              <i data-lucide="moon" class="w-3.5 h-3.5"></i>
+            </button>
+            <button id="theme-light" class="w-7 h-7 flex items-center justify-center rounded hover:bg-white/10 transition-colors">
+              <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Templates Page -->
+    <div id="templates-page" class="pt-14 h-screen">
+      <div class="h-full overflow-y-auto">
+        <div class="max-w-7xl mx-auto p-8">
+          <!-- Header -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-2">
+              <h1 class="text-3xl font-semibold tracking-tight">Templates de Projeto</h1>
+              <button id="create-template-btn" class="px-4 py-2 bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-medium">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Criar Template
+              </button>
+            </div>
+            <p class="text-[#E6E9F2]/60">
+              Escolha um template para começar seu projeto ou crie um personalizado
+            </p>
+          </div>
+
+          <!-- Templates Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Template 1: App/Site -->
+            <button class="template-card group text-left bg-[#151821] border border-white/10 rounded-xl p-6 hover:border-[#7AA2FF]/50 transition-all hover:shadow-lg" data-template="app-site">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                  <i data-lucide="smartphone" class="w-6 h-6 text-[#7AA2FF]"></i>
+                </div>
+                <div class="px-2 py-1 bg-[#5AD19A]/10 rounded text-xs text-[#5AD19A] font-medium">
+                  Ativo
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">App ou Website</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Template completo para desenvolvimento de aplicativos e sites, desde a ideia até o lançamento
+              </p>
+              <div class="flex items-center gap-2 text-xs text-[#E6E9F2]/40 mb-3">
+                <span>5 etapas</span>
+                <span>•</span>
+                <span>22 cards</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#7AA2FF] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <span class="text-[#7AA2FF] opacity-0 group-hover:opacity-100 transition-opacity">Usar template</span>
+              </div>
+            </button>
+
+            <!-- Template 2: Discovery -->
+            <button class="template-card group text-left bg-[#151821] border border-white/10 rounded-xl p-6 hover:border-[#9B8AFB]/50 transition-all hover:shadow-lg" data-template="discovery">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                  <i data-lucide="compass" class="w-6 h-6 text-[#9B8AFB]"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Discovery de Design</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Estruture pesquisas, análises de usuário e definições de design system
+              </p>
+              <div class="flex items-center gap-2 text-xs text-[#E6E9F2]/40 mb-3">
+                <span>4 etapas</span>
+                <span>•</span>
+                <span>16 cards</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#9B8AFB] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <span class="text-[#9B8AFB] opacity-0 group-hover:opacity-100 transition-opacity">Usar template</span>
+              </div>
+            </button>
+
+            <!-- Template 3: Feature -->
+            <button class="template-card group text-left bg-[#151821] border border-white/10 rounded-xl p-6 hover:border-[#5AD19A]/50 transition-all hover:shadow-lg" data-template="feature">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                  <i data-lucide="sparkles" class="w-6 h-6 text-[#5AD19A]"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Nova Feature</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Planeje e documente o desenvolvimento de uma nova funcionalidade
+              </p>
+              <div class="flex items-center gap-2 text-xs text-[#E6E9F2]/40 mb-3">
+                <span>3 etapas</span>
+                <span>•</span>
+                <span>12 cards</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#5AD19A] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <span class="text-[#5AD19A] opacity-0 group-hover:opacity-100 transition-opacity">Usar template</span>
+              </div>
+            </button>
+
+            <!-- Template 4: Research -->
+            <button class="template-card group text-left bg-[#151821] border border-white/10 rounded-xl p-6 hover:border-[#FFC24B]/50 transition-all hover:shadow-lg" data-template="research">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                  <i data-lucide="search" class="w-6 h-6 text-[#FFC24B]"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Pesquisa</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Estruture pesquisas de mercado, UX research e análise de dados
+              </p>
+              <div class="flex items-center gap-2 text-xs text-[#E6E9F2]/40 mb-3">
+                <span>3 etapas</span>
+                <span>•</span>
+                <span>10 cards</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#FFC24B] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <span class="text-[#FFC24B] opacity-0 group-hover:opacity-100 transition-opacity">Usar template</span>
+              </div>
+            </button>
+
+            <!-- Template 5: Campaign -->
+            <button class="template-card group text-left bg-[#151821] border border-white/10 rounded-xl p-6 hover:border-[#FF6B6B]/50 transition-all hover:shadow-lg" data-template="campaign">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                  <i data-lucide="megaphone" class="w-6 h-6 text-[#FF6B6B]"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Campanha de Marketing</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Planeje campanhas de ads, lançamentos e ações de marketing
+              </p>
+              <div class="flex items-center gap-2 text-xs text-[#E6E9F2]/40 mb-3">
+                <span>4 etapas</span>
+                <span>•</span>
+                <span>14 cards</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#FF6B6B] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <span class="text-[#FF6B6B] opacity-0 group-hover:opacity-100 transition-opacity">Usar template</span>
+              </div>
+            </button>
+
+            <!-- Template 6: Event -->
+            <button class="template-card group text-left bg-[#151821] border border-white/10 rounded-xl p-6 hover:border-[#FF9FF3]/50 transition-all hover:shadow-lg" data-template="event">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-[#FF9FF3]/10 border border-[#FF9FF3]/20 flex items-center justify-center">
+                  <i data-lucide="calendar-days" class="w-6 h-6 text-[#FF9FF3]"></i>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Evento</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Organize eventos, webinars, conferências e encontros
+              </p>
+              <div class="flex items-center gap-2 text-xs text-[#E6E9F2]/40 mb-3">
+                <span>5 etapas</span>
+                <span>•</span>
+                <span>18 cards</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#FF9FF3] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                <span class="text-[#FF9FF3] opacity-0 group-hover:opacity-100 transition-opacity">Usar template</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template Editor Page -->
+    <div id="template-editor-page" class="pt-14 h-screen hidden">
+      <div class="h-full flex">
+        <!-- Left Sidebar - Stages -->
+        <aside class="w-80 border-r border-white/5 bg-[#0F1115] flex flex-col transition-colors duration-200">
+          <div class="p-4 border-b border-white/5">
+            <input id="template-name" type="text" placeholder="Nome do Template" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors font-semibold" value="Novo Template">
+            <textarea id="template-description" placeholder="Descrição do template..." rows="2" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors mt-2 resize-none"></textarea>
+          </div>
+          
+          <div class="flex-1 overflow-y-auto p-3">
+            <div class="text-xs font-semibold text-[#E6E9F2]/40 uppercase tracking-wider mb-3 px-2">
+              Etapas do Template
+            </div>
+            <div id="stages-list" class="space-y-2">
+              <!-- Stages will be added here dynamically -->
+            </div>
+          </div>
+
+          <div class="p-3 border-t border-white/5">
+            <button id="add-stage-btn" class="w-full px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              Adicionar Etapa
+            </button>
+          </div>
+        </aside>
+
+        <!-- Main Area - Stage Editor -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+          <div class="h-12 border-b border-white/5 px-4 flex items-center justify-between bg-[#0F1115]">
+            <div id="current-stage-title" class="text-sm font-medium text-[#E6E9F2]/60">
+              Selecione uma etapa para configurar
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="save-template-btn" class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center gap-1.5">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                Salvar Template
+              </button>
+            </div>
+          </div>
+
+          <div id="stage-editor-empty" class="flex-1 flex items-center justify-center text-center p-8">
+            <div>
+              <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="layers" class="w-8 h-8 text-[#E6E9F2]/40"></i>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Configure as Etapas</h3>
+              <p class="text-sm text-[#E6E9F2]/60 max-w-md">
+                Adicione etapas ao seu template e configure os cards e assistentes para cada uma
+              </p>
+            </div>
+          </div>
+
+          <div id="stage-editor-content" class="flex-1 overflow-y-auto p-6 hidden">
+            <!-- Stage Configuration -->
+            <div class="max-w-4xl mx-auto space-y-6">
+              <!-- Stage Info -->
+              <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+                <h3 class="text-sm font-semibold mb-4">Informações da Etapa</h3>
+                <div class="space-y-4">
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Nome da Etapa</label>
+                    <input id="stage-name" type="text" placeholder="Ex: Ideia Base" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+                  </div>
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Descrição</label>
+                    <textarea id="stage-description" placeholder="Descreva o objetivo desta etapa..." rows="2" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors resize-none"></textarea>
+                  </div>
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Cor da Etapa</label>
+                    <div class="flex items-center gap-2">
+                      <button class="stage-color w-10 h-10 rounded-lg bg-[#7AA2FF] border-2 border-[#7AA2FF] hover:scale-110 transition-transform" data-color="#7AA2FF"></button>
+                      <button class="stage-color w-10 h-10 rounded-lg bg-[#5AD19A] border-2 border-transparent hover:scale-110 transition-transform" data-color="#5AD19A"></button>
+                      <button class="stage-color w-10 h-10 rounded-lg bg-[#FFC24B] border-2 border-transparent hover:scale-110 transition-transform" data-color="#FFC24B"></button>
+                      <button class="stage-color w-10 h-10 rounded-lg bg-[#FF6B6B] border-2 border-transparent hover:scale-110 transition-transform" data-color="#FF6B6B"></button>
+                      <button class="stage-color w-10 h-10 rounded-lg bg-[#9B8AFB] border-2 border-transparent hover:scale-110 transition-transform" data-color="#9B8AFB"></button>
+                      <button class="stage-color w-10 h-10 rounded-lg bg-[#FF9FF3] border-2 border-transparent hover:scale-110 transition-transform" data-color="#FF9FF3"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- AI Assistant -->
+              <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+                <div class="flex items-center gap-2 mb-4">
+                  <i data-lucide="sparkles" class="w-4 h-4 text-[#7AA2FF]"></i>
+                  <h3 class="text-sm font-semibold">Assistente de IA</h3>
+                </div>
+                <div class="space-y-4">
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Instruções do Assistente</label>
+                    <textarea id="assistant-instructions" placeholder="Defina como o assistente deve ajudar nesta etapa..." rows="4" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors resize-none"></textarea>
+                    <p class="text-xs text-[#E6E9F2]/40 mt-1.5">
+                      O assistente usará estas instruções para ajudar o usuário nesta etapa específica
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cards Library -->
+              <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm font-semibold">Cards da Etapa</h3>
+                  <div class="flex items-center gap-2">
+                    <button id="create-card-btn" class="px-3 py-1.5 text-xs font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center gap-1.5">
+                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                      Criar Card
+                    </button>
+                    <button id="open-card-library-btn" class="px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1.5">
+                      <i data-lucide="library" class="w-3.5 h-3.5"></i>
+                      Biblioteca
+                    </button>
+                  </div>
+                </div>
+                <div id="stage-cards-list" class="space-y-2">
+                  <div class="text-sm text-[#E6E9F2]/40 text-center py-8 border-2 border-dashed border-white/10 rounded-lg">
+                    Nenhum card adicionado. Use a biblioteca ou crie um novo card.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Creator Page -->
+    <div id="card-creator-page" class="pt-14 h-screen hidden">
+      <div class="h-full overflow-y-auto">
+        <div class="max-w-5xl mx-auto p-8">
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl font-semibold tracking-tight mb-2">Criar Novo Card</h1>
+            <p class="text-[#E6E9F2]/60">
+              Escolha como deseja criar seu card personalizado
+            </p>
+          </div>
+
+          <!-- Creation Method Selector -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- AI Mode -->
+            <button id="select-ai-mode" class="creation-mode-card text-left bg-[#151821] border-2 border-white/10 rounded-xl p-6 hover:border-[#7AA2FF]/50 transition-all group">
+              <div class="w-12 h-12 rounded-xl bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center mb-4">
+                <i data-lucide="sparkles" class="w-6 h-6 text-[#7AA2FF]"></i>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Criar com IA</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Descreva o que seu card deve fazer e a IA criará a estrutura automaticamente
+              </p>
+              <div class="flex items-center gap-1.5 text-sm text-[#7AA2FF]">
+                <span>Recomendado</span>
+                <i data-lucide="arrow-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+              </div>
+            </button>
+
+            <!-- Manual Mode -->
+            <button id="select-manual-mode" class="creation-mode-card text-left bg-[#151821] border-2 border-white/10 rounded-xl p-6 hover:border-[#5AD19A]/50 transition-all group">
+              <div class="w-12 h-12 rounded-xl bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center mb-4">
+                <i data-lucide="wrench" class="w-6 h-6 text-[#5AD19A]"></i>
+              </div>
+              <h3 class="text-lg font-semibold mb-2">Criar Manualmente</h3>
+              <p class="text-sm text-[#E6E9F2]/60 mb-4">
+                Defina cada campo e configuração do card de forma precisa e personalizada
+              </p>
+              <div class="flex items-center gap-1.5 text-sm text-[#5AD19A]">
+                <span>Controle total</span>
+                <i data-lucide="arrow-right" class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+              </div>
+            </button>
+          </div>
+
+          <!-- AI Mode Content -->
+          <div id="ai-mode-content" class="hidden space-y-6">
+            <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="sparkles" class="w-4 h-4 text-[#7AA2FF]"></i>
+                <h3 class="text-sm font-semibold">Descreva seu Card</h3>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">O que este card deve fazer?</label>
+                  <textarea id="ai-card-description" placeholder="Ex: Quero um card para documentar personas de usuário. Deve ter campos para nome, idade, objetivos, frustrações e uma foto." rows="4" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors resize-none"></textarea>
+                  <p class="text-xs text-[#E6E9F2]/40 mt-1.5">
+                    Seja específico sobre os campos que você precisa e o propósito do card
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Categoria do Card</label>
+                    <select id="ai-card-category" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+                      <option value="">Selecione...</option>
+                      <option value="ideation">Ideação</option>
+                      <option value="research">Pesquisa</option>
+                      <option value="planning">Planejamento</option>
+                      <option value="design">Design</option>
+                      <option value="development">Desenvolvimento</option>
+                      <option value="marketing">Marketing</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Ícone</label>
+                    <select id="ai-card-icon" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+                      <option value="file-text">Documento</option>
+                      <option value="user">Usuário</option>
+                      <option value="users">Grupo</option>
+                      <option value="lightbulb">Ideia</option>
+                      <option value="target">Objetivo</option>
+                      <option value="layout">Layout</option>
+                      <option value="code">Código</option>
+                      <option value="trending-up">Crescimento</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button id="generate-card-btn" class="w-full px-4 py-3 bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium">
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  Gerar Card com IA
+                </button>
+              </div>
+            </div>
+
+            <!-- AI Generated Preview -->
+            <div id="ai-preview-section" class="hidden">
+              <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm font-semibold">Preview do Card Gerado</h3>
+                  <div class="flex items-center gap-2">
+                    <button id="regenerate-card-btn" class="px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1.5">
+                      <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                      Regenerar
+                    </button>
+                    <button id="save-ai-card-btn" class="px-3 py-1.5 text-xs font-medium bg-[#5AD19A] hover:bg-[#4AC189] text-white rounded-lg transition-colors flex items-center gap-1.5">
+                      <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                      Salvar Card
+                    </button>
+                  </div>
+                </div>
+
+                <div id="ai-card-preview" class="space-y-4">
+                  <!-- Preview will be generated here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manual Mode Content -->
+          <div id="manual-mode-content" class="hidden space-y-6">
+            <!-- Basic Info -->
+            <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+              <h3 class="text-sm font-semibold mb-4">Informações Básicas</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Nome do Card</label>
+                  <input id="manual-card-name" type="text" placeholder="Ex: Persona de Usuário" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+                </div>
+
+                <div>
+                  <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Descrição</label>
+                  <textarea id="manual-card-description" placeholder="Descreva o propósito deste card..." rows="2" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Categoria</label>
+                    <select id="manual-card-category" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+                      <option value="">Selecione...</option>
+                      <option value="ideation">Ideação</option>
+                      <option value="research">Pesquisa</option>
+                      <option value="planning">Planejamento</option>
+                      <option value="design">Design</option>
+                      <option value="development">Desenvolvimento</option>
+                      <option value="marketing">Marketing</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Ícone</label>
+                    <select id="manual-card-icon" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+                      <option value="file-text">Documento</option>
+                      <option value="user">Usuário</option>
+                      <option value="users">Grupo</option>
+                      <option value="lightbulb">Ideia</option>
+                      <option value="target">Objetivo</option>
+                      <option value="layout">Layout</option>
+                      <option value="code">Código</option>
+                      <option value="trending-up">Crescimento</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fields Configuration -->
+            <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Campos do Card</h3>
+                <button id="add-field-btn" class="px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-1.5">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  Adicionar Campo
+                </button>
+              </div>
+
+              <div id="manual-fields-list" class="space-y-3">
+                <div class="text-sm text-[#E6E9F2]/40 text-center py-8 border-2 border-dashed border-white/10 rounded-lg">
+                  Nenhum campo adicionado. Clique em "Adicionar Campo" para começar.
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview and Save -->
+            <div class="bg-[#151821] rounded-xl border border-white/10 p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Preview do Card</h3>
+                <button id="save-manual-card-btn" class="px-4 py-2 text-sm font-medium bg-[#5AD19A] hover:bg-[#4AC189] text-white rounded-lg transition-colors flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4"></i>
+                  Salvar Card
+                </button>
+              </div>
+
+              <div id="manual-card-preview" class="border-2 border-dashed border-white/10 rounded-lg p-6">
+                <p class="text-sm text-[#E6E9F2]/40 text-center">
+                  Preencha as informações básicas para ver o preview
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Field Modal -->
+    <div id="add-field-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-[#0F1115] border border-white/10 rounded-2xl w-full max-w-2xl shadow-2xl">
+        <div class="p-6 border-b border-white/5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold tracking-tight">Adicionar Campo</h2>
+            <button id="close-field-modal-btn" class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Nome do Campo</label>
+            <input id="field-name" type="text" placeholder="Ex: Nome da Persona" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+          </div>
+
+          <div>
+            <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Tipo do Campo</label>
+            <select id="field-type" class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+              <option value="text">Texto Curto</option>
+              <option value="textarea">Texto Longo</option>
+              <option value="number">Número</option>
+              <option value="date">Data</option>
+              <option value="select">Lista de Opções</option>
+              <option value="checkbox">Checkbox</option>
+              <option value="file">Arquivo/Imagem</option>
+              <option value="url">URL</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs text-[#E6E9F2]/60 mb-1.5 block">Placeholder</label>
+            <input id="field-placeholder" type="text" placeholder="Texto de ajuda para o usuário..." class="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="field-required" class="w-4 h-4 rounded bg-white/5 border border-white/10">
+            <label for="field-required" class="text-sm text-[#E6E9F2]/80">Campo obrigatório</label>
+          </div>
+        </div>
+
+        <div class="p-4 border-t border-white/5 flex items-center justify-end gap-2">
+          <button id="cancel-field-btn" class="px-4 py-2 text-sm font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors">
+            Cancelar
+          </button>
+          <button id="confirm-field-btn" class="px-4 py-2 text-sm font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors">
+            Adicionar Campo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Library Modal -->
+    <div id="card-library-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-[#0F1115] border border-white/10 rounded-2xl w-full max-w-5xl max-h-[85vh] flex flex-col shadow-2xl">
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-white/5">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-xl font-semibold tracking-tight">Biblioteca de Cards</h2>
+            <button id="close-card-library-btn" class="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <p class="text-sm text-[#E6E9F2]/60">
+            Selecione os cards que deseja adicionar a esta etapa
+          </p>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="p-4 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div class="flex-1 relative">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#E6E9F2]/40"></i>
+              <input id="card-search" type="text" placeholder="Buscar cards..." class="w-full pl-9 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm placeholder:text-[#E6E9F2]/40 focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+            </div>
+            <select id="card-category-filter" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-[#7AA2FF]/50 transition-colors">
+              <option value="all">Todas Categorias</option>
+              <option value="ideation">Ideação</option>
+              <option value="research">Pesquisa</option>
+              <option value="planning">Planejamento</option>
+              <option value="design">Design</option>
+              <option value="development">Desenvolvimento</option>
+              <option value="marketing">Marketing</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Card: Nome do Projeto -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Nome do Projeto" data-category="ideation">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                  <i data-lucide="tag" class="w-4 h-4 text-[#7AA2FF]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Nome do Projeto</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Título e descrição do projeto</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Ideação</div>
+            </button>
+
+            <!-- Card: Pitch -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Pitch" data-category="ideation">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                  <i data-lucide="message-square" class="w-4 h-4 text-[#7AA2FF]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Pitch</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Resumo executivo do projeto</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Ideação</div>
+            </button>
+
+            <!-- Card: Problema -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Problema" data-category="ideation">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                  <i data-lucide="alert-circle" class="w-4 h-4 text-[#7AA2FF]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Problema</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Problema que o projeto resolve</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Ideação</div>
+            </button>
+
+            <!-- Card: Solução -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Solução" data-category="ideation">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                  <i data-lucide="lightbulb" class="w-4 h-4 text-[#7AA2FF]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Solução</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Como o projeto resolve o problema</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Ideação</div>
+            </button>
+
+            <!-- Card: Público-Alvo -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Público-Alvo" data-category="research">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                  <i data-lucide="users" class="w-4 h-4 text-[#5AD19A]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Público-Alvo</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Definição do público-alvo</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Pesquisa</div>
+            </button>
+
+            <!-- Card: KPIs -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="KPIs" data-category="planning">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                  <i data-lucide="trending-up" class="w-4 h-4 text-[#FFC24B]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">KPIs</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Indicadores chave de performance</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Planejamento</div>
+            </button>
+
+            <!-- Card: Persona -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Persona" data-category="research">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                  <i data-lucide="user" class="w-4 h-4 text-[#5AD19A]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Persona</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Perfil detalhado de usuário</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Pesquisa</div>
+            </button>
+
+            <!-- Card: Proposta de Valor -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Proposta de Valor" data-category="ideation">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                  <i data-lucide="gem" class="w-4 h-4 text-[#7AA2FF]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Proposta de Valor</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Valor único do projeto</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Ideação</div>
+            </button>
+
+            <!-- Card: Benchmarking -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Benchmarking" data-category="research">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#5AD19A]/10 border border-[#5AD19A]/20 flex items-center justify-center">
+                  <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#5AD19A]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Benchmarking</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Análise da concorrência</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Pesquisa</div>
+            </button>
+
+            <!-- Card: Roadmap -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Roadmap" data-category="planning">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                  <i data-lucide="map" class="w-4 h-4 text-[#FFC24B]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Roadmap</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Planejamento de entregas</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Planejamento</div>
+            </button>
+
+            <!-- Card: Wireframe -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Wireframe" data-category="design">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#9B8AFB]/10 border border-[#9B8AFB]/20 flex items-center justify-center">
+                  <i data-lucide="layout" class="w-4 h-4 text-[#9B8AFB]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Wireframe</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Estrutura de telas</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Design</div>
+            </button>
+
+            <!-- Card: Tech Stack -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Tech Stack" data-category="development">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#FF6B6B]/10 border border-[#FF6B6B]/20 flex items-center justify-center">
+                  <i data-lucide="code" class="w-4 h-4 text-[#FF6B6B]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Tech Stack</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Tecnologias utilizadas</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Desenvolvimento</div>
+            </button>
+
+            <!-- Card: Orçamento -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Orçamento" data-category="planning">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#FFC24B]/10 border border-[#FFC24B]/20 flex items-center justify-center">
+                  <i data-lucide="dollar-sign" class="w-4 h-4 text-[#FFC24B]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Orçamento</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Custos e investimentos</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Planejamento</div>
+            </button>
+
+            <!-- Card: Estratégia de Marketing -->
+            <button class="card-library-item text-left bg-[#151821] border border-white/10 rounded-xl p-4 hover:border-[#7AA2FF]/50 transition-all group" data-card-type="Estratégia de Marketing" data-category="marketing">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-8 h-8 rounded-lg bg-[#FF9FF3]/10 border border-[#FF9FF3]/20 flex items-center justify-center">
+                  <i data-lucide="target" class="w-4 h-4 text-[#FF9FF3]"></i>
+                </div>
+                <div class="w-5 h-5 rounded border-2 border-white/20 group-hover:border-[#7AA2FF] transition-colors"></div>
+              </div>
+              <h4 class="font-semibold text-sm mb-1">Estratégia de Marketing</h4>
+              <p class="text-xs text-[#E6E9F2]/60">Plano de divulgação</p>
+              <div class="mt-2 px-2 py-1 bg-white/5 rounded text-xs text-[#E6E9F2]/60 inline-block">Marketing</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="p-4 border-t border-white/5 flex items-center justify-between">
+          <div class="text-sm text-[#E6E9F2]/60">
+            <span id="selected-cards-count">0</span> cards selecionados
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="cancel-card-selection-btn" class="px-4 py-2 text-sm font-medium text-[#E6E9F2]/80 hover:text-[#E6E9F2] hover:bg-white/5 rounded-lg transition-colors">
+              Cancelar
+            </button>
+            <button id="confirm-card-selection-btn" class="px-4 py-2 text-sm font-medium bg-[#7AA2FF] hover:bg-[#6690E8] text-white rounded-lg transition-colors">
+              Adicionar Cards
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      // Global state
+      let currentPage = 'templates'; // templates, template-editor, card-creator
+      let templateEditorState = {
+        stages: [],
+        currentStageId: null,
+        selectedCards: []
+      };
+      let cardCreatorState = {
+        mode: null, // 'ai' or 'manual'
+        fields: []
+      };
+
+      // Theme Switcher
+      const body = document.body;
+      const themeDark = document.getElementById('theme-dark');
+      const themeLight = document.getElementById('theme-light');
+
+      function setTheme(theme) {
+        body.setAttribute('data-theme', theme);
+
+        if (theme === 'dark') {
+          body.className = 'bg-[#0F1115] text-[#E6E9F2] antialiased overflow-x-hidden transition-colors duration-200';
+          themeDark.classList.add('bg-white/10');
+          themeLight.classList.remove('bg-black/10');
+        } else {
+          body.className = 'bg-white text-[#0F1115] antialiased overflow-x-hidden transition-colors duration-200';
+          themeLight.classList.add('bg-black/10');
+          themeDark.classList.remove('bg-white/10');
+        }
+      }
+
+      themeDark.addEventListener('click', () => setTheme('dark'));
+      themeLight.addEventListener('click', () => setTheme('light'));
+
+      // Page Navigation
+      function showPage(pageName) {
+        const templatesPage = document.getElementById('templates-page');
+        const templateEditorPage = document.getElementById('template-editor-page');
+        const cardCreatorPage = document.getElementById('card-creator-page');
+
+        templatesPage.classList.add('hidden');
+        templateEditorPage.classList.add('hidden');
+        cardCreatorPage.classList.add('hidden');
+
+        if (pageName === 'templates') {
+          templatesPage.classList.remove('hidden');
+          document.getElementById('page-title').textContent = 'Templates de Projeto';
+        } else if (pageName === 'template-editor') {
+          templateEditorPage.classList.remove('hidden');
+          document.getElementById('page-title').textContent = 'Criar Template';
+        } else if (pageName === 'card-creator') {
+          cardCreatorPage.classList.remove('hidden');
+          document.getElementById('page-title').textContent = 'Criar Card';
+        }
+
+        currentPage = pageName;
+        lucide.createIcons();
+      }
+
+      // Back Button
+      document.getElementById('back-btn').addEventListener('click', () => {
+        if (currentPage === 'template-editor') {
+          showPage('templates');
+        } else if (currentPage === 'card-creator') {
+          showPage('template-editor');
+        }
+      });
+
+      // Create Template Button
+      document.getElementById('create-template-btn').addEventListener('click', () => {
+        templateEditorState = {
+          stages: [],
+          currentStageId: null,
+          selectedCards: []
+        };
+        showPage('template-editor');
+        renderStagesList();
+      });
+
+      // Create Card Button
+      document.getElementById('create-card-btn').addEventListener('click', () => {
+        cardCreatorState = {
+          mode: null,
+          fields: []
+        };
+        showPage('card-creator');
+        hideCardCreatorModes();
+      });
+
+      // Card Creator Mode Selection
+      document.getElementById('select-ai-mode').addEventListener('click', () => {
+        cardCreatorState.mode = 'ai';
+        document.getElementById('ai-mode-content').classList.remove('hidden');
+        document.getElementById('manual-mode-content').classList.add('hidden');
+        lucide.createIcons();
+      });
+
+      document.getElementById('select-manual-mode').addEventListener('click', () => {
+        cardCreatorState.mode = 'manual';
+        document.getElementById('manual-mode-content').classList.remove('hidden');
+        document.getElementById('ai-mode-content').classList.add('hidden');
+        lucide.createIcons();
+      });
+
+      function hideCardCreatorModes() {
+        document.getElementById('ai-mode-content').classList.add('hidden');
+        document.getElementById('manual-mode-content').classList.add('hidden');
+      }
+
+      // AI Mode - Generate Card
+      document.getElementById('generate-card-btn').addEventListener('click', () => {
+        const description = document.getElementById('ai-card-description').value;
+        const category = document.getElementById('ai-card-category').value;
+        const icon = document.getElementById('ai-card-icon').value;
+
+        if (!description || !category) {
+          alert('Preencha a descrição e categoria do card');
+          return;
+        }
+
+        // Simulate AI generation
+        setTimeout(() => {
+          generateAICardPreview(description, category, icon);
+          document.getElementById('ai-preview-section').classList.remove('hidden');
+          lucide.createIcons();
+        }, 1500);
+      });
+
+      function generateAICardPreview(description, category, icon) {
+        // Simulated AI response
+        const preview = document.getElementById('ai-card-preview');
+        preview.innerHTML = `
+          <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                <i data-lucide="${icon}" class="w-5 h-5 text-[#7AA2FF]"></i>
+              </div>
+              <div>
+                <div class="font-semibold">Card Gerado</div>
+                <div class="text-xs text-[#E6E9F2]/60">${category}</div>
+              </div>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div>
+                <div class="text-xs text-[#E6E9F2]/60 mb-1">Campo sugerido: Nome</div>
+                <div class="px-3 py-2 bg-white/5 rounded border border-white/10">Campo de texto</div>
+              </div>
+              <div>
+                <div class="text-xs text-[#E6E9F2]/60 mb-1">Campo sugerido: Descrição</div>
+                <div class="px-3 py-2 bg-white/5 rounded border border-white/10">Campo de texto longo</div>
+              </div>
+              <div>
+                <div class="text-xs text-[#E6E9F2]/60 mb-1">Campo sugerido: Dados Demográficos</div>
+                <div class="px-3 py-2 bg-white/5 rounded border border-white/10">Campo de texto</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 p-3 bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 rounded-lg text-xs">
+            <div class="flex items-start gap-2">
+              <i data-lucide="info" class="w-4 h-4 text-[#7AA2FF] flex-shrink-0 mt-0.5"></i>
+              <div>
+                <div class="font-medium text-[#7AA2FF] mb-1">IA Sugestão</div>
+                <div class="text-[#E6E9F2]/80">Este card foi gerado automaticamente com base na sua descrição. Você pode regenerar ou editar manualmente.</div>
+              </div>
+            </div>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+
+      // Regenerate Card
+      document.getElementById('regenerate-card-btn').addEventListener('click', () => {
+        const description = document.getElementById('ai-card-description').value;
+        const category = document.getElementById('ai-card-category').value;
+        const icon = document.getElementById('ai-card-icon').value;
+        generateAICardPreview(description, category, icon);
+      });
+
+      // Save AI Card
+      document.getElementById('save-ai-card-btn').addEventListener('click', () => {
+        alert('Card salvo com sucesso!');
+        showPage('template-editor');
+      });
+
+      // Manual Mode - Add Field
+      const addFieldModal = document.getElementById('add-field-modal');
+      document.getElementById('add-field-btn').addEventListener('click', () => {
+        addFieldModal.classList.remove('hidden');
+        lucide.createIcons();
+      });
+
+      document.getElementById('close-field-modal-btn').addEventListener('click', () => {
+        addFieldModal.classList.add('hidden');
+      });
+
+      document.getElementById('cancel-field-btn').addEventListener('click', () => {
+        addFieldModal.classList.add('hidden');
+      });
+
+      document.getElementById('confirm-field-btn').addEventListener('click', () => {
+        const fieldName = document.getElementById('field-name').value;
+        const fieldType = document.getElementById('field-type').value;
+        const fieldPlaceholder = document.getElementById('field-placeholder').value;
+        const fieldRequired = document.getElementById('field-required').checked;
+
+        if (!fieldName) {
+          alert('Digite o nome do campo');
+          return;
+        }
+
+        cardCreatorState.fields.push({
+          name: fieldName,
+          type: fieldType,
+          placeholder: fieldPlaceholder,
+          required: fieldRequired
+        });
+
+        renderManualFieldsList();
+        updateManualCardPreview();
+        addFieldModal.classList.add('hidden');
+
+        // Clear form
+        document.getElementById('field-name').value = '';
+        document.getElementById('field-placeholder').value = '';
+        document.getElementById('field-required').checked = false;
+      });
+
+      function renderManualFieldsList() {
+        const fieldsList = document.getElementById('manual-fields-list');
+
+        if (cardCreatorState.fields.length === 0) {
+          fieldsList.innerHTML = `
+            <div class="text-sm text-[#E6E9F2]/40 text-center py-8 border-2 border-dashed border-white/10 rounded-lg">
+              Nenhum campo adicionado. Clique em "Adicionar Campo" para começar.
+            </div>
+          `;
+          return;
+        }
+
+        fieldsList.innerHTML = cardCreatorState.fields.map((field, index) => `
+          <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                <i data-lucide="type" class="w-4 h-4 text-[#7AA2FF]"></i>
+              </div>
+              <div>
+                <div class="text-sm font-medium">${field.name}</div>
+                <div class="text-xs text-[#E6E9F2]/60">${field.type}${field.required ? ' • Obrigatório' : ''}</div>
+              </div>
+            </div>
+            <button class="remove-field-btn w-7 h-7 flex items-center justify-center hover:bg-white/10 rounded transition-colors" data-index="${index}">
+              <i data-lucide="x" class="w-4 h-4 text-[#FF6B6B]"></i>
+            </button>
+          </div>
+        `).join('');
+
+        // Add remove listeners
+        fieldsList.querySelectorAll('.remove-field-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            cardCreatorState.fields.splice(index, 1);
+            renderManualFieldsList();
+            updateManualCardPreview();
+          });
+        });
+
+        lucide.createIcons();
+      }
+
+      function updateManualCardPreview() {
+        const preview = document.getElementById('manual-card-preview');
+        const cardName = document.getElementById('manual-card-name').value;
+        const cardDescription = document.getElementById('manual-card-description').value;
+        const cardCategory = document.getElementById('manual-card-category').value;
+        const cardIcon = document.getElementById('manual-card-icon').value;
+
+        if (!cardName && cardCreatorState.fields.length === 0) {
+          preview.innerHTML = `
+            <p class="text-sm text-[#E6E9F2]/40 text-center">
+              Preencha as informações básicas para ver o preview
+            </p>
+          `;
+          return;
+        }
+
+        preview.innerHTML = `
+          <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                <i data-lucide="${cardIcon}" class="w-5 h-5 text-[#7AA2FF]"></i>
+              </div>
+              <div>
+                <div class="font-semibold">${cardName || 'Nome do Card'}</div>
+                <div class="text-xs text-[#E6E9F2]/60">${cardCategory || 'Categoria'}</div>
+              </div>
+            </div>
+            ${cardDescription ? `<p class="text-sm text-[#E6E9F2]/60 mb-4">${cardDescription}</p>` : ''}
+            ${cardCreatorState.fields.length > 0 ? `
+              <div class="space-y-3 text-sm">
+                ${cardCreatorState.fields.map(field => `
+                  <div>
+                    <div class="text-xs text-[#E6E9F2]/60 mb-1">${field.name}${field.required ? ' *' : ''}</div>
+                    <div class="px-3 py-2 bg-white/5 rounded border border-white/10">
+                      ${field.placeholder || `Campo ${field.type}`}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+        lucide.createIcons();
+      }
+
+      // Update preview on input changes
+      document.getElementById('manual-card-name').addEventListener('input', updateManualCardPreview);
+      document.getElementById('manual-card-description').addEventListener('input', updateManualCardPreview);
+      document.getElementById('manual-card-category').addEventListener('change', updateManualCardPreview);
+      document.getElementById('manual-card-icon').addEventListener('change', updateManualCardPreview);
+
+      // Save Manual Card
+      document.getElementById('save-manual-card-btn').addEventListener('click', () => {
+        const cardName = document.getElementById('manual-card-name').value;
+        if (!cardName) {
+          alert('Digite o nome do card');
+          return;
+        }
+        if (cardCreatorState.fields.length === 0) {
+          alert('Adicione pelo menos um campo ao card');
+          return;
+        }
+        alert('Card salvo com sucesso!');
+        showPage('template-editor');
+      });
+
+      // Template Cards Click
+      document.querySelectorAll('.template-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const template = card.dataset.template;
+          alert(`Usar template: ${template}`);
+        });
+      });
+
+      // Add Stage Button
+      document.getElementById('add-stage-btn').addEventListener('click', () => {
+        const stageId = 'stage-' + Date.now();
+        const newStage = {
+          id: stageId,
+          name: 'Nova Etapa',
+          description: '',
+          color: '#7AA2FF',
+          assistantInstructions: '',
+          cards: []
+        };
+        templateEditorState.stages.push(newStage);
+        renderStagesList();
+        selectStage(stageId);
+      });
+
+      function renderStagesList() {
+        const stagesList = document.getElementById('stages-list');
+        stagesList.innerHTML = '';
+
+        if (templateEditorState.stages.length === 0) {
+          stagesList.innerHTML = `
+            <div class="text-xs text-[#E6E9F2]/40 text-center py-8">
+              Nenhuma etapa adicionada
+            </div>
+          `;
+          return;
+        }
+
+        templateEditorState.stages.forEach((stage, index) => {
+          const isActive = stage.id === templateEditorState.currentStageId;
+          const stageEl = document.createElement('button');
+          stageEl.className = `w-full text-left px-3 py-2.5 rounded-lg border transition-colors ${
+            isActive 
+              ? 'bg-[#7AA2FF]/10 border-[#7AA2FF]/30' 
+              : 'hover:bg-white/5 border-transparent hover:border-white/10'
+          }`;
+          stageEl.innerHTML = `
+            <div class="flex items-center gap-2 mb-1">
+              <div class="w-2 h-2 rounded-full" style="background-color: ${stage.color}"></div>
+              <span class="text-xs font-medium" style="color: ${stage.color}">Etapa ${index + 1}</span>
+            </div>
+            <div class="text-sm font-medium">${stage.name || 'Nova Etapa'}</div>
+            <div class="text-xs text-[#E6E9F2]/40 mt-1">${stage.cards.length} cards</div>
+          `;
+          stageEl.addEventListener('click', () => selectStage(stage.id));
+          stagesList.appendChild(stageEl);
+        });
+
+        lucide.createIcons();
+      }
+
+      function selectStage(stageId) {
+        templateEditorState.currentStageId = stageId;
+        const stage = templateEditorState.stages.find(s => s.id === stageId);
+        
+        if (!stage) return;
+
+        // Show editor content
+        document.getElementById('stage-editor-empty').classList.add('hidden');
+        document.getElementById('stage-editor-content').classList.remove('hidden');
+
+        // Update current stage title
+        document.getElementById('current-stage-title').textContent = stage.name || 'Nova Etapa';
+
+        // Fill form
+        document.getElementById('stage-name').value = stage.name || '';
+        document.getElementById('stage-description').value = stage.description || '';
+        document.getElementById('assistant-instructions').value = stage.assistantInstructions || '';
+
+        // Update color selection
+        document.querySelectorAll('.stage-color').forEach(btn => {
+          if (btn.dataset.color === stage.color) {
+            btn.classList.add('border-2');
+            btn.style.borderColor = stage.color;
+          } else {
+            btn.classList.remove('border-2');
+            btn.classList.add('border-2', 'border-transparent');
+          }
+        });
+
+        // Render cards list
+        renderStageCardsList(stage);
+
+        // Render stages list to update active state
+        renderStagesList();
+
+        lucide.createIcons();
+      }
+
+      function renderStageCardsList(stage) {
+        const cardsList = document.getElementById('stage-cards-list');
+        
+        if (stage.cards.length === 0) {
+          cardsList.innerHTML = `
+            <div class="text-sm text-[#E6E9F2]/40 text-center py-8 border-2 border-dashed border-white/10 rounded-lg">
+              Nenhum card adicionado. Use a biblioteca ou crie um novo card.
+            </div>
+          `;
+          return;
+        }
+
+        cardsList.innerHTML = stage.cards.map(card => `
+          <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#7AA2FF]/10 border border-[#7AA2FF]/20 flex items-center justify-center">
+                <i data-lucide="file-text" class="w-4 h-4 text-[#7AA2FF]"></i>
+              </div>
+              <div>
+                <div class="text-sm font-medium">${card}</div>
+              </div>
+            </div>
+            <button class="remove-card-btn w-7 h-7 flex items-center justify-center hover:bg-white/10 rounded transition-colors" data-card="${card}">
+              <i data-lucide="x" class="w-4 h-4 text-[#FF6B6B]"></i>
+            </button>
+          </div>
+        `).join('');
+
+        // Add remove card listeners
+        cardsList.querySelectorAll('.remove-card-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const cardType = btn.dataset.card;
+            stage.cards = stage.cards.filter(c => c !== cardType);
+            renderStageCardsList(stage);
+            renderStagesList();
+          });
+        });
+
+        lucide.createIcons();
+      }
+
+      // Stage form inputs
+      document.getElementById('stage-name').addEventListener('input', (e) => {
+        const stage = templateEditorState.stages.find(s => s.id === templateEditorState.currentStageId);
+        if (stage) {
+          stage.name = e.target.value;
+          document.getElementById('current-stage-title').textContent = e.target.value || 'Nova Etapa';
+          renderStagesList();
+        }
+      });
+
+      document.getElementById('stage-description').addEventListener('input', (e) => {
+        const stage = templateEditorState.stages.find(s => s.id === templateEditorState.currentStageId);
+        if (stage) {
+          stage.description = e.target.value;
+        }
+      });
+
+      document.getElementById('assistant-instructions').addEventListener('input', (e) => {
+        const stage = templateEditorState.stages.find(s => s.id === templateEditorState.currentStageId);
+        if (stage) {
+          stage.assistantInstructions = e.target.value;
+        }
+      });
+
+      // Color selection
+      document.querySelectorAll('.stage-color').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const color = btn.dataset.color;
+          const stage = templateEditorState.stages.find(s => s.id === templateEditorState.currentStageId);
+          if (stage) {
+            stage.color = color;
+            document.querySelectorAll('.stage-color').forEach(b => {
+              b.classList.remove('border-2');
+              b.classList.add('border-2', 'border-transparent');
+            });
+            btn.classList.add('border-2');
+            btn.style.borderColor = color;
+            renderStagesList();
+          }
+        });
+      });
+
+      // Card Library Modal
+      const cardLibraryModal = document.getElementById('card-library-modal');
+      const openCardLibraryBtn = document.getElementById('open-card-library-btn');
+      const closeCardLibraryBtn = document.getElementById('close-card-library-btn');
+      const cancelCardSelectionBtn = document.getElementById('cancel-card-selection-btn');
+      const confirmCardSelectionBtn = document.getElementById('confirm-card-selection-btn');
+
+      openCardLibraryBtn.addEventListener('click', () => {
+        templateEditorState.selectedCards = [];
+        updateSelectedCardsCount();
+        cardLibraryModal.classList.remove('hidden');
+        lucide.createIcons();
+      });
+
+      closeCardLibraryBtn.addEventListener('click', () => {
+        cardLibraryModal.classList.add('hidden');
+      });
+
+      cancelCardSelectionBtn.addEventListener('click', () => {
+        cardLibraryModal.classList.add('hidden');
+      });
+
+      confirmCardSelectionBtn.addEventListener('click', () => {
+        const stage = templateEditorState.stages.find(s => s.id === templateEditorState.currentStageId);
+        if (stage) {
+          templateEditorState.selectedCards.forEach(cardType => {
+            if (!stage.cards.includes(cardType)) {
+              stage.cards.push(cardType);
+            }
+          });
+          renderStageCardsList(stage);
+          renderStagesList();
+        }
+        cardLibraryModal.classList.add('hidden');
+      });
+
+      // Card Library Items Selection
+      document.querySelectorAll('.card-library-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const cardType = item.dataset.cardType;
+          const checkbox = item.querySelector('.w-5.h-5');
+          
+          if (templateEditorState.selectedCards.includes(cardType)) {
+            templateEditorState.selectedCards = templateEditorState.selectedCards.filter(c => c !== cardType);
+            checkbox.innerHTML = '';
+            checkbox.classList.remove('bg-[#7AA2FF]', 'border-[#7AA2FF]');
+            checkbox.classList.add('border-white/20');
+          } else {
+            templateEditorState.selectedCards.push(cardType);
+            checkbox.innerHTML = '<i data-lucide="check" class="w-3 h-3 text-white"></i>';
+            checkbox.classList.add('bg-[#7AA2FF]', 'border-[#7AA2FF]');
+            checkbox.classList.remove('border-white/20');
+          }
+          
+          updateSelectedCardsCount();
+          lucide.createIcons();
+        });
+      });
+
+      function updateSelectedCardsCount() {
+        document.getElementById('selected-cards-count').textContent = templateEditorState.selectedCards.length;
+      }
+
+      // Card Search and Filter
+      document.getElementById('card-search').addEventListener('input', (e) => {
+        const search = e.target.value.toLowerCase();
+        filterCards(search, document.getElementById('card-category-filter').value);
+      });
+
+      document.getElementById('card-category-filter').addEventListener('change', (e) => {
+        const category = e.target.value;
+        filterCards(document.getElementById('card-search').value.toLowerCase(), category);
+      });
+
+      function filterCards(search, category) {
+        document.querySelectorAll('.card-library-item').forEach(item => {
+          const cardType = item.dataset.cardType.toLowerCase();
+          const cardCategory = item.dataset.category;
+          
+          const matchesSearch = cardType.includes(search);
+          const matchesCategory = category === 'all' || cardCategory === category;
+          
+          if (matchesSearch && matchesCategory) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      }
+
+      // Save Template Button
+      document.getElementById('save-template-btn').addEventListener('click', () => {
+        const templateName = document.getElementById('template-name').value;
+        const templateDescription = document.getElementById('template-description').value;
+        
+        console.log('Saving template:', {
+          name: templateName,
+          description: templateDescription,
+          stages: templateEditorState.stages
+        });
+        
+        alert('Template salvo com sucesso!');
+        showPage('templates');
+      });
+    </script>
+  
+</body></html>
