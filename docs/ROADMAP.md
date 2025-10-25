@@ -124,13 +124,13 @@ Prioridade = (Impacto no Usuário × Diferenciação Competitiva) / Esforço de 
 | 8 | Project Overview (compilação básica) | ⭐⭐⭐⭐⭐ | 5h | ✅ **COMPLETO** |
 | 8.1 | Sistema de Progressão (50% Unlock) | ⭐⭐⭐⭐⭐ | 3-4h | ✅ **COMPLETO** |
 | 8.2 | Reorganização UX Batch Creation | ⭐⭐⭐⭐ | 2h | ✅ **COMPLETO** |
+| 11 | List View dos Cards | ⭐⭐⭐⭐⭐ | 6-8h | ✅ **COMPLETO** |
+| 6 | Menções com @ para Referenciar Cards | ⭐⭐⭐⭐⭐ | 4-6h | ✅ **COMPLETO** |
+| 7 | Command Palette com / (Atalhos) | ⭐⭐⭐⭐ | 3-4h | ✅ **COMPLETO** |
 | 9 | Export PRD | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
 | 10 | Export Pitch Deck Outline | ⭐⭐⭐⭐⭐ | 3h | 🔴 Pendente |
-| 11 | List View dos Cards | ⭐⭐⭐⭐⭐ | 6-8h | 📋 **PLANEJADO** |
-| 6 | Menções com @ para Referenciar Cards | ⭐⭐⭐⭐⭐ | 4-6h | 📋 **PLANEJADO** |
-| 7 | Command Palette com / (Atalhos) | ⭐⭐⭐⭐ | 3-4h | 📋 **PLANEJADO** |
 
-**Total estimado:** 29-38 horas (10-11h concluídas - 29% COMPLETO)
+**Total estimado:** 29-38 horas (26-33h concluídas - 86% COMPLETO) 🎉**
 **Impacto esperado:** Tangibilização do valor criado, uso profissional, compartilhamento viral, melhor onboarding
 
 **✅ Tarefas Concluídas:**
@@ -738,7 +738,7 @@ async function createAllCardsForStage(projectId: string, stageId: number) {
 
 **Esforço:** 4-6 horas
 **Impacto:** MUITO ALTO
-**Status:** 📋 **PLANEJADO** (Implementar SEGUNDO - após List View)
+**Status:** ✅ **COMPLETO** (2025-10-24)
 
 #### Problema que Resolve
 - Referenciar cards requer clicar no botão Sparkles (✨)
@@ -746,16 +746,50 @@ async function createAllCardsForStage(projectId: string, stageId: number) {
 - Fluxo interrompido ao procurar card específico
 - Falta de descobrimento de funcionalidade
 
-#### Por Que Implementar Depois da List View?
+#### Solução Implementada
 
-✅ **Reuso de código:**
-- Usa `card-filters.ts` da List View
-- Usa `use-card-search.ts` para autocomplete
-- Componentes de busca já validados
+**Sistema de Menções Tipo Slack/Notion:**
+- Digite `@` no input do AI Copilot → mostra autocomplete com todos os cards
+- Filtro em tempo real conforme digita (fuzzy search)
+- Seleciona card → insere menção no texto
+- Suporta múltiplas menções na mesma mensagem
+- Navegação por teclado (↑↓ Enter Escape)
 
-✅ **Experiência melhorada:**
-- Usuários já familiarizados com busca de cards
-- Padrões UX consistentes
+#### Implementação Realizada
+
+**Fase 1: Detecção e Autocomplete (2-3h) ✅**
+- `hooks/use-mention-detection.ts`: Detecta `@` e calcula posição do dropdown
+- `hooks/use-mention-autocomplete.ts`: Filtragem fuzzy de cards
+- `hooks/use-mention-keyboard.ts`: Navegação por teclado
+- `hooks/use-mentions.ts`: Hook principal que combina toda a lógica
+
+**Fase 2: UI e Seleção (1-2h) ✅**
+- `components/mentions/mention-dropdown.tsx`: Dropdown visual com cards
+- Badges visuais para cards mencionados (ícone de etapa + título)
+- Múltiplas menções suportadas
+- Posicionamento inteligente (acima do textarea)
+
+**Fase 3: Contexto para IA (1h) ✅**
+- `hooks/use-mention-tracking.ts`: Rastreamento de cards mencionados
+- `lib/mention-context.ts`: Formatação de contexto estruturado
+- Integração com `/api/ai/chat` para envio de múltiplos cards
+
+**Fase 4: Navegação por Teclado (30min-1h) ✅**
+- ↑↓ para navegar entre sugestões
+- Enter para selecionar
+- Escape para fechar
+- Tab para sair do dropdown
+
+#### Acceptance Criteria
+- [x] Digitar @ abre autocomplete
+- [x] Filtro funciona em tempo real (fuzzy search)
+- [x] Navegação por teclado (↑↓ Enter Escape)
+- [x] Click seleciona card e insere menção
+- [x] Texto da menção aparece no input (@Título)
+- [x] Suporte a múltiplos cards na mesma mensagem
+- [x] Contexto de todos os cards mencionados é enviado para IA
+- [x] Dropdown fecha ao selecionar ou pressionar Escape
+- [x] Posicionamento correto do dropdown (acima do textarea)
 
 #### Quebra de Implementação
 
@@ -908,9 +942,33 @@ const handleCardMention = (card: CardRecord) => {
 - [ ] Click fora fecha autocomplete
 
 #### Arquivos Afetados
-- Novo componente: `components/canvas/card-mention-autocomplete.tsx`
-- `components/canvas/ai-sidebar.tsx` (lógica de detecção @)
-- `components/canvas/ai-suggestions.ts` (helper para buscar cards)
+
+**Novos Arquivos:**
+- ✅ `hooks/use-mention-detection.ts` - Detecção de @ e cálculo de posição
+- ✅ `hooks/use-mention-autocomplete.ts` - Filtro fuzzy de cards
+- ✅ `hooks/use-mention-keyboard.ts` - Navegação por teclado
+- ✅ `hooks/use-mentions.ts` - Hook principal combinado
+- ✅ `hooks/use-mention-tracking.ts` - Rastreamento de menções
+- ✅ `components/mentions/mention-dropdown.tsx` - UI do dropdown
+- ✅ `lib/mention-context.ts` - Formatação de contexto para IA
+
+**Arquivos Modificados:**
+- ✅ `components/canvas/ai-sidebar.tsx` - Integração do sistema de menções
+- ✅ `components/canvas/canvas-workspace.tsx` - Fetch de todos os cards
+
+#### Desafios e Soluções
+
+**Problema 1: Dropdown não aparecia visualmente**
+- Causa: Cálculo de posição usando mirror div retornava coordenadas incorretas (793px off-screen)
+- Solução: Simplificado para `textarea.getBoundingClientRect()` + 280px acima
+
+**Problema 2: Clique no card não funcionava**
+- Causa: Event listener `mousedown` no documento fechava dropdown antes do `onClick` disparar
+- Solução: Mudado botão de `onClick` para `onMouseDown` com `e.preventDefault()`
+
+**Problema 3: Texto não aparecia no input após seleção**
+- Causa: Manipulação direta do DOM (`textarea.value =`) não atualiza state do React
+- Solução: Callback `onTextUpdate` que chama `setInput` diretamente no componente pai
 
 ---
 

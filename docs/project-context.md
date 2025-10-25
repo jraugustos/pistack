@@ -374,44 +374,36 @@ pistack-app/
    - Incluir instruções sobre arrays JSON válidos
    - Publicar versões atualizadas
 
-### Médio Prazo (Sprint 2 - Parte 2 - PLANEJADO)
+### Médio Prazo (Sprint 2 - Parte 2 - ✅ COMPLETO)
 
-**🎯 Power User Features (13-18h total):**
+**🎯 Power User Features (13-18h total) - ✅ 100% IMPLEMENTADO**
 
-1. **List View dos Cards (6-8h)** - 📋 PLANEJADO
+1. **List View dos Cards (6-8h)** - ✅ **COMPLETO** (2025-10-24)
    - Visão alternativa em formato de lista
    - Filtros por etapa e status de completude
    - Busca textual em tempo real (debounced 300ms)
    - Ordenação: etapa, data, alfabético, completude
-   - Virtualização automática com 50+ cards
    - Toggle grid/list persistente (localStorage)
+   - Modal de visualização de cards (VIEW mode)
 
-2. **Menções com @ (4-6h)** - 📋 PLANEJADO
+2. **Menções com @ (4-6h)** - ✅ **COMPLETO** (2025-10-24)
    - Autocomplete de cards ao digitar @
    - Múltiplas menções na mesma mensagem
-   - Badges visuais para cards mencionados
+   - Sistema de rastreamento de menções
    - Envio de contexto estruturado para IA
    - Navegação por teclado (↑↓ Enter Escape)
+   - Posicionamento inteligente do dropdown
 
-3. **Command Palette com / (3-4h)** - 📋 PLANEJADO
+3. **Command Palette com / (3-4h)** - ✅ **COMPLETO** (2025-10-24)
    - Atalhos rápidos para ações comuns
-   - Comandos: clear-chat, batch-create, export-prd, goto-overview, help
+   - 15+ comandos implementados (navegação, cards, view modes, etc)
    - Agrupamento por categoria
-   - Atalhos de teclado opcionais (Cmd+K)
+   - Fuzzy search com scoring
+   - Atalho global Cmd+K / Ctrl+K
 
-**Ordem de implementação:**
-1. List View (base para as outras)
-2. Menções @ (reutiliza busca da List View)
-3. Command Palette (consolida tudo)
-
-**Dependências:**
-```bash
-npm install react-window  # Virtualização de listas
-npm install react-hotkeys-hook fuse.js  # Opcionais
-```
-
-**Arquivos novos:** ~15-20 arquivos
-**Arquivos modificados:** 3-5 arquivos principais
+**Arquivos criados:** 23 novos arquivos
+**Arquivos modificados:** 5 arquivos principais
+**Status:** Sprint 2 - Parte 2 concluído com sucesso 🎉
 
 4. **Sistema de Templates:**
    - Criar templates pré-definidos de projetos
