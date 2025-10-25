@@ -25,6 +25,19 @@ interface AIGeneratedCard {
   suggestion: string
 }
 
+// Helper function to provide category-specific guidance
+function getCategoryGuidance(category: CardCategory): string {
+  const guidance: Record<CardCategory, string> = {
+    ideation: 'Focus on creative exploration and brainstorming. Use more open-ended textarea fields. Less structure, more freedom.',
+    research: 'Data collection and analysis focus. Mix structured and unstructured fields. Include demographics, behaviors, insights.',
+    planning: 'Structured with clear outcomes. Include dates, numbers, priorities. Often has checkboxes for status tracking.',
+    design: 'Visual and technical specifications. Include file fields for mockups/screenshots and URLs for design references.',
+    development: 'Technical details and specifications. Include URLs for repos/docs. Use select for technical choices.',
+    marketing: 'Metrics and outcomes focus. Target audience details, campaign info, and performance metrics.'
+  }
+  return guidance[category] || 'General purpose card for project management.'
+}
+
 export async function POST(request: NextRequest) {
   try {
     await requireAdmin()
@@ -39,48 +52,63 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create prompt for OpenAI
-    const prompt = `You are an expert UX designer and product manager helping to create a card definition for a project management tool.
+    // Create prompt for OpenAI (based on docs/assistant-instructions)
+    const prompt = `You are a specialized AI assistant for PIStack, helping administrators create card definitions for project management.
 
-The user wants to create a card with the following description:
-"${description}"
-
+**User Request**:
+Description: "${description}"
 Category: ${category}
 Icon: ${icon}
 
-Based on this description, generate a card definition with:
-1. A clear, concise name for the card (max 50 characters)
-2. A list of fields that should be in this card
-3. A brief suggestion/explanation of what was generated
+**Your Task**: Generate a structured card definition based on this description.
 
-For each field, specify:
-- name: The field name (clear and descriptive)
-- type: One of: text, textarea, number, date, select, checkbox, file, url
-- placeholder: Optional helpful placeholder text
-- required: Whether the field is required (boolean)
-- options: Only for "select" type - array of option strings
-
-Return ONLY a valid JSON object with this structure:
+**Output Format** (CRITICAL - Return ONLY this JSON, no markdown):
 {
-  "name": "Card Name",
+  "name": "Card Name in Portuguese (max 50 chars)",
   "fields": [
     {
-      "name": "Field Name",
-      "type": "text",
-      "placeholder": "Optional placeholder",
-      "required": true
+      "name": "Field Name (Portuguese, specific)",
+      "type": "text|textarea|number|date|select|checkbox|file|url",
+      "placeholder": "Ex: helpful example",
+      "required": true|false,
+      "options": ["Only for select type"]
     }
   ],
-  "suggestion": "Brief explanation of what was generated and why these fields were chosen"
+  "suggestion": "1-2 sentences explaining your choices"
 }
 
-Important guidelines:
-- Keep field names clear and user-friendly
-- Use "text" for short inputs, "textarea" for long text
-- Use "select" only when there are clear, predefined options
-- Mark fields as required only if they are essential
-- Keep the suggestion brief (1-2 sentences)
-- Return ONLY the JSON object, no markdown formatting or code blocks`
+**Field Types - Decision Guide**:
+- text: Short text (names, titles, ~100 chars)
+- textarea: Long text (descriptions, notes, paragraphs)
+- number: Numeric values (age, budget, quantity)
+- date: Specific dates (deadlines, launch dates)
+- select: 2-10 predefined options (priority, status)
+- checkbox: Boolean yes/no (completed, validated)
+- file: File URLs (documents, images, attachments)
+- url: Web links (websites, references)
+
+**Rules**:
+1. Use Portuguese for ALL field names and placeholders
+2. Create 3-8 fields (sweet spot: 4-6)
+3. Mark ONLY 1-3 essential fields as required
+4. Provide helpful placeholders with "Ex:" prefix
+5. For select: provide 2-10 logical options
+6. Field names must be specific: "Nome do Cliente" not "Nome"
+7. Order fields logically (most important first)
+
+**Quality Checklist**:
+✓ All names in Portuguese
+✓ 3-8 total fields
+✓ 1-3 required fields
+✓ Specific, clear field names
+✓ Helpful placeholder examples
+✓ Select fields have 2-10 options
+✓ Suggestion explains reasoning
+
+**Category Context** (${category}):
+${getCategoryGuidance(category)}
+
+Return ONLY the JSON object. No markdown, no code blocks, no explanations outside JSON.`
 
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
