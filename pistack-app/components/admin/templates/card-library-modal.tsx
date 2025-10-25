@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Search, Hash, Circle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { X, Search, Hash, Circle, Plus } from 'lucide-react'
 import { CardDefinition, CARD_CATEGORY_LABELS, CardCategory } from '@/lib/types/card-definition'
 import * as LucideIcons from 'lucide-react'
 
@@ -22,6 +23,7 @@ export function CardLibraryModal({
   onAddCards,
   selectedCardIds = [],
 }: CardLibraryModalProps) {
+  const router = useRouter()
   const [definitions, setDefinitions] = useState<CardDefinition[]>([])
   const [filteredDefinitions, setFilteredDefinitions] = useState<CardDefinition[]>([])
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(selectedCardIds))
@@ -136,6 +138,13 @@ export function CardLibraryModal({
                 </option>
               ))}
             </select>
+            <button
+              onClick={() => router.push('/admin/cards/new')}
+              className="px-3 py-2 bg-[#5AD19A] hover:bg-[#4AC189] text-white rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Criar Card
+            </button>
           </div>
         </div>
 
