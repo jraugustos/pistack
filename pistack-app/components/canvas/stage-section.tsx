@@ -64,6 +64,7 @@ import { CardActionsProvider, CardActionsContextValue } from '@/components/canva
 import { CardEditModal } from '@/components/canvas/card-edit-modal'
 import { BatchCreationModal } from '@/components/canvas/batch-creation-modal'
 import { normalizeCardArrays } from '@/lib/array-normalizers'
+import { DynamicCard } from '@/components/canvas/cards/dynamic'
 
 interface StageSectionProps {
   projectId: string
@@ -83,10 +84,20 @@ interface CardRecord {
   id: string
   stage_id: string
   card_type: string
+  card_definition_id?: string | null
   content: Record<string, any>
   position: number
   created_at: string
   updated_at: string
+  definition?: {
+    id: string
+    name: string
+    description?: string
+    category: string
+    icon: string
+    fields: any[]
+    is_system: boolean
+  }
 }
 
 interface EditCardState {
@@ -1519,6 +1530,31 @@ const StageSectionBase: ForwardRefRenderFunction<
     }
 
     const card = getCardByType(cardType)
+
+    // PHASE 7: Use DynamicCard for cards with card_definition_id
+    if (card?.definition) {
+      const actionHandlers: CardActionsContextValue = {
+        onEdit: () => handleEditCard(card),
+        onDelete: () => handleDeleteCard(card.id),
+      }
+
+      return (
+        <CardActionsProvider key={card.id} value={actionHandlers}>
+          <DynamicCard
+            cardId={card.id}
+            definition={card.definition}
+            content={card.content}
+            stageColor={stage.stage_color}
+            onAiClick={() => emitReferenceCard(card)}
+            onSave={async (content: Record<string, any>) => {
+              await saveCard(card.id, content)
+            }}
+          />
+        </CardActionsProvider>
+      )
+    }
+
+    // Fallback: Use hardcoded card components (backward compatibility)
     const CardComponent = CARD_COMPONENTS[cardType]
 
     if (!CardComponent) {

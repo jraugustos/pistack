@@ -27,11 +27,12 @@ export async function GET(request: NextRequest) {
     const supabase = getServiceRoleClient()
     const supabaseUserId = await ensureSupabaseUser(userId, supabase)
 
-    // Get all cards for this stage
+    // Get all cards for this stage with card definitions
     const { data: cards, error } = await supabase
       .from('cards')
       .select(`
         *,
+        definition:card_definitions(*),
         stage:stages!inner(
           id,
           project:projects!inner(
