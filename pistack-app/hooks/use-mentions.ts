@@ -13,9 +13,10 @@ interface UseMentionsProps {
   cards: CardRecord[]
   enabled?: boolean
   onMentionInsert?: (cardId: string, cardType: string) => void
+  onTextUpdate?: (newText: string) => void // Callback to update parent's input state
 }
 
-export function useMentions({ cards, enabled = true, onMentionInsert }: UseMentionsProps) {
+export function useMentions({ cards, enabled = true, onMentionInsert, onTextUpdate }: UseMentionsProps) {
   // Mention detection
   const {
     trigger,
@@ -38,10 +39,30 @@ export function useMentions({ cards, enabled = true, onMentionInsert }: UseMenti
     (suggestion: { id: string; cardType: string; title: string }) => {
       console.log('[useMentions] handleSelect called with:', suggestion)
 
-      // Insert mention text (e.g., "@Público-alvo")
-      insertMention(`@${suggestion.title}`)
+      if (!textareaRef.current || !trigger.active) {
+        console.log('[useMentions] Cannot select - no textarea or not active')
+        return
+      }
 
-      console.log('[useMentions] Calling onMentionInsert')
+      const textarea = textareaRef.current
+      const value = textarea.value
+      const mentionText = `@${suggestion.title}`
+
+      // Calculate new value
+      const beforeMention = value.substring(0, trigger.cursorIndex)
+      const afterCursor = value.substring(textarea.selectionStart)
+      const newValue = beforeMention + mentionText + ' ' + afterCursor
+
+      console.log('[useMentions] Old value:', value)
+      console.log('[useMentions] New value:', newValue)
+
+      // Update parent's state instead of DOM manipulation
+      if (onTextUpdate) {
+        onTextUpdate(newValue)
+      }
+
+      // Close dropdown
+      closeMention()
 
       // Notify parent about mention
       if (onMentionInsert) {
@@ -49,8 +70,15 @@ export function useMentions({ cards, enabled = true, onMentionInsert }: UseMenti
       }
 
       console.log('[useMentions] handleSelect complete')
+
+      // Focus back and set cursor position
+      setTimeout(() => {
+        const newCursorPos = beforeMention.length + mentionText.length + 1
+        textarea.setSelectionRange(newCursorPos, newCursorPos)
+        textarea.focus()
+      }, 0)
     },
-    [insertMention, onMentionInsert]
+    [trigger, textareaRef, onMentionInsert, onTextUpdate, closeMention]
   )
 
   // Keyboard navigation

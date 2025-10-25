@@ -166,6 +166,7 @@ export function AiSidebar({ projectId, activeStage, isOpen, onToggle, allCards =
     cards: allCards,
     enabled: true,
     onMentionInsert: handleMentionInsert,
+    onTextUpdate: setInput, // Update React state directly
   })
 
   const summarizeFunctionCall = (call: { call?: string; result?: any }) => {
