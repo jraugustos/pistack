@@ -25,10 +25,6 @@ export function QuickSuggestionsCarousel({
   const autoplayRef = useRef<NodeJS.Timeout | null>(null)
   const hasInteracted = useRef(false)
 
-  if (suggestions.length === 0) {
-    return null
-  }
-
   const currentSuggestion = suggestions[currentIndex]
   const showDots = suggestions.length > 1
 
@@ -77,6 +73,11 @@ export function QuickSuggestionsCarousel({
       clearInterval(autoplayRef.current)
     }
     onSelect(currentSuggestion.text)
+  }
+
+  // Early return deve vir após todos os hooks
+  if (suggestions.length === 0) {
+    return null
   }
 
   return (

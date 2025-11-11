@@ -39,10 +39,10 @@ export async function GET(
 
     // Sort stages and cards
     template.stages = template.stages
-      ?.sort((a, b) => a.stage_number - b.stage_number)
-      .map((stage) => ({
+      ?.sort((a: any, b: any) => a.stage_number - b.stage_number)
+      .map((stage: any) => ({
         ...stage,
-        cards: stage.cards?.sort((a, b) => a.position - b.position) || [],
+        cards: stage.cards?.sort((a: any, b: any) => a.position - b.position) || [],
       }))
 
     return NextResponse.json({ template })

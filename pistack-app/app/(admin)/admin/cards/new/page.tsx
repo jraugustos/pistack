@@ -496,7 +496,7 @@ export default function CardCreatorPage() {
               <div className="space-y-3">
                 {manualForm.fields.length === 0 ? (
                   <div className="text-sm text-[#E6E9F2]/40 text-center py-8 border-2 border-dashed border-white/10 rounded-lg">
-                    Nenhum campo adicionado. Clique em "Adicionar Campo" para
+                    Nenhum campo adicionado. Clique em &quot;Adicionar Campo&quot; para
                     começar.
                   </div>
                 ) : (
