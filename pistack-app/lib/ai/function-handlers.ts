@@ -145,14 +145,27 @@ export async function handleUpdateCard(
       }
     }
 
+    // Valida se content foi fornecido
+    if (!args.content || typeof args.content !== 'object' || Object.keys(args.content).length === 0) {
+      console.error('[FunctionHandler][UpdateCard] Content vazio ou inválido', {
+        cardId: args.card_id,
+        cardType: card.card_type,
+        receivedContent: args.content,
+      })
+      return {
+        success: false,
+        error: 'Parâmetro content é obrigatório e não pode estar vazio',
+      }
+    }
+
     // SANITIZAR CONTEÚDO ANTES DE SALVAR
     const sanitizedContent = sanitizeAIResponse(args.content, card.card_type)
 
     console.log('[FunctionHandler][UpdateCard] Sanitizando conteúdo', {
       cardId: args.card_id,
       cardType: card.card_type,
-      before: JSON.stringify(args.content).substring(0, 100),
-      after: JSON.stringify(sanitizedContent).substring(0, 100),
+      before: args.content ? JSON.stringify(args.content).substring(0, 100) : 'undefined',
+      after: sanitizedContent ? JSON.stringify(sanitizedContent).substring(0, 100) : 'undefined',
     })
 
     // Update the card

@@ -8,9 +8,10 @@ import {
   forwardRef,
   ForwardRefRenderFunction,
   useRef,
+  ReactNode,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { Plus, Sparkles, Check, Info, Lightbulb, X } from 'lucide-react'
+import { Plus, Sparkles, Check, Info, Lightbulb, X, Loader2 } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { useAIButtonGuard } from '@/hooks/use-debounced-ai'
 import {
@@ -63,6 +64,7 @@ import {
 import { CardActionsProvider, CardActionsContextValue } from '@/components/canvas/cards/base-card'
 import { CardEditModal } from '@/components/canvas/card-edit-modal'
 import { BatchCreationModal } from '@/components/canvas/batch-creation-modal'
+import { LoadingCard } from '@/components/canvas/cards/loading-card'
 import { normalizeCardArrays } from '@/lib/array-normalizers'
 import { DynamicCard } from '@/components/canvas/cards/dynamic'
 
@@ -153,6 +155,9 @@ const createLoadingState = (isVisible: boolean): LoadingState => ({
 
 const addCompletedStep = (completedSteps: number[], step: number) =>
   completedSteps.includes(step) ? completedSteps : [...completedSteps, step]
+
+const CARD_GENERATION_POLL_INTERVAL = 2000
+const CARD_GENERATION_MAX_ATTEMPTS = 15
 
 const STAGE_CARD_TYPES: Record<number, string[]> = {
   1: [
@@ -900,6 +905,12 @@ const StageSectionBase: ForwardRefRenderFunction<
   const [isBatchModalOpen, setIsBatchModalOpen] = useState(false)
   const [batchProgress, setBatchProgress] = useState<BatchProgress | null>(null)
   const batchAbortRef = useRef(false)
+  // Track AI creation lifecycle
+  const [creatingCards, setCreatingCards] = useState<Set<string>>(new Set())
+  const [processingCards, setProcessingCards] = useState<Record<string, string>>({})
+  const pollTimeoutsRef = useRef<Record<string, ReturnType<typeof setTimeout> | null>>({})
+  const pollAttemptsRef = useRef<Record<string, number>>({})
+  const processingBaselinesRef = useRef<Record<string, string>>({})
 
   // Hook para prevenir cliques múltiplos no botão de IA
   const { canClick } = useAIButtonGuard()
@@ -928,30 +939,35 @@ const StageSectionBase: ForwardRefRenderFunction<
   const stageCardTypes = STAGE_CARD_TYPES[stage.stage_number] ?? []
 
   const selectableCardTypes = useMemo(
-    () => stageCardTypes.filter((type) => !cardsByType[type]),
-    [stageCardTypes, cardsByType]
+    () =>
+      stageCardTypes.filter(
+        (type) => !cardsByType[type] && !creatingCards.has(type)
+      ),
+    [stageCardTypes, cardsByType, creatingCards]
   )
 
   const fetchCards = useCallback(
-    async (options?: { silent?: boolean }) => {
+    async (options?: { silent?: boolean }): Promise<CardRecord[]> => {
       if (!stage.id) {
         setCards([])
         setIsLoading(false)
-        return
+        return []
       }
 
       if (!options?.silent) {
         setIsLoading(true)
       }
 
+      let mappedCards: CardRecord[] = []
+
       try {
         const response = await fetch(`/api/cards?stageId=${stage.id}`)
         const data = await response.json()
-        const mapped = (data.cards || []).map((card: CardRecord) => ({
+        mappedCards = (data.cards || []).map((card: CardRecord) => ({
           ...card,
           content: normalizeCardContent(card.card_type, card.content),
         }))
-        setCards(mapped)
+        setCards(mappedCards)
       } catch (error) {
         console.error('Error loading cards:', error)
       } finally {
@@ -959,6 +975,8 @@ const StageSectionBase: ForwardRefRenderFunction<
           setIsLoading(false)
         }
       }
+
+      return mappedCards
     },
     [stage.id]
   )
@@ -1068,6 +1086,182 @@ const StageSectionBase: ForwardRefRenderFunction<
     })
   }, [])
 
+  const clearCreatingCard = useCallback((cardType: string) => {
+    setCreatingCards((prev) => {
+      if (!prev.has(cardType)) {
+        return prev
+      }
+      const next = new Set(prev)
+      next.delete(cardType)
+      return next
+    })
+  }, [])
+
+  const stopPollingCard = useCallback((cardId: string) => {
+    const timeoutId = pollTimeoutsRef.current[cardId]
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+    delete pollTimeoutsRef.current[cardId]
+    delete pollAttemptsRef.current[cardId]
+  }, [])
+
+  const finishProcessingCard = useCallback(
+    (cardType: string, cardId?: string) => {
+      setProcessingCards((prev) => {
+        if (!prev[cardType]) {
+          return prev
+        }
+        const next = { ...prev }
+        delete next[cardType]
+        return next
+      })
+      if (cardId) {
+        delete processingBaselinesRef.current[cardId]
+        stopPollingCard(cardId)
+      }
+    },
+    [stopPollingCard]
+  )
+
+  const pollCardCompletion = useCallback(
+    async (cardType: string, cardId: string, attempt = 0) => {
+      try {
+        const response = await fetch(`/api/cards?cardId=${cardId}`)
+        if (response.status === 404) {
+          finishProcessingCard(cardType, cardId)
+          return
+        }
+        if (response.ok) {
+          const data = await response.json()
+          const fetchedCard = data.card
+          if (fetchedCard) {
+            const normalizedCard = {
+              ...fetchedCard,
+              content: normalizeCardContent(fetchedCard.card_type, fetchedCard.content),
+            }
+
+            setCards((prev) => {
+              const idx = prev.findIndex((card) => card.id === normalizedCard.id)
+              if (idx === -1) {
+                return [...prev, normalizedCard]
+              }
+              const next = [...prev]
+              next[idx] = normalizedCard
+              return next
+            })
+
+            const baselineSignature = processingBaselinesRef.current[cardId]
+            const currentSignature = JSON.stringify(normalizedCard.content || {})
+
+            if (!baselineSignature || baselineSignature !== currentSignature) {
+              finishProcessingCard(cardType, cardId)
+              return
+            }
+          }
+        }
+      } catch (error) {
+        console.error('[StageSection] Poll card error:', error)
+      }
+
+      if (attempt >= CARD_GENERATION_MAX_ATTEMPTS) {
+        finishProcessingCard(cardType, cardId)
+        return
+      }
+
+      const timeoutId = window.setTimeout(() => {
+        pollCardCompletion(cardType, cardId, attempt + 1)
+      }, CARD_GENERATION_POLL_INTERVAL)
+
+      pollTimeoutsRef.current[cardId] = timeoutId
+      pollAttemptsRef.current[cardId] = attempt + 1
+    },
+    [finishProcessingCard]
+  )
+
+  const registerProcessingCard = useCallback(
+    (cardType: string, cardId: string, baselineContent: Record<string, any>) => {
+      setProcessingCards((prev) => ({
+        ...prev,
+        [cardType]: cardId,
+      }))
+      processingBaselinesRef.current[cardId] = JSON.stringify(baselineContent || {})
+      pollAttemptsRef.current[cardId] = 0
+      pollCardCompletion(cardType, cardId, 0)
+    },
+    [pollCardCompletion]
+  )
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{
+        cardId: string
+        cardType: string
+        content: Record<string, any>
+      }>).detail
+
+      if (!detail) {
+        return
+      }
+
+      registerProcessingCard(
+        detail.cardType,
+        detail.cardId,
+        normalizeCardContent(detail.cardType, detail.content ?? {})
+      )
+    }
+
+    window.addEventListener('pistack:ai:card-processing', handler as EventListener)
+    return () => {
+      window.removeEventListener('pistack:ai:card-processing', handler as EventListener)
+    }
+  }, [registerProcessingCard])
+
+  useEffect(() => {
+    return () => {
+      Object.values(pollTimeoutsRef.current).forEach((timeoutId) => {
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+        }
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (creatingCards.size === 0) {
+      return
+    }
+
+    setCreatingCards((prev) => {
+      let updated = false
+      const next = new Set(prev)
+
+      prev.forEach((cardType) => {
+        const card = cardsByType[cardType]
+        if (card && cardHasContent(card)) {
+          next.delete(cardType)
+          updated = true
+        }
+      })
+
+      return updated ? next : prev
+    })
+  }, [cardsByType, cardHasContent, creatingCards])
+
+  useEffect(() => {
+    Object.entries(processingCards).forEach(([cardType, cardId]) => {
+      const card = cardsByType[cardType]
+      if (!card) {
+        return
+      }
+      const baselineSignature = processingBaselinesRef.current[cardId]
+      const currentSignature = JSON.stringify(card.content || {})
+      if (!baselineSignature || baselineSignature !== currentSignature) {
+        finishProcessingCard(cardType, cardId)
+      }
+    })
+  }, [cardsByType, finishProcessingCard, processingCards])
+
   // Batch Creation Functions
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -1132,6 +1326,15 @@ const StageSectionBase: ForwardRefRenderFunction<
       const cardType = cardTypes[i]
       console.log(`[BatchCreate] Creating card ${i + 1}/${cardTypes.length}: ${cardType}`)
 
+      setCreatingCards((prev) => {
+        if (prev.has(cardType) || cardsByType[cardType]) {
+          return prev
+        }
+        const next = new Set(prev)
+        next.add(cardType)
+        return next
+      })
+
       // Atualiza para "creating"
       updateBatchCardStatus(i, 'creating')
 
@@ -1167,6 +1370,16 @@ const StageSectionBase: ForwardRefRenderFunction<
         const responseData = await response.json()
         console.log(`[BatchCreate] Success for ${cardType}:`, responseData)
 
+        if (response.status === 202 && responseData.card?.id) {
+          const normalizedBaseline = normalizeCardContent(
+            cardType,
+            responseData.card.content
+          )
+          registerProcessingCard(cardType, responseData.card.id, normalizedBaseline)
+        }
+
+        clearCreatingCard(cardType)
+
         // Atualiza para "success"
         updateBatchCardStatus(i, 'success')
 
@@ -1180,6 +1393,7 @@ const StageSectionBase: ForwardRefRenderFunction<
           error instanceof Error ? error.message : 'Erro desconhecido'
         console.error(`[BatchCreate] Error creating ${cardType}:`, errorMessage)
         updateBatchCardStatus(i, 'error', errorMessage)
+        clearCreatingCard(cardType)
 
         // Continua mesmo com erro
         if (i < cardTypes.length - 1) {
@@ -1197,7 +1411,15 @@ const StageSectionBase: ForwardRefRenderFunction<
     await delay(2000)
     setIsBatchModalOpen(false)
     console.log('[BatchCreate] Batch creation complete')
-  }, [stage.id, stage.stage_number, fetchCards, updateBatchCardStatus])
+  }, [
+    stage.id,
+    stage.stage_number,
+    cardsByType,
+    clearCreatingCard,
+    registerProcessingCard,
+    fetchCards,
+    updateBatchCardStatus,
+  ])
 
   const handleBatchCancel = useCallback(() => {
     batchAbortRef.current = true
@@ -1260,13 +1482,25 @@ const StageSectionBase: ForwardRefRenderFunction<
 
   const shouldShowCard = useCallback(
     (cardType: string) => {
+      if (creatingCards.has(cardType)) {
+        return true
+      }
+
       const card = getCardByType(cardType)
       if (!card) {
-        return cardType === 'project-name' && !normalizedSearch && !showOnlyFilled
+        return (
+          cardType === 'project-name' && !normalizedSearch && !showOnlyFilled
+        )
       }
       return cardMatchesFilters(card)
     },
-    [cardMatchesFilters, getCardByType, normalizedSearch, showOnlyFilled]
+    [
+      cardMatchesFilters,
+      creatingCards,
+      getCardByType,
+      normalizedSearch,
+      showOnlyFilled,
+    ]
   )
 
   const zoomScale = useMemo(() => zoom / 100, [zoom])
@@ -1312,11 +1546,13 @@ const StageSectionBase: ForwardRefRenderFunction<
   const createCard = async (cardType: string, content: Record<string, any>) => {
     const autoPopulate = !content || Object.keys(content).length === 0
 
-    try {
-      if (autoPopulate) {
-        startLoadingOverlay()
-      }
+    // Se vai fazer autopopulate, marca o card como "criando" ANTES de tudo
+    if (autoPopulate) {
+      setCreatingCards((prev) => new Set(prev).add(cardType))
+      console.log('[StageSection] Marcando card como criando:', cardType)
+    }
 
+    try {
       const response = await fetch('/api/cards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1329,36 +1565,37 @@ const StageSectionBase: ForwardRefRenderFunction<
         }),
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        if (process.env.NODE_ENV !== 'production') {
-          // eslint-disable-next-line no-console
-          console.debug('[StageSection] card created', data.card)
-        }
-
-        // Se houve warning, significa que a IA falhou
-        if (data.warning) {
-          console.warn('[StageSection] Card created with warning:', data.warning)
-        }
-
-        // Normaliza e adiciona o card ao estado
-        const normalizedCard = {
-          ...data.card,
-          content: normalizeCardContent(cardType, data.card.content),
-        }
-
-        setCards((prev) => {
-          const next = prev.filter((existing) => existing.id !== data.card.id)
-          next.push(normalizedCard)
-          return next
-        })
-
-        return data.card
-      } else {
+      if (!response.ok) {
         const errorData = await response.json()
         console.error('[StageSection] Failed to create card:', errorData)
         throw new Error(errorData.error || 'Failed to create card')
       }
+
+      const data = await response.json()
+      const normalizedCard = {
+        ...data.card,
+        content: normalizeCardContent(cardType, data.card.content),
+      }
+
+      setCards((prev) => {
+        const next = prev.filter((existing) => existing.id !== data.card.id)
+        next.push(normalizedCard)
+        return next
+      })
+
+      if (autoPopulate && response.status === 202 && normalizedCard.id) {
+        console.log('[StageSection] Card enviado para geração em background:', cardType)
+        registerProcessingCard(cardType, normalizedCard.id, normalizedCard.content)
+        return normalizedCard
+      }
+
+      console.log('[StageSection] Card criado:', cardType, data.card.id)
+
+      if (data.warning) {
+        console.warn('[StageSection] Card created with warning:', data.warning)
+      }
+
+      return normalizedCard
     } catch (error) {
       console.error('Error creating card:', error)
       // Em caso de erro, atualiza a lista de cards para garantir consistência
@@ -1366,7 +1603,7 @@ const StageSectionBase: ForwardRefRenderFunction<
       throw error
     } finally {
       if (autoPopulate) {
-        stopLoadingOverlay()
+        clearCreatingCard(cardType)
       }
     }
   }
@@ -1380,7 +1617,13 @@ const StageSectionBase: ForwardRefRenderFunction<
       })
 
       if (response.ok) {
+        const processingEntry = Object.entries(processingCards).find(
+          ([, id]) => id === cardId
+        )
         setCards((prev) => prev.filter((card) => card.id !== cardId))
+        if (processingEntry) {
+          finishProcessingCard(processingEntry[0], cardId)
+        }
       }
     } catch (error) {
       console.error('Error deleting card:', error)
@@ -1529,7 +1772,37 @@ const StageSectionBase: ForwardRefRenderFunction<
       return null
     }
 
+    // Se o card está sendo criado, mostra LoadingCard
+    if (creatingCards.has(cardType)) {
+      console.log('[StageSection] Renderizando LoadingCard para:', cardType)
+      const cardTitle = CARD_TITLES[cardType] || cardType
+      return (
+        <LoadingCard
+          key={`loading-${cardType}`}
+          cardTitle={cardTitle}
+          stageColor={stage.stage_color}
+        />
+      )
+    }
+
     const card = getCardByType(cardType)
+    const processingCardId = processingCards[cardType]
+
+    const withProcessingIndicator = (node: ReactNode, key?: string) => {
+      if (!processingCardId || !card?.id) {
+        return node
+      }
+
+      return (
+        <div className="relative" key={key}>
+          <div className="absolute top-3 right-3 flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[#7AA2FF]/10 text-[#C8D1FF]">
+            <Loader2 className="w-3 h-3 animate-spin" />
+            <span>IA refinando</span>
+          </div>
+          {node}
+        </div>
+      )
+    }
 
     // PHASE 7: Use DynamicCard for cards with card_definition_id
     if (card?.definition) {
@@ -1538,7 +1811,7 @@ const StageSectionBase: ForwardRefRenderFunction<
         onDelete: () => handleDeleteCard(card.id),
       }
 
-      return (
+      const dynamicCard = (
         <CardActionsProvider key={card.id} value={actionHandlers}>
           <DynamicCard
             cardId={card.id}
@@ -1552,6 +1825,8 @@ const StageSectionBase: ForwardRefRenderFunction<
           />
         </CardActionsProvider>
       )
+
+      return withProcessingIndicator(dynamicCard, `dynamic-${card.id}`)
     }
 
     // Fallback: Use hardcoded card components (backward compatibility)
@@ -1576,7 +1851,7 @@ const StageSectionBase: ForwardRefRenderFunction<
         }
       : {}
 
-    return (
+    const staticCard = (
       <CardActionsProvider key={card?.id ?? cardType} value={actionHandlers}>
         <CardComponent
           cardId={card?.id ?? `${stage.id}-${cardType}`}
@@ -1592,6 +1867,8 @@ const StageSectionBase: ForwardRefRenderFunction<
         />
       </CardActionsProvider>
     )
+
+    return withProcessingIndicator(staticCard, card?.id ?? cardType)
   }
 
   const currentLoadingMessage = LOADING_MESSAGES[

@@ -219,22 +219,16 @@ function validateCardSchema(cardType: string, content: any): boolean {
       return !hasWrongFields || Array.isArray(content.kpis)
 
     case 'problem':
-      // Aceita se tem 'problem' OU se não tem campos de outros cards
-      return (
-        ('problem' in content) ||
-        !('solution' in content && 'kpis' in content)
-      )
+      // DEVE ter o campo 'problem' - não aceita vazio
+      return 'problem' in content && typeof content.problem === 'string' && content.problem.trim().length > 0
 
     case 'solution':
-      // Aceita se tem 'solution' OU se não tem campos de outros cards
-      return (
-        ('solution' in content) ||
-        !('problem' in content && 'kpis' in content)
-      )
+      // DEVE ter o campo 'solution' - não aceita vazio
+      return 'solution' in content && typeof content.solution === 'string' && content.solution.trim().length > 0
 
     case 'pitch':
-      // Aceita se tem 'pitch'
-      return 'pitch' in content
+      // DEVE ter o campo 'pitch' - não aceita vazio
+      return 'pitch' in content && typeof content.pitch === 'string' && content.pitch.trim().length > 0
 
     case 'project-name':
       // Aceita se tem 'projectName' ou 'name'
@@ -247,6 +241,29 @@ function validateCardSchema(cardType: string, content: any): boolean {
     case 'primary-persona':
       // Aceita se tem 'name' e não tem campos completamente errados
       return 'name' in content || Object.keys(content).length > 2
+
+    case 'benchmarking':
+      return (
+        (Array.isArray(content.competitors) && content.competitors.length > 0) ||
+        (Array.isArray(content.opportunities) && content.opportunities.length > 0)
+      )
+
+    case 'user-stories':
+      if (!Array.isArray(content.stories)) {
+        return false
+      }
+      return content.stories.some((story) => {
+        if (!story) return false
+        if (typeof story === 'string') {
+          return story.trim().length > 0
+        }
+        const candidate = story as Record<string, any>
+        return (
+          typeof candidate.title === 'string' && candidate.title.trim().length > 0 ||
+          typeof candidate.asA === 'string' && candidate.asA.trim().length > 0 ||
+          typeof candidate.iWant === 'string' && candidate.iWant.trim().length > 0
+        )
+      })
 
     default:
       // Para outros tipos, aceita qualquer coisa com conteúdo
@@ -797,8 +814,9 @@ export async function generateCardWithAssistant(options: GenerateCardOptions) {
     assistant_id: assistantId,
   })
 
-  const maxAttempts = 60 // Aumentado de 30 para 60 (60 segundos)
+  const maxAttempts = 20
   let attempts = 0
+  const runStart = Date.now()
 
   while (attempts < maxAttempts) {
     attempts += 1
@@ -873,6 +891,16 @@ export async function generateCardWithAssistant(options: GenerateCardOptions) {
       }
     }
 
+    if (Date.now() - runStart > 25000) {
+      console.warn('[AI][AutoPopulate] Tempo limite atingido antes da conclusão', {
+        cardId,
+        cardType,
+        stageNumber,
+        attempts,
+      })
+      break
+    }
+
     await wait(1000)
     run = await openai.beta.threads.runs.retrieve(run.id, {
       thread_id: thread.id,
@@ -880,16 +908,71 @@ export async function generateCardWithAssistant(options: GenerateCardOptions) {
   }
 
   if (run.status !== 'completed') {
-    console.error('[AI][Timeout] Assistente não completou a tempo', {
+    console.error('[AI][Timeout] Assistente não completou a tempo, acionando fallback', {
       cardId,
       cardType,
       stageNumber,
       attempts,
       finalStatus: run.status,
     })
+
+    // Aciona o fallback em caso de timeout
+    const fallback = await generateFallbackContent({
+      supabase,
+      projectId,
+      stageId,
+      stageNumber,
+      stageName,
+      cardType,
+      userId,
+      cardId,
+      project,
+      stages,
+    })
+
+    if (!fallback.success || !fallback.content) {
+      return {
+        success: false,
+        error: fallback.error || 'Timeout e fallback falharam.',
+      }
+    }
+
+    // Verifica se o card ainda existe antes de tentar atualizar
+    const { data: existingCard, error: checkError } = await supabase
+      .from('cards')
+      .select('id')
+      .eq('id', cardId)
+      .maybeSingle()
+
+    if (checkError || !existingCard) {
+      console.error('[AI][Fallback] Card não existe mais no banco', { cardId, checkError })
+      return {
+        success: false,
+        error: 'Card foi removido durante processamento da IA',
+      }
+    }
+
+    const { data: fallbackCard, error: fallbackError } = await supabase
+      .from('cards')
+      .update({
+        content: fallback.content,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', cardId)
+      .select()
+      .single()
+
+    if (fallbackError || !fallbackCard) {
+      console.error('[AI][Fallback] falha ao salvar conteúdo', fallbackError)
+      return {
+        success: false,
+        error: fallbackError?.message || 'Não foi possível salvar conteúdo do fallback.',
+      }
+    }
+
     return {
-      success: false,
-      error: `Timeout ao aguardar resposta da IA (status final: ${run.status} após ${attempts} tentativas).`,
+      success: true,
+      card: fallbackCard,
     }
   }
 
@@ -965,10 +1048,13 @@ export async function generateCardWithAssistant(options: GenerateCardOptions) {
     content: JSON.stringify(card.content).substring(0, 200),
   })
 
-  if (!hasContent) {
-    console.warn('[AI] card sem conteúdo após assistente, acionando fallback', {
+  // Aciona fallback se não tiver conteúdo OU se o schema estiver incorreto
+  if (!hasContent || !hasCorrectSchema) {
+    console.warn('[AI] card inválido após assistente, acionando fallback', {
       cardId,
       cardType,
+      hasContent,
+      hasCorrectSchema,
     })
 
     const fallback = await generateFallbackContent({
@@ -988,6 +1074,21 @@ export async function generateCardWithAssistant(options: GenerateCardOptions) {
       return {
         success: false,
         error: fallback.error || 'Fallback não conseguiu gerar conteúdo.',
+      }
+    }
+
+    // Verifica se o card ainda existe antes de tentar atualizar
+    const { data: existingCard2, error: checkError2 } = await supabase
+      .from('cards')
+      .select('id')
+      .eq('id', cardId)
+      .maybeSingle()
+
+    if (checkError2 || !existingCard2) {
+      console.error('[AI][Fallback] Card não existe mais no banco', { cardId, checkError2 })
+      return {
+        success: false,
+        error: 'Card foi removido durante processamento da IA',
       }
     }
 

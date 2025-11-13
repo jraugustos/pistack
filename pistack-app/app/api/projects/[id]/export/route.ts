@@ -4,6 +4,7 @@ import {
   ensureSupabaseUser,
   getServiceRoleClient,
 } from '@/lib/supabase/admin'
+import { deserializeChatMessage } from '@/lib/chat/messages'
 
 export async function GET(
   request: NextRequest,
@@ -108,12 +109,16 @@ export async function GET(
             new Date(a.created_at).getTime() -
             new Date(b.created_at).getTime()
         )
-        .map((message: any) => ({
-          id: message.id,
-          role: message.role,
-          content: message.content,
-          createdAt: message.created_at,
-        })),
+        .map((message: any) => {
+          const parsed = deserializeChatMessage(message.content)
+          return {
+            id: message.id,
+            role: message.role,
+            content: parsed.content,
+            data: parsed.data ?? null,
+            createdAt: message.created_at,
+          }
+        }),
     }))
 
     const payload = {

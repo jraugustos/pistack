@@ -4,12 +4,16 @@ import {
   ensureSupabaseUser,
   getServiceRoleClient,
 } from '@/lib/supabase/admin'
+import { deserializeChatMessage } from '@/lib/chat/messages'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('[AI History] GET request received')
     const { userId } = await auth()
+    console.log('[AI History] Auth result:', { userId })
 
     if (!userId) {
+      console.log('[AI History] No userId - unauthorized')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -18,7 +22,10 @@ export async function GET(request: NextRequest) {
     const stageParam = searchParams.get('stage')
     const stageNumber = Number(stageParam)
 
+    console.log('[AI History] Request params:', { projectId, stageParam, stageNumber })
+
     if (!projectId || Number.isNaN(stageNumber)) {
+      console.log('[AI History] Missing required parameters')
       return NextResponse.json(
         { error: 'Missing required parameters' },
         { status: 400 }
@@ -26,14 +33,18 @@ export async function GET(request: NextRequest) {
     }
 
     if (stageNumber < 1 || stageNumber > 6) {
+      console.log('[AI History] Invalid stage number')
       return NextResponse.json(
         { error: 'Invalid stage number' },
         { status: 400 }
       )
     }
 
+    console.log('[AI History] Getting Supabase client...')
     const supabase = getServiceRoleClient()
+    console.log('[AI History] Ensuring Supabase user...')
     const supabaseUserId = await ensureSupabaseUser(userId, supabase)
+    console.log('[AI History] Supabase user ID:', supabaseUserId)
 
     // Ensure project belongs to the authenticated user
     const { data: project, error: projectError } = await supabase
@@ -69,11 +80,14 @@ export async function GET(request: NextRequest) {
     const threadRecord = threadRows?.[0]
 
     if (!threadRecord) {
+      console.log('[AI History] No thread found, returning empty')
       return NextResponse.json({
         threadId: null,
         messages: [],
       })
     }
+
+    console.log('[AI History] Thread found:', { id: threadRecord.id, openai_thread_id: threadRecord.openai_thread_id })
 
     const { data: messageRows, error: messageError } = await supabase
       .from('ai_messages')
@@ -82,12 +96,14 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: true })
 
     if (messageError) {
-      console.error('Error fetching AI messages:', messageError)
+      console.error('[AI History] Error fetching AI messages:', messageError)
       return NextResponse.json(
         { error: 'Failed to load AI messages' },
         { status: 500 }
       )
     }
+
+    console.log('[AI History] Returning response:', { threadId: threadRecord.openai_thread_id, messageCount: messageRows?.length || 0 })
 
     return NextResponse.json({
       threadId: threadRecord.openai_thread_id,
@@ -95,7 +111,7 @@ export async function GET(request: NextRequest) {
         messageRows?.map((message) => ({
           id: message.id,
           role: message.role,
-          content: message.content,
+          ...deserializeChatMessage(message.content),
           createdAt: message.created_at,
         })) ?? [],
     })

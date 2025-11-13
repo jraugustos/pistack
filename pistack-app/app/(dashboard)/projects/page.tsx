@@ -5,7 +5,9 @@ import {
   getServiceRoleClient,
 } from '@/lib/supabase/admin'
 import Link from 'next/link'
-import { Plus, FolderOpen, Calendar } from 'lucide-react'
+import { Plus, FolderOpen, LogOut } from 'lucide-react'
+import { SignOutButton } from '@clerk/nextjs'
+import { ProjectCard } from '@/components/projects/project-card'
 
 async function getProjects(userId: string) {
   try {
@@ -55,6 +57,16 @@ export default async function ProjectsPage() {
             >
               Meus Projetos
             </Link>
+            <SignOutButton redirectUrl="/sign-in">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#E6E9F2]/80 border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
+                aria-label="Sair da conta"
+              >
+                <LogOut className="w-4 h-4" />
+                Sair
+              </button>
+            </SignOutButton>
           </div>
         </nav>
       </header>
@@ -124,29 +136,7 @@ export default async function ProjectsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {projects.map((project) => (
-                <Link
-                  key={project.id}
-                  href={`/canvas/${project.id}`}
-                  className="group bg-[#151821] rounded-xl border border-white/5 hover:border-[#7AA2FF]/30 p-6 transition-all hover:shadow-lg hover:shadow-[#7AA2FF]/5"
-                >
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-[#7AA2FF] transition-colors">
-                    {project.name}
-                  </h3>
-                  {project.description && (
-                    <p className="text-sm text-[#E6E9F2]/60 mb-4 line-clamp-2">
-                      {project.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2 text-xs text-[#E6E9F2]/40">
-                    <Calendar className="w-3 h-3" />
-                    <span>
-                      Atualizado{' '}
-                      {new Date(project.updated_at).toLocaleDateString(
-                        'pt-BR'
-                      )}
-                    </span>
-                  </div>
-                </Link>
+                <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           </>
